@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact Us | Shree Nepal Secondary School Bishrampur</title>
+  <meta name="description" content="Contact Shree Nepal Secondary School Bishrampur — address, phone, email, Google Maps location, and student contact form." />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .contact-info-card {
+      padding: 1.5rem; border-radius: var(--radius-lg);
+      display: flex; align-items: flex-start; gap: 1.25rem;
+      margin-bottom: 1rem; transition: var(--transition);
+    }
+    .contact-info-card:hover { border-color: rgba(244,169,0,0.4); }
+    .contact-info-icon {
+      width: 52px; height: 52px; border-radius: var(--radius);
+      background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.5rem; flex-shrink: 0; color: var(--navy);
+    }
+    .contact-info-text h4 { color: var(--white); margin-bottom: 0.25rem; font-size: 0.95rem; }
+    .contact-info-text p, .contact-info-text a { color: var(--text-muted); font-size: 0.88rem; line-height: 1.6; }
+    .contact-info-text a:hover { color: var(--gold); }
+    .contact-form { padding: 2.5rem; border-radius: var(--radius-lg); }
+    .form-group { margin-bottom: 1.25rem; }
+    .form-group label { display: block; color: var(--white); font-size: 0.85rem; font-weight: 600; margin-bottom: 0.5rem; }
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%; padding: 0.85rem 1rem;
+      background: var(--navy-light); border: 1px solid var(--glass-border);
+      border-radius: var(--radius); color: var(--white); font-size: 0.9rem;
+      font-family: inherit; transition: var(--transition); outline: none;
+    }
+    .form-group input::placeholder,
+    .form-group textarea::placeholder { color: var(--text-muted); }
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(244,169,0,0.15); }
+    .form-group textarea { resize: vertical; min-height: 120px; }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+    .map-embed { border-radius: var(--radius-lg); overflow: hidden; border: 2px solid var(--glass-border); }
+    .social-link {
+      display: flex; align-items: center; gap: 0.75rem;
+      padding: 0.9rem 1.25rem; border-radius: var(--radius);
+      background: var(--glass-bg); border: 1px solid var(--glass-border);
+      color: var(--white); font-size: 0.85rem; font-weight: 600;
+      transition: var(--transition); text-decoration: none; margin-bottom: 0.75rem;
+    }
+    .social-link:hover { border-color: rgba(244,169,0,0.4); transform: translateX(4px); color: var(--gold); }
+    .social-link .sicon { font-size: 1.4rem; }
+    @media(max-width:600px){ .form-row{grid-template-columns:1fr;} .contact-form{padding:1.5rem;} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="index.html" class="nav-brand">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
+      <div class="nav-brand-text">
+        <span class="school-name">Shree Nepal Secondary School</span>
+        <span class="school-sub">Bishrampur-02, Rautahat, Nepal</span>
+      </div>
+    </a>
+    <ul class="nav-links" id="nav-links">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="about.html">About</a></li>
+      <li><a href="academics.html">Academics</a></li>
+      <li><a href="faculty.html">Faculty</a></li>
+      <li><a href="committee.html">Committee</a></li>
+      <li><a href="notices.html">Notices</a></li>
+      <li><a href="gallery.html">Gallery</a></li>
+      <li><a href="links.html">Edu Links</a></li>
+      <li><a href="contact.html" class="active">Contact</a></li>
+      <li><a href="epustakalaya.html" class="nav-epustakalaya">📚 E-Library</a></li>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div class="container">
+    <div class="tag">Get In Touch</div>
+    <h1>Contact Us</h1>
+    <p>Reach out to us for admissions, inquiries, or general information</p>
+    <div class="breadcrumb"><a href="index.html">Home</a><span>/</span><span>Contact</span></div>
+  </div>
+</div>
+
+<section class="section" style="background:var(--navy)">
+  <div class="container">
+    <div class="grid-2" style="gap:3rem;align-items:start">
+
+      <!-- Contact Info -->
+      <div class="reveal">
+        <div class="section-header" style="text-align:left;margin-bottom:2rem">
+          <div class="tag">Our Details</div>
+          <h2>School Contact Information</h2>
+          <div class="gold-line" style="margin:1rem 0 0"></div>
+        </div>
+
+        <div class="glass-card contact-info-card">
+          <div class="contact-info-icon">📍</div>
+          <div class="contact-info-text">
+            <h4>School Address</h4>
+            <p>Shree Nepal Secondary School, Bishrampur<br>
+               Brindaban-02, Rautahat<br>
+               Madhesh Province, Nepal</p>
+          </div>
+        </div>
+
+        <div class="glass-card contact-info-card">
+          <div class="contact-info-icon">📞</div>
+          <div class="contact-info-text">
+            <h4>Contact Number</h4>
+            <a href="tel:+9779855084542">+977 9855084542</a>
+          </div>
+        </div>
+
+        <div class="glass-card contact-info-card">
+          <div class="contact-info-icon">✉️</div>
+          <div class="contact-info-text">
+            <h4>Email Addresses</h4>
+            <a href="mailto:admin@nepalssb.edu.np">admin@nepalssb.edu.np</a><br>
+            <a href="mailto:info@nepalssb.edu.np">info@nepalssb.edu.np</a>
+          </div>
+        </div>
+
+        <div class="glass-card contact-info-card">
+          <div class="contact-info-icon">👨‍💼</div>
+          <div class="contact-info-text">
+            <h4>Principal's Contact</h4>
+            <p>Premlal Prasad Raut</p>
+            <a href="mailto:premlalprasadraut@gmail.com">premlalprasadraut@gmail.com</a>
+          </div>
+        </div>
+
+        <div class="glass-card contact-info-card">
+          <div class="contact-info-icon">🌐</div>
+          <div class="contact-info-text">
+            <h4>Website</h4>
+            <a href="https://nepalssb.edu.np">nepalssb.edu.np</a>
+          </div>
+        </div>
+
+        <!-- Social Links -->
+        <h3 style="color:var(--white);margin:2rem 0 1rem;font-size:1.1rem">Follow Us on Facebook</h3>
+        <a href="https://www.facebook.com/nepal.secondary.3" target="_blank" rel="noopener" class="social-link">
+          <span class="sicon">📘</span>
+          <span>nepal.secondary.3 — Facebook</span>
+          <span style="margin-left:auto;color:var(--gold)">↗</span>
+        </a>
+        <a href="https://www.facebook.com/Shreenepalsecondaryschool/" target="_blank" rel="noopener" class="social-link">
+          <span class="sicon">🏫</span>
+          <span>Shreenepalsecondaryschool — Facebook Page</span>
+          <span style="margin-left:auto;color:var(--gold)">↗</span>
+        </a>
+      </div>
+
+      <!-- Contact Form -->
+      <div class="reveal">
+        <div class="section-header" style="text-align:left;margin-bottom:2rem">
+          <div class="tag">Write to Us</div>
+          <h2>Student & Parent Inquiry</h2>
+          <div class="gold-line" style="margin:1rem 0 0"></div>
+        </div>
+
+        <div class="glass-card contact-form">
+          <p style="font-size:0.85rem;color:var(--text-muted);margin-bottom:1.5rem">
+            📧 Fill in the form below and click Send — this will open your email app with the message pre-filled.
+            Your message will be sent to <strong style="color:var(--gold)">info@nepalssb.edu.np</strong>
+          </p>
+          <form id="contact-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label for="contact-name">Full Name *</label>
+                <input type="text" id="contact-name" name="name" placeholder="Your full name" required>
+              </div>
+              <div class="form-group">
+                <label for="contact-class">Class / Grade</label>
+                <select id="contact-class" name="class">
+                  <option value="">Select class</option>
+                  <option>ECD</option>
+                  <option>Class 1</option>
+                  <option>Class 2</option>
+                  <option>Class 3</option>
+                  <option>Class 4</option>
+                  <option>Class 5</option>
+                  <option>Class 6</option>
+                  <option>Class 7</option>
+                  <option>Class 8</option>
+                  <option>Class 9</option>
+                  <option>Class 10 (SEE)</option>
+                  <option>Class 11</option>
+                  <option>Class 12</option>
+                  <option>Parent / Guardian</option>
+                  <option>Other</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="contact-email">Your Email *</label>
+              <input type="email" id="contact-email" name="email" placeholder="yourname@example.com" required>
+            </div>
+            <div class="form-group">
+              <label for="contact-phone">Phone Number</label>
+              <input type="tel" id="contact-phone" name="phone" placeholder="+977 9XXXXXXXXX">
+            </div>
+            <div class="form-group">
+              <label for="contact-subject">Subject *</label>
+              <input type="text" id="contact-subject" name="subject" placeholder="e.g., Admission Inquiry, General Question" required>
+            </div>
+            <div class="form-group">
+              <label for="contact-message">Message *</label>
+              <textarea id="contact-message" name="message" placeholder="Write your message here..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn-gold" style="width:100%;justify-content:center;font-size:1rem;padding:0.9rem">
+              ✉️ Send Message
+            </button>
+          </form>
+          <p style="text-align:center;color:var(--text-muted);font-size:0.78rem;margin-top:1rem">
+            We typically respond within 1–2 business days.
+          </p>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Map -->
+    <div style="margin-top:4rem">
+      <div class="section-header" style="margin-bottom:2rem">
+        <div class="tag">Find Us</div>
+        <h2>Our Location on Map</h2>
+        <p>Brindaban-02, Rautahat, Madhesh Province, Nepal</p>
+        <div class="gold-line"></div>
+      </div>
+      <div class="map-embed reveal" style="height:450px">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d113.97899!2d85.36917!3d27.021745!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39ec9d8377c90265%3A0x7fce6aa93880e6ff!2sShree%20Nepal%20secondary%20school%20Bishrampur-02%2C%20Brindawan%20Municipality%2C%20Rautahat%2CNepal!5e0!3m2!1sen!2snp!4v1700000000000!5m2!1sen!2snp"
+          width="100%" height="450" style="border:0;display:block;"
+          allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade"
+          title="School Location Map">
+        </iframe>
+      </div>
+      <div style="text-align:center;margin-top:1.5rem">
+        <a href="https://www.google.com/maps/place/Shree+Nepal+secondary+school+Bishrampur-02,+Brindawan+Municipality,+Rautahat,Nepal/@27.0217447,85.3691755,20z"
+           target="_blank" rel="noopener" class="btn btn-gold">
+          📍 Open in Google Maps →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
+        <h3>Shree Nepal Secondary School</h3>
+        <p>Quality education from ECD to Class 12 — Brindaban-02, Rautahat, Nepal.</p>
+        <div class="footer-social">
+          <a href="https://www.facebook.com/nepal.secondary.3" target="_blank" rel="noopener">📘</a>
+          <a href="https://www.facebook.com/Shreenepalsecondaryschool/" target="_blank" rel="noopener">🏫</a>
+          <a href="mailto:info@nepalssb.edu.np">✉️</a>
+        </div>
+      </div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="academics.html">Academics</a></li><li><a href="faculty.html">Faculty</a></li><li><a href="notices.html">Notices</a></li></ul></div>
+      <div class="footer-col"><h4>Edu Resources</h4><ul><li><a href="epustakalaya.html">E-Pustakalaya</a></li><li><a href="https://neb.ntc.net.np/" target="_blank">NEB Result</a></li><li><a href="https://see.ntc.net.np/" target="_blank">SEE Result</a></li><li><a href="https://moecdc.gov.np/" target="_blank">CDC Nepal</a></li></ul></div>
+      <div class="footer-col"><h4>Contact</h4>
+        <div class="footer-contact-item"><span class="icon">📍</span><span>Brindaban-02, Rautahat,<br>Madhesh Province, Nepal</span></div>
+        <div class="footer-contact-item"><span class="icon">📞</span><span><a href="tel:+9779855084542" style="color:inherit">+977 9855084542</a></span></div>
+        <div class="footer-contact-item"><span class="icon">✉️</span><span><a href="mailto:admin@nepalssb.edu.np" style="color:inherit">admin@nepalssb.edu.np</a></span></div>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2026-2027 <span>Shree Nepal Secondary School Bishrampur</span>. All Rights Reserved.</p></div>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+<script>
+  // Contact form — opens mailto
+  document.getElementById('contact-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const name    = document.getElementById('contact-name').value.trim();
+    const email   = document.getElementById('contact-email').value.trim();
+    const phone   = document.getElementById('contact-phone').value.trim();
+    const cls     = document.getElementById('contact-class').value;
+    const subject = document.getElementById('contact-subject').value.trim();
+    const message = document.getElementById('contact-message').value.trim();
+    if (!name || !email || !subject || !message) return;
+    const body = encodeURIComponent(
+      `Name: ${name}\nEmail: ${email}\nPhone: ${phone || 'Not provided'}\nClass: ${cls || 'Not specified'}\n\nMessage:\n${message}\n\n---\nSent via nepalssb.edu.np contact form`
+    );
+    const mailtoLink = `mailto:info@nepalssb.edu.np?subject=${encodeURIComponent('Inquiry: ' + subject)}&body=${body}`;
+    window.location.href = mailtoLink;
+  });
+</script>
+</body>
+</html>
