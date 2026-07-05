@@ -57,6 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (p.name) pNames.forEach(el => el.textContent = p.name);
       if (p.message) pMessages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
       
+      // Update Principal Email explicitly
+      if (p.email) {
+        document.querySelectorAll('.principal-email').forEach(el => {
+          el.textContent = p.email;
+          if (el.closest('a')) el.closest('a').href = 'mailto:' + p.email;
+        });
+      }
+
       if (p.photoUrl) {
         const indexPhotoWrap = document.querySelector('.principal-photo-wrap');
         if (indexPhotoWrap) {
