@@ -65,7 +65,11 @@
     @media(max-width:900px){ #notice-grid{grid-template-columns:repeat(2,1fr);} }
     @media(max-width:600px){ #notice-grid{grid-template-columns:1fr;} }
   </style>
-</head>
+  <!-- Firebase Compat SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <script src="firebase-config.js"></script></head>
 <body>
 
 <nav class="navbar" id="navbar">
@@ -141,7 +145,46 @@
   <img class="lightbox-img" id="lightbox-img" src="" alt="Notice">
 </div>
 
-<script src="notices/notices-list.js"></script>
 <script src="script.js"></script>
+<script>
+// ── Load notices from Firebase Firestore ──────────────────────────────────
+(async function loadFirebaseNotices() {
+  try {
+    const snap = await db.collection('notices').orderBy('createdAt', 'desc').get();
+    if (snap.empty) {
+      // No Firebase data yet — load from static file as fallback
+      const s = document.createElement('script');
+      s.src = 'notices/notices-list.js';
+      document.body.appendChild(s);
+      return;
+    }
+    // Build notices array from Firestore
+    const notices = [];
+    snap.forEach(doc => {
+      const n = doc.data();
+      notices.push({
+        id: snap.docs.indexOf(doc) + 1,
+        title: n.title || 'Notice',
+        file: n.imageUrl || '',          // full Storage URL
+        date: n.date || '',
+        category: n.category || 'General',
+        important: n.important || false,
+        isUrl: !!n.imageUrl              // signal that 'file' is a full URL
+      });
+    });
+    // Trigger the existing render function from script.js (with slight delay to let it load)
+    if (typeof renderNotices === 'function') {
+      renderNotices(notices);
+    } else {
+      window._firestoreNotices = notices; // script.js will pick this up
+    }
+  } catch(e) {
+    console.warn('Firebase notices load failed, using static fallback:', e);
+    const s = document.createElement('script');
+    s.src = 'notices/notices-list.js';
+    document.body.appendChild(s);
+  }
+})();
+</script>
 </body>
 </html>

@@ -135,26 +135,38 @@ document.head.appendChild(revealStyle);
 // ── Notice board ─────────────────────────────────────────────
 function buildNoticeBoard() {
   const grid = document.getElementById('notice-grid');
-  if (!grid || typeof notices === 'undefined') return;
+  if (!grid) return;
 
-  const categories = ['All', ...new Set(notices.map(n => n.category))];
-  const filterEl = document.getElementById('notice-filter');
-  if (filterEl) {
-    categories.forEach(cat => {
-      const btn = document.createElement('button');
-      btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
-      btn.textContent = cat;
-      btn.dataset.filter = cat;
-      btn.addEventListener('click', () => {
-        filterEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderNotices(cat === 'All' ? notices : notices.filter(n => n.category === cat));
-      });
-      filterEl.appendChild(btn);
-    });
+  // Use Firebase data if already loaded, else wait for static notices variable
+  if (window._firestoreNotices) {
+    const list = window._firestoreNotices;
+    buildFilters(list);
+    renderNotices(list);
+    return;
   }
 
+  if (typeof notices === 'undefined') return;
+  buildFilters(notices);
   renderNotices(notices);
+}
+
+function buildFilters(list) {
+  const categories = ['All', ...new Set(list.map(n => n.category))];
+  const filterEl = document.getElementById('notice-filter');
+  if (!filterEl) return;
+  filterEl.innerHTML = '';
+  categories.forEach(cat => {
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
+    btn.textContent = cat;
+    btn.dataset.filter = cat;
+    btn.addEventListener('click', () => {
+      filterEl.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderNotices(cat === 'All' ? list : list.filter(n => n.category === cat));
+    });
+    filterEl.appendChild(btn);
+  });
 }
 
 function renderNotices(list) {
@@ -171,12 +183,18 @@ function renderNotices(list) {
     return;
   }
   list.forEach(n => {
+    // Support both full Firebase Storage URLs and legacy relative paths
+    const imgSrc    = n.isUrl ? n.file : (n.file ? `notices/${n.file}` : '');
+    const openHref  = imgSrc || '#';
     const card = document.createElement('div');
     card.className = 'notice-card glass-card reveal';
     card.innerHTML = `
-      <div class="notice-img-wrap" data-lightbox="notices/${n.file}" style="cursor:pointer">
-        <img src="notices/${n.file}" alt="${n.title}" loading="lazy"
-             onerror="this.outerHTML='<div style=\'width:100%;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy-light);gap:0.5rem\'><div style=\'font-size:3rem\'>📄</div><div style=\'color:var(--text-muted);font-size:0.8rem\'>Notice Image</div></div>'">
+      <div class="notice-img-wrap" style="cursor:pointer">
+        ${imgSrc
+          ? `<img src="${imgSrc}" alt="${n.title}" loading="lazy"
+               onerror="this.outerHTML='<div style=\'width:100%;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy-light);gap:0.5rem\'><div style=\'font-size:3rem\'>📄</div><div style=\'color:var(--text-muted);font-size:0.8rem\'>Notice Image</div></div>'">` 
+          : `<div style="width:100%;height:220px;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--navy-light);gap:0.5rem"><div style="font-size:3rem">📄</div><div style="color:var(--text-muted);font-size:0.8rem">No Image</div></div>`
+        }
         <div class="notice-overlay"><span>📄 View Full</span></div>
       </div>
       <div class="notice-body">
@@ -185,20 +203,19 @@ function renderNotices(list) {
           <span class="notice-date">📅 ${n.date}</span>
         </div>
         <h4>${n.title}</h4>
-        <a href="notices/${n.file}" target="_blank" class="btn btn-outline" style="margin-top:0.75rem;font-size:0.8rem;padding:0.5rem 1.2rem">
-          Open Full Size ↗
-        </a>
+        ${imgSrc ? `<a href="${openHref}" target="_blank" class="btn btn-outline" style="margin-top:0.75rem;font-size:0.8rem;padding:0.5rem 1.2rem">Open Full Size ↗</a>` : ''}
       </div>`;
-    // Re-trigger lightbox for dynamically created elements
-    card.querySelector('[data-lightbox]').addEventListener('click', () => {
-      const overlay = document.getElementById('lightbox-overlay');
-      const lbImg   = document.getElementById('lightbox-img');
-      if (overlay && lbImg) {
-        lbImg.src = `notices/${n.file}`;
-        overlay.classList.add('active');
-        document.body.style.overflow = 'hidden';
-      }
-    });
+    if (imgSrc) {
+      card.querySelector('.notice-img-wrap').addEventListener('click', () => {
+        const overlay = document.getElementById('lightbox-overlay');
+        const lbImg   = document.getElementById('lightbox-img');
+        if (overlay && lbImg) {
+          lbImg.src = imgSrc;
+          overlay.classList.add('active');
+          document.body.style.overflow = 'hidden';
+        }
+      });
+    }
     grid.appendChild(card);
   });
   // Re-trigger reveal observer

@@ -1,103 +1,74 @@
-# Shree Nepal Secondary School — Website
+# Shree Nepal Secondary School Website 🏫
 
-## 🌐 Live Website: [nepalssb.edu.np](https://nepalssb.edu.np)
-
-Official website of **Shree Nepal Secondary School, Bishrampur-02, Rautahat, Madhesh Province, Nepal**.
+Welcome to the source code for the **Shree Nepal Secondary School** website! This site is designed to be easily managed directly from the **GitHub website** without needing any coding software.
 
 ---
 
-## 📁 File Structure
+## 🚀 Step 1: Upload to Your GitHub
 
-```
-/
-├── index.html              ← Home page
-├── about.html              ← About the school
-├── academics.html          ← Classes ECD–12, streams, facilities
-├── faculty.html            ← Principal + staff
-├── committee.html          ← Bidhyala Bebastapan Samiti
-├── notices.html            ← Notice board
-├── gallery.html            ← Photo gallery
-├── epustakalaya.html       ← E-Pustakalaya digital library
-├── links.html              ← Educational links
-├── contact.html            ← Contact page
-├── style.css               ← Global styles
-├── script.js               ← Global JavaScript
-├── vercel.json             ← Vercel deployment config
-│
-├── notices/
-│   ├── notices-list.js     ← EDIT THIS to add notices
-│   └── *.jpg / *.png       ← Notice image files
-│
-└── images/
-    ├── logo.png            ← ⚠️ REPLACE with actual logo
-    ├── school-bg.jpg       ← ⚠️ REPLACE with school photo
-    ├── principal.jpg       ← ⚠️ REPLACE with principal photo
-    ├── computer-lab.jpg    ← ⚠️ REPLACE with lab photo
-    ├── smart-room.jpg      ← ⚠️ REPLACE with smart room photo
-    ├── staff-room.jpg      ← ⚠️ REPLACE with staff room photo
-    ├── assembly.jpg        ← ⚠️ REPLACE with assembly photo
-    ├── ground.jpg          ← ⚠️ REPLACE with ground photo
-    └── students.jpg        ← ⚠️ REPLACE with students photo
-```
+1. Go to [GitHub.com](https://github.com) and log in to your account.
+2. Click the **`+`** icon in the top right corner and select **New repository**.
+3. Name it something like `nepal-school-website`.
+4. Make sure it is set to **Public**.
+5. Click **Create repository**.
+6. On the next page, click on **"uploading an existing file"** (it's a small link near the top).
+7. Drag and drop **all the files and folders** from your `web` folder into the browser window.
+8. Wait for them to upload, then click **Commit changes** at the bottom.
 
 ---
 
-## 📸 How to Add Photos
+## 🌐 Step 2: Deploy to Vercel (Go Live!)
 
-1. Name your photos exactly as listed above (e.g., `logo.png`, `school-bg.jpg`)
-2. Place them in the `images/` folder
-3. Push to GitHub → Vercel auto-deploys
-
-For committee member photos, place them in `images/committee/` folder.
-
----
-
-## 📋 How to Add a Notice
-
-1. Take a photo/screenshot of the notice
-2. Save it as `.jpg` or `.png` in the `notices/` folder
-3. Open `notices/notices-list.js`
-4. Add a new entry at the top of the `notices` array:
-
-```js
-{
-  id: 4,                          // unique number
-  title: "Your Notice Title",
-  file: "your-notice-filename.jpg",
-  date: "2081-04-01",
-  category: "Exam",               // Exam | Holiday | Meeting | Result | Admission | General
-  important: true                 // true = red badge, false = gold badge
-},
-```
-
-5. Push to GitHub — Vercel deploys in ~1 minute
+1. Go to [Vercel.com](https://vercel.com) and log in (you can use your GitHub account).
+2. Click **Add New...** and select **Project**.
+3. Under "Import Git Repository", find your `nepal-school-website` repository and click **Import**.
+4. You don't need to change any settings. Just click the big **Deploy** button.
+5. Wait about 1 minute. Congratulations, your site is live! 🎉
+6. **To add your custom domain (`nepalssb.edu.np`)**:
+   - Go to your project dashboard on Vercel.
+   - Click **Settings** -> **Domains**.
+   - Type in `nepalssb.edu.np` and click **Add**.
+   - Follow the instructions Vercel gives you to update your DNS records with your domain provider.
 
 ---
 
-## 👥 How to Update Committee Members
+## 📝 How to Update the Website Directly on GitHub
 
-Open `committee.html` and find the placeholder cards:
-- Replace `[ Adhyaksha Name ]` with actual name
-- Replace `[ Member Name ]` with actual names
-- Replace `Add Contact` with actual phone numbers
-- Add photos: place files in `images/committee/` and uncomment the `<img>` tags
+You can edit text, add notices, and change photos directly from your browser! Whenever you save a change on GitHub, **Vercel will automatically update your live website within 1 minute.**
 
----
+### 👉 Adding a New Notice
+1. Open your repository on GitHub.
+2. Click on the `notices` folder.
+3. Click **Add file** -> **Upload files** to upload your notice photo (e.g., `exam-routine.jpg`). Click **Commit changes**.
+4. Now, click on the file named `notices-list.js` inside the `notices` folder.
+5. Click the **✏️ Pencil icon** (Edit this file).
+6. Add your notice to the list, like this:
+   ```javascript
+   const notices = [
+     {
+       id: 1,
+       title: "Exam Routine - Final Examination",
+       file: "exam-routine.jpg", // Make sure this matches your uploaded photo name!
+       date: "2081-03-15",
+       category: "Exam",
+       important: true
+     }
+   ];
+   ```
+7. Click **Commit changes...** at the top right, and confirm.
 
-## 🚀 Deployment (Vercel)
+### 👉 Updating Staff or Committee Members
+1. To upload a new photo, go to `images/staff/` (or `images/committee/`), click **Add file** -> **Upload files**, and upload the photo.
+2. To change names, go to `faculty.html` (for staff) or `committee.html` (for committee).
+3. Click the **✏️ Pencil icon**.
+4. Find the text you want to change and type the new name.
+5. Find the `<img>` tag next to it and update the filename to match the photo you uploaded.
+6. Click **Commit changes...**
 
-1. Push this repository to GitHub
-2. Log in to [vercel.com](https://vercel.com)
-3. Click **New Project** → Import from GitHub
-4. Select this repository → click **Deploy**
-5. In Settings → Domains → add `nepalssb.edu.np`
-6. Update your domain DNS records as shown by Vercel
+### 👉 Updating General Text (Home, About, etc.)
+1. Click on the HTML file for the page you want to edit (e.g., `index.html` for the Home page, `about.html` for the About page).
+2. Click the **✏️ Pencil icon**.
+3. Carefully edit the text (make sure you don't delete the `<...>` code tags around the text).
+4. Click **Commit changes...**.
 
----
-
-## 📞 Contact
-
-- 📧 admin@nepalssb.edu.np
-- 📧 info@nepalssb.edu.np
-- 📞 +977 9855084542
-- 🌐 nepalssb.edu.np
+Enjoy managing your new school website! 🇳🇵

@@ -27,4 +27,20 @@
 
 const notices = [
   // Add your notices here
+    {
+    id: 1,
+    title: "कक्षा ११ र १२ को नियममत पठिपाठि सञ्चालि सम्बन्धमा।",
+    file: "classstart.jpg",
+    date: "2081-03-01",
+    category: "Exam",
+    important: true
+  },
+     {
+    id: 2,
+    title: "कक्षा ",
+    file: "classstart.jpg",
+    date: "2081-03-01",
+    category: "Exam",
+    important: true
+  },
 ];
