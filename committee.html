@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -8,29 +8,6 @@
   <link rel="icon" type="image/png" href="images/logo.png" />
   <link rel="stylesheet" href="style.css?v=1783286551" />
   <style>
-    .chairman-card {
-      padding: 2.5rem; text-align: center;
-      background: linear-gradient(135deg, rgba(244,169,0,0.1) 0%, var(--glass-bg) 100%);
-      border: 2px solid rgba(244,169,0,0.3);
-      border-radius: var(--radius-lg); max-width: 500px; margin: 0 auto;
-      position: relative; overflow: hidden;
-    }
-    .chairman-card::before {
-      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px;
-      background: linear-gradient(90deg, var(--gold), var(--gold-light));
-    }
-    .chairman-photo {
-      width: 150px; height: 150px; border-radius: 50%; object-fit: cover;
-      border: 4px solid var(--gold); margin: 0 auto 1.25rem;
-      box-shadow: 0 0 30px rgba(244,169,0,0.3);
-    }
-    .chairman-photo-placeholder {
-      width: 150px; height: 150px; border-radius: 50%;
-      background: var(--navy-light); border: 4px solid var(--gold);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 4rem; margin: 0 auto 1.25rem;
-      box-shadow: 0 0 30px rgba(244,169,0,0.3);
-    }
     .member-card {
       padding: 1.75rem; text-align: center;
       border-radius: var(--radius-lg); transition: var(--transition);
@@ -49,7 +26,6 @@
     .member-role { color: var(--gold); font-size: 0.78rem; font-weight: 600; margin-bottom: 0.4rem; }
     .member-contact { color: var(--text-muted); font-size: 0.78rem; }
     .member-contact a { color: var(--gold); }
-    .crown { font-size: 1.5rem; position: absolute; top: -0.6rem; left: 50%; transform: translateX(-50%); }
     .smcbanner {
       background: linear-gradient(135deg, var(--navy-mid), var(--navy));
       border: 1px solid var(--glass-border); border-radius: var(--radius-lg);
@@ -60,7 +36,8 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-  <script src="firebase-config.js"></script></head>
+  <script src="firebase-config.js"></script>
+</head>
 <body>
 
 <nav class="navbar" id="navbar">
@@ -111,20 +88,8 @@
       </p>
     </div>
 
-    <!-- CHAIRMAN / ADHYAKSHA -->
-    
-    </div>
-
-    
-
-    <div class="grid-3" style="max-width:900px;margin:0 auto"></div><div style="text-align:center;margin-top:3rem;padding:2rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius)">
-      <p style="color:var(--text-muted);font-size:0.88rem">
-        📝 <strong style="color:var(--white)">How to update committee info:</strong>
-        Replace the placeholder names, contacts, and photos in the <code style="color:var(--gold)">committee.html</code> file.
-        Place member photos in <code style="color:var(--gold)">images/committee/</code> folder.
-        Contact: <a href="mailto:placeholder@school.com"></span>" style="color:var(--gold)"><span class="dyn-school-email"></span></a>
-      </p>
-    </div>
+    <!-- The Javascript dynamically renders the Committee grid here -->
+    <div class="grid-3" style="max-width:900px;margin:0 auto"></div>
   </div>
 </section>
 
@@ -140,8 +105,8 @@
       <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="academics.html">Academics</a></li><li><a href="faculty.html">Faculty</a></li><li><a href="committee.html">Committee</a></li><li><a href="notices.html">Notices</a></li></ul></div>
       <div class="footer-col"><h4>Edu Resources</h4><ul><li><a href="epustakalaya.html">E-Pustakalaya</a></li><li><a href="https://neb.ntc.net.np/" target="_blank">NEB Result</a></li><li><a href="https://see.ntc.net.np/" target="_blank">SEE Result</a></li></ul></div>
       <div class="footer-col"><h4>Contact</h4>
-        <div class="footer-contact-item"><span class="icon">📞</span><span><a href="tel:0000000000"><span class="dyn-school-phone"></span></a></span></div>
-        <div class="footer-contact-item"><span class="icon">✉️</span><span><a href="mailto:placeholder@school.com" style="color:inherit" class="dyn-school-email">admin@nepalssb.edu.np</a></span></div>
+        <div class="footer-contact-item"><span class="icon">📞</span><span><a href="tel:0000000000" style="color:inherit" class="dyn-school-phone"></a></span></div>
+        <div class="footer-contact-item"><span class="icon">✉️</span><span><a href="mailto:placeholder@school.com" style="color:inherit" class="dyn-school-email"></a></span></div>
       </div>
     </div>
     <div class="footer-bottom"><p>© 2026-2027 <span><span class="dyn-school-name"></span> Bishrampur</span>. All Rights Reserved.</p></div>
