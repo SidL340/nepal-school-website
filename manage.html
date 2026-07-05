@@ -773,7 +773,7 @@ function setGalleryCat(cat) {
 function loadGallery(cat) {
   const el = document.getElementById('gallery-grid');
   el.innerHTML = '<div class="empty"><div class="empty-icon">📷</div>Loading...</div>';
-  db.collection('gallery').where('category','==',cat).orderBy('createdAt','desc').get().then(snap => {
+  db.collection('gallery').where('category','==',cat).get().then(snap => {
     if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">📷</div>No photos in this category yet.</div>'; return; }
     el.innerHTML = '';
     el.className = 'gallery-grid';
