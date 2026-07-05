@@ -6,7 +6,48 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const path = window.location.pathname.toLowerCase();
 
-  // 1. Load Principal Info (Settings collection)
+  // 1. Load School Info (Settings collection)
+  db.collection('settings').doc('school').get().then(doc => {
+    if (doc.exists) {
+      const s = doc.data();
+      
+      // Update names
+      if (s.name) {
+        document.querySelectorAll('.dyn-school-name').forEach(el => {
+          el.textContent = s.name;
+        });
+        if (document.title === 'School Website' || document.title.includes('School Website')) {
+           document.title = s.name + ' - Official Website';
+        }
+      }
+      
+      // Update phones
+      if (s.phone) {
+        document.querySelectorAll('.dyn-school-phone').forEach(el => {
+          el.textContent = s.phone;
+          // If the parent is an anchor tag, update its href
+          if (el.closest('a')) el.closest('a').href = 'tel:' + s.phone;
+        });
+      }
+      
+      // Update emails
+      if (s.email1) {
+        document.querySelectorAll('.dyn-school-email').forEach(el => {
+          el.textContent = s.email1;
+          if (el.closest('a')) el.closest('a').href = 'mailto:' + s.email1;
+        });
+      }
+      
+      // Update about text
+      if (s.about) {
+        document.querySelectorAll('.dyn-school-about').forEach(el => {
+          el.innerHTML = s.about.replace(/\n/g, '<br>');
+        });
+      }
+    }
+  }).catch(console.error);
+
+  // 2. Load Principal Info (Settings collection)
   const pNames = document.querySelectorAll('.principal-name');
   const pMessages = document.querySelectorAll('.message-text, .message-full');
   
@@ -16,26 +57,19 @@ document.addEventListener('DOMContentLoaded', () => {
       if (p.name) pNames.forEach(el => el.textContent = p.name);
       if (p.message) pMessages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
       
-      // Update Principal Photo robustly (handling the case where 'onerror' destroyed the <img> tag)
       if (p.photoUrl) {
-        // Handle index.html
         const indexPhotoWrap = document.querySelector('.principal-photo-wrap');
         if (indexPhotoWrap) {
           indexPhotoWrap.innerHTML = \`<img src="\${p.photoUrl}" alt="\${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">\`;
         }
         
-        // Handle faculty.html
         if (path.includes('faculty')) {
           const facultyPhotoContainer = document.querySelector('.principal-hero .grid-2 > div:first-child');
           if (facultyPhotoContainer) {
-            // Remove the old img or placeholder
             const oldImg = facultyPhotoContainer.querySelector('img, .principal-photo-placeholder');
             if (oldImg) oldImg.remove();
-            // Insert the new image at the top
             facultyPhotoContainer.insertAdjacentHTML('afterbegin', \`<img src="\${p.photoUrl}" alt="\${p.name}" class="principal-photo">\`);
           }
-          
-          // Fallback for the name if .principal-name was missing
           const facultyName = document.querySelector('.principal-hero p[style*="var(--gold)"]');
           if (facultyName) facultyName.textContent = '— ' + p.name;
         }
@@ -43,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }).catch(console.error);
 
-  // 2. Load Staff Directory (only on Faculty page)
+  // 3. Load Staff Directory
   if (path.includes('faculty')) {
     const staffGrid = document.querySelector('.grid-4'); 
     if (staffGrid) {
@@ -64,12 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
             \`;
             staffGrid.appendChild(card);
           });
+        } else {
+           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👩‍🏫</div><p>Staff directory is currently being updated.</p></div>';
         }
       }).catch(console.error);
     }
   }
 
-  // 3. Load Committee Directory (only on Committee page)
+  // 4. Load Committee Directory
   if (path.includes('committee')) {
     const commGrid = document.querySelector('.grid-3');
     if (commGrid) {
@@ -90,12 +126,14 @@ document.addEventListener('DOMContentLoaded', () => {
             \`;
             commGrid.appendChild(card);
           });
+        } else {
+           commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👥</div><p>Committee directory is currently being updated.</p></div>';
         }
       }).catch(console.error);
     }
   }
 
-  // 4. Load Gallery
+  // 5. Load Gallery
   const galleryGrid = document.getElementById('gallery-grid');
   if (galleryGrid) {
     const filterBtns = document.querySelectorAll('.filter-btn');

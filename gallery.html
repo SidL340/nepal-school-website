@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Gallery | Shree Nepal Secondary School Bishrampur</title>
-  <meta name="description" content="Photo gallery of Shree Nepal Secondary School Bishrampur — school building, computer lab, smart classroom, assembly, ground, and more." />
+  <title>School Website</title>
+  <meta name="description" content="School Website" />
   <link rel="icon" type="image/png" href="images/logo.png" />
   <link rel="stylesheet" href="style.css" />
   <style>
@@ -68,7 +68,7 @@
     <a href="index.html" class="nav-brand">
       <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
-        <span class="school-name">Shree Nepal Secondary School</span>
+        <span class="school-name"><span class="dyn-school-name"></span></span>
         <span class="school-sub">Bishrampur-02, Rautahat, Nepal</span>
       </div>
     </a>
@@ -114,86 +114,25 @@
     </div>
 
     <!-- Gallery Grid -->
-    <div class="gallery-grid" id="gallery-grid">
-
-      <!-- School Building -->
-      <div class="gallery-item wide" data-category="school" data-lightbox="images/school-bg.jpg">
-        <img src="images/school-bg.jpg" alt="School Building"
-             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'ph-icon\'>🏫</div><div class=\'ph-text\'>School Building<br><small>Replace: images/school-bg.jpg</small></div></div>'">
-        <div class="gallery-caption">🏫 Shree Nepal Secondary School — Main Building</div>
-      </div>
-
-      <!-- Computer Lab -->
-      <div class="gallery-item" data-category="lab" data-lightbox="images/computer-lab.jpg">
-        <img src="images/computer-lab.jpg" alt="Computer Lab"
-             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'ph-icon\'>🖥️</div><div class=\'ph-text\'>Computer Lab<br><small>Replace: images/computer-lab.jpg</small></div></div>'">
-        <div class="gallery-caption">🖥️ Computer Laboratory</div>
-      </div>
-
-      <!-- Smart Room -->
-      <div class="gallery-item" data-category="smart" data-lightbox="images/smart-room.jpg">
-        <img src="images/smart-room.jpg" alt="Smart Classroom"
-             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'ph-icon\'>📺</div><div class=\'ph-text\'>Smart Classroom<br><small>Replace: images/smart-room.jpg</small></div></div>'">
-        <div class="gallery-caption">📺 Smart Classroom with Touch Board</div>
-      </div>
-
-      <!-- Staff Room -->
-      <div class="gallery-item" data-category="staff" data-lightbox="images/staff-room.jpg">
-        <img src="images/staff-room.jpg" alt="Staff Room"
-             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'ph-icon\'>👩‍🏫</div><div class=\'ph-text\'>Staff Room<br><small>Replace: images/staff-room.jpg</small></div></div>'">
-        <div class="gallery-caption">👩‍🏫 Staff Room</div>
-      </div>
-
-      <!-- Assembly -->
-      <div class="gallery-item wide" data-category="assembly" data-lightbox="images/assembly.jpg">
-        <img src="images/assembly.jpg" alt="School Assembly"
-             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'ph-icon\'>🎤</div><div class=\'ph-text\'>School Assembly<br><small>Replace: images/assembly.jpg</small></div></div>'">
-        <div class="gallery-caption">🎤 Morning Assembly</div>
-      </div>
-
-      <!-- Ground -->
-      <div class="gallery-item" data-category="ground" data-lightbox="images/ground.jpg">
-        <img src="images/ground.jpg" alt="School Ground"
-             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'ph-icon\'>🏃</div><div class=\'ph-text\'>School Ground<br><small>Replace: images/ground.jpg</small></div></div>'">
-        <div class="gallery-caption">🏃 School Ground</div>
-      </div>
-
-      <!-- Students in Class -->
-      <div class="gallery-item wide" data-category="students" data-lightbox="images/students.jpg">
-        <img src="images/students.jpg" alt="Students Studying in Class"
-             onerror="this.parentElement.innerHTML='<div class=\'gallery-placeholder\'><div class=\'ph-icon\'>👩‍🎓</div><div class=\'ph-text\'>Students in Class<br><small>Replace: images/students.jpg</small></div></div>'">
-        <div class="gallery-caption">👩‍🎓 Students Engaged in Learning</div>
-      </div>
-
-    </div>
-
-    <div style="text-align:center;margin-top:3rem;padding:1.5rem;background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--radius)">
-      <p style="color:var(--text-muted);font-size:0.88rem">
-        📸 <strong style="color:var(--white)">To add more photos:</strong>
-        Place images in the <code style="color:var(--gold)">images/</code> folder and add gallery items to <code style="color:var(--gold)">gallery.html</code>.
-        Supported formats: .jpg, .jpeg, .png, .webp
-      </p>
-    </div>
-  </div>
-</section>
+    <div class="gallery-grid" id="gallery-grid"></div></div></div></section>
 
 <footer>
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
         <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
-        <h3>Shree Nepal Secondary School</h3>
+        <h3><span class="dyn-school-name"></span></h3>
         <p>Quality education from ECD to Class 12 — Brindaban-02, Rautahat, Nepal.</p>
-        <div class="footer-social"><a href="https://www.facebook.com/nepal.secondary.3" target="_blank" rel="noopener">📘</a><a href="mailto:info@nepalssb.edu.np">✉️</a></div>
+        <div class="footer-social"><a href="https://www.facebook.com/nepal.secondary.3" target="_blank" rel="noopener">📘</a><a href="mailto:placeholder@school.com">✉️</a></div>
       </div>
       <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="index.html">Home</a></li><li><a href="about.html">About</a></li><li><a href="gallery.html">Gallery</a></li><li><a href="notices.html">Notices</a></li></ul></div>
       <div class="footer-col"><h4>Edu Resources</h4><ul><li><a href="epustakalaya.html">E-Pustakalaya</a></li><li><a href="https://neb.ntc.net.np/" target="_blank">NEB Result</a></li><li><a href="https://see.ntc.net.np/" target="_blank">SEE Result</a></li></ul></div>
       <div class="footer-col"><h4>Contact</h4>
-        <div class="footer-contact-item"><span class="icon">📞</span><span><a href="tel:+9779855084542" style="color:inherit">+977 9855084542</a></span></div>
-        <div class="footer-contact-item"><span class="icon">✉️</span><span><a href="mailto:admin@nepalssb.edu.np" style="color:inherit">admin@nepalssb.edu.np</a></span></div>
+        <div class="footer-contact-item"><span class="icon">📞</span><span><a href="tel:0000000000"><span class="dyn-school-phone"></span></a></span></div>
+        <div class="footer-contact-item"><span class="icon">✉️</span><span><a href="mailto:placeholder@school.com"></span>" style="color:inherit"><span class="dyn-school-email"></span></a></span></div>
       </div>
     </div>
-    <div class="footer-bottom"><p>© 2026-2027 <span>Shree Nepal Secondary School Bishrampur</span>. All Rights Reserved.</p></div>
+    <div class="footer-bottom"><p>© 2026-2027 <span><span class="dyn-school-name"></span> Bishrampur</span>. All Rights Reserved.</p></div>
   </div>
 </footer>
 
