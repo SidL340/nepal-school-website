@@ -547,26 +547,7 @@ function toast(msg, type = 'success') {
   toastTimer = setTimeout(() => t.className = '', 3200);
 }
 
-// ─── Image Upload ─────────────────────────────────────────────────────────
-async function uploadImage(file, folder, progressId) {
-  const name = Date.now() + '_' + file.name.replace(/[^a-zA-Z0-9._]/g, '_');
-  const ref  = storage.ref(folder + '/' + name);
-  const task = ref.put(file);
-  if (progressId) {
-    task.on('state_changed', snap => {
-      const pct = (snap.bytesTransferred / snap.totalBytes) * 100;
-      const el = document.getElementById(progressId);
-      if (el) el.style.width = pct + '%';
-    });
-  }
-  await task;
-  return await ref.getDownloadURL();
-}
 
-async function deleteStorageImage(url) {
-  if (!url || !url.startsWith('http')) return;
-  try { await storage.refFromURL(url).delete(); } catch(e) {}
-}
 
 // ─── Overview Stats ───────────────────────────────────────────────────────
 async function loadOverviewStats() {
