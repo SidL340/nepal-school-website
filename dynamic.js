@@ -1,73 +1,84 @@
 // ── Dynamic Data Loader for Shree Nepal Secondary School ─────────────────────
-// Loads data from Firebase Firestore and updates the DOM if elements exist.
+// Loads data from Firebase Firestore and updates the DOM dynamically.
 
 document.addEventListener('DOMContentLoaded', () => {
   if (typeof db === 'undefined') return;
 
-  // 1. Load Principal Info
-  const principalEls = {
-    names: document.querySelectorAll('.principal-name'),
-    photos: document.querySelectorAll('.principal-photo-wrap img, .principal-photo'),
-    messages: document.querySelectorAll('.message-text, .message-full')
-  };
+  const path = window.location.pathname.toLowerCase();
+
+  // 1. Load Principal Info (Settings collection)
+  // Look for elements that usually hold principal data.
+  const pNames = document.querySelectorAll('.principal-name');
+  const pPhotos = document.querySelectorAll('.principal-photo-wrap img, .principal-photo');
+  const pMessages = document.querySelectorAll('.message-text, .message-full');
   
-  if (principalEls.names.length > 0) {
-    db.collection('schoolInfo').doc('principal').get().then(doc => {
+  if (pNames.length > 0 || pPhotos.length > 0 || pMessages.length > 0) {
+    db.collection('settings').doc('principal').get().then(doc => {
       if (doc.exists) {
         const p = doc.data();
-        if (p.name) principalEls.names.forEach(el => el.textContent = p.name);
-        if (p.message) principalEls.messages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
-        if (p.photoUrl) principalEls.photos.forEach(el => el.src = p.photoUrl);
+        if (p.name) pNames.forEach(el => el.textContent = p.name);
+        if (p.message) pMessages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
+        if (p.photoUrl) pPhotos.forEach(el => el.src = p.photoUrl);
+        
+        // Faculty page specific fallback for name:
+        if (p.name && path.includes('faculty')) {
+          const facultyName = document.querySelector('.principal-hero p[style*="var(--gold)"]');
+          if (facultyName) facultyName.textContent = '— ' + p.name;
+        }
       }
     }).catch(console.error);
   }
 
-  // 2. Load Staff Directory
-  const staffGrid = document.querySelector('.grid-4'); // faculty.html grid
-  if (staffGrid && window.location.pathname.includes('faculty.html')) {
-    db.collection('staff').orderBy('order').get().then(snap => {
-      if (!snap.empty) {
-        staffGrid.innerHTML = '';
-        snap.forEach(doc => {
-          const s = doc.data();
-          const card = document.createElement('div');
-          card.className = 'glass-card staff-card reveal visible';
-          card.innerHTML = `
-            ${s.photoUrl 
-              ? \`<img src="\${s.photoUrl}" class="staff-photo" alt="\${s.name}" onerror="this.outerHTML='<div class=\\'staff-photo-icon\\'>👤</div>'">\`
-              : \`<div class="staff-photo-icon">👤</div>\`}
-            <div class="staff-name">\${s.name}</div>
-            <div class="staff-role">\${s.role || 'Teacher'}</div>
-            <div class="staff-subject">\${s.subject || ''}</div>
-          `;
-          staffGrid.appendChild(card);
-        });
-      }
-    }).catch(console.error);
+  // 2. Load Staff Directory (only on Faculty page)
+  if (path.includes('faculty')) {
+    const staffGrid = document.querySelector('.grid-4'); 
+    if (staffGrid) {
+      db.collection('staff').orderBy('order').get().then(snap => {
+        if (!snap.empty) {
+          staffGrid.innerHTML = '';
+          snap.forEach(doc => {
+            const s = doc.data();
+            const card = document.createElement('div');
+            card.className = 'glass-card staff-card reveal visible';
+            card.innerHTML = `
+              ${s.photoUrl 
+                ? \`<img src="\${s.photoUrl}" class="staff-photo" alt="\${s.name}" onerror="this.outerHTML='<div class=\\'staff-photo-icon\\'>👤</div>'">\`
+                : \`<div class="staff-photo-icon">👤</div>\`}
+              <div class="staff-name">\${s.name}</div>
+              <div class="staff-role">\${s.role || 'Teacher'}</div>
+              <div class="staff-subject">\${s.subject || ''}</div>
+            `;
+            staffGrid.appendChild(card);
+          });
+        }
+      }).catch(console.error);
+    }
   }
 
-  // 3. Load Committee Directory
-  const commGrid = document.querySelector('.grid-3'); // committee.html grid
-  if (commGrid && window.location.pathname.includes('committee.html')) {
-    db.collection('committee').orderBy('order').get().then(snap => {
-      if (!snap.empty) {
-        commGrid.innerHTML = '';
-        snap.forEach(doc => {
-          const c = doc.data();
-          const card = document.createElement('div');
-          card.className = 'glass-card member-card reveal visible';
-          card.innerHTML = `
-            ${c.photoUrl 
-              ? \`<img src="\${c.photoUrl}" class="member-photo" alt="\${c.name}" onerror="this.outerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">\`
-              : \`<div class="member-photo-placeholder">👤</div>\`}
-            <div class="member-name">\${c.name}</div>
-            <div class="member-role">\${c.role}</div>
-            ${c.contact ? \`<div class="member-contact">📞 <a href="tel:\${c.contact}">\${c.contact}</a></div>\` : ''}
-          `;
-          commGrid.appendChild(card);
-        });
-      }
-    }).catch(console.error);
+  // 3. Load Committee Directory (only on Committee page)
+  if (path.includes('committee')) {
+    const commGrid = document.querySelector('.grid-3');
+    if (commGrid) {
+      db.collection('committee').orderBy('order').get().then(snap => {
+        if (!snap.empty) {
+          commGrid.innerHTML = '';
+          snap.forEach(doc => {
+            const c = doc.data();
+            const card = document.createElement('div');
+            card.className = 'glass-card member-card reveal visible';
+            card.innerHTML = `
+              ${c.photoUrl 
+                ? \`<img src="\${c.photoUrl}" class="member-photo" alt="\${c.name}" onerror="this.outerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">\`
+                : \`<div class="member-photo-placeholder">👤</div>\`}
+              <div class="member-name">\${c.name}</div>
+              <div class="member-role">\${c.role}</div>
+              ${c.contact ? \`<div class="member-contact">📞 <a href="tel:\${c.contact}">\${c.contact}</a></div>\` : ''}
+            `;
+            commGrid.appendChild(card);
+          });
+        }
+      }).catch(console.error);
+    }
   }
 
   // 4. Load Gallery
