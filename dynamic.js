@@ -7,27 +7,41 @@ document.addEventListener('DOMContentLoaded', () => {
   const path = window.location.pathname.toLowerCase();
 
   // 1. Load Principal Info (Settings collection)
-  // Look for elements that usually hold principal data.
   const pNames = document.querySelectorAll('.principal-name');
-  const pPhotos = document.querySelectorAll('.principal-photo-wrap img, .principal-photo');
   const pMessages = document.querySelectorAll('.message-text, .message-full');
   
-  if (pNames.length > 0 || pPhotos.length > 0 || pMessages.length > 0) {
-    db.collection('settings').doc('principal').get().then(doc => {
-      if (doc.exists) {
-        const p = doc.data();
-        if (p.name) pNames.forEach(el => el.textContent = p.name);
-        if (p.message) pMessages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
-        if (p.photoUrl) pPhotos.forEach(el => el.src = p.photoUrl);
+  db.collection('settings').doc('principal').get().then(doc => {
+    if (doc.exists) {
+      const p = doc.data();
+      if (p.name) pNames.forEach(el => el.textContent = p.name);
+      if (p.message) pMessages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
+      
+      // Update Principal Photo robustly (handling the case where 'onerror' destroyed the <img> tag)
+      if (p.photoUrl) {
+        // Handle index.html
+        const indexPhotoWrap = document.querySelector('.principal-photo-wrap');
+        if (indexPhotoWrap) {
+          indexPhotoWrap.innerHTML = \`<img src="\${p.photoUrl}" alt="\${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">\`;
+        }
         
-        // Faculty page specific fallback for name:
-        if (p.name && path.includes('faculty')) {
+        // Handle faculty.html
+        if (path.includes('faculty')) {
+          const facultyPhotoContainer = document.querySelector('.principal-hero .grid-2 > div:first-child');
+          if (facultyPhotoContainer) {
+            // Remove the old img or placeholder
+            const oldImg = facultyPhotoContainer.querySelector('img, .principal-photo-placeholder');
+            if (oldImg) oldImg.remove();
+            // Insert the new image at the top
+            facultyPhotoContainer.insertAdjacentHTML('afterbegin', \`<img src="\${p.photoUrl}" alt="\${p.name}" class="principal-photo">\`);
+          }
+          
+          // Fallback for the name if .principal-name was missing
           const facultyName = document.querySelector('.principal-hero p[style*="var(--gold)"]');
           if (facultyName) facultyName.textContent = '— ' + p.name;
         }
       }
-    }).catch(console.error);
-  }
+    }
+  }).catch(console.error);
 
   // 2. Load Staff Directory (only on Faculty page)
   if (path.includes('faculty')) {
@@ -40,14 +54,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const s = doc.data();
             const card = document.createElement('div');
             card.className = 'glass-card staff-card reveal visible';
-            card.innerHTML = `
-              ${s.photoUrl 
+            card.innerHTML = \`
+              \${s.photoUrl 
                 ? \`<img src="\${s.photoUrl}" class="staff-photo" alt="\${s.name}" onerror="this.outerHTML='<div class=\\'staff-photo-icon\\'>👤</div>'">\`
                 : \`<div class="staff-photo-icon">👤</div>\`}
               <div class="staff-name">\${s.name}</div>
               <div class="staff-role">\${s.role || 'Teacher'}</div>
               <div class="staff-subject">\${s.subject || ''}</div>
-            `;
+            \`;
             staffGrid.appendChild(card);
           });
         }
@@ -66,14 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
             const c = doc.data();
             const card = document.createElement('div');
             card.className = 'glass-card member-card reveal visible';
-            card.innerHTML = `
-              ${c.photoUrl 
+            card.innerHTML = \`
+              \${c.photoUrl 
                 ? \`<img src="\${c.photoUrl}" class="member-photo" alt="\${c.name}" onerror="this.outerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">\`
                 : \`<div class="member-photo-placeholder">👤</div>\`}
               <div class="member-name">\${c.name}</div>
               <div class="member-role">\${c.role}</div>
-              ${c.contact ? \`<div class="member-contact">📞 <a href="tel:\${c.contact}">\${c.contact}</a></div>\` : ''}
-            `;
+              \${c.contact ? \`<div class="member-contact">📞 <a href="tel:\${c.contact}">\${c.contact}</a></div>\` : ''}
+            \`;
             commGrid.appendChild(card);
           });
         }
