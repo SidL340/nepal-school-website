@@ -11,7 +11,7 @@
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
+  <!-- Cloudinary used for image uploads (free, always free) -->
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
@@ -491,6 +491,51 @@ function showSection(name) {
   if (name === 'school')    loadSchoolInfo();
   if (name === 'principal') loadPrincipal();
 }
+
+// ─── Image Upload via Cloudinary (always free — 25GB) ─────────────────────
+const CLOUDINARY_CLOUD = 'ugowk6kp';
+const CLOUDINARY_PRESET = 'school_uploads';
+
+function uploadImage(file, folder, progressId) {
+  return new Promise((resolve, reject) => {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_PRESET);
+    formData.append('folder', 'nepal-school/' + folder);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`);
+
+    // Track upload progress
+    if (progressId) {
+      xhr.upload.addEventListener('progress', e => {
+        if (e.lengthComputable) {
+          const el = document.getElementById(progressId);
+          if (el) el.style.width = ((e.loaded / e.total) * 100) + '%';
+        }
+      });
+    }
+
+    xhr.addEventListener('load', () => {
+      if (xhr.status === 200) {
+        const data = JSON.parse(xhr.responseText);
+        resolve(data.secure_url);
+      } else {
+        reject(new Error('Upload failed. Please try again.'));
+      }
+    });
+    xhr.addEventListener('error', () => reject(new Error('Network error during upload.')));
+    xhr.send(formData);
+  });
+}
+
+async function deleteStorageImage(url) {
+  // Cloudinary deletion requires server-side API secret (not possible in browser)
+  // The item is removed from the website. To permanently remove from Cloudinary,
+  // go to cloudinary.com → Media Library and delete manually.
+  return;
+}
+
 
 // ─── Toast ────────────────────────────────────────────────────────────────
 let toastTimer;
