@@ -10,66 +10,29 @@ document.addEventListener('DOMContentLoaded', () => {
   db.collection('settings').doc('school').get().then(doc => {
     if (doc.exists) {
       const s = doc.data();
-      
-      // Update names
       if (s.name) {
-        document.querySelectorAll('.dyn-school-name').forEach(el => {
-          el.textContent = s.name;
-        });
-        if (document.title === 'School Website' || document.title.includes('School Website')) {
-           document.title = s.name + ' - Official Website';
-        }
+        document.querySelectorAll('.dyn-school-name').forEach(el => el.textContent = s.name);
+        if (document.title === 'School Website' || document.title.includes('School Website')) document.title = s.name + ' - Official Website';
       }
-      
-      // Update phones
-      if (s.phone) {
-        document.querySelectorAll('.dyn-school-phone').forEach(el => {
-          el.textContent = s.phone;
-          // If the parent is an anchor tag, update its href
-          if (el.closest('a')) el.closest('a').href = 'tel:' + s.phone;
-        });
-      }
-      
-      // Update emails
-      if (s.email1) {
-        document.querySelectorAll('.dyn-school-email').forEach(el => {
-          el.textContent = s.email1;
-          if (el.closest('a')) el.closest('a').href = 'mailto:' + s.email1;
-        });
-      }
-      
-      // Update about text
-      if (s.about) {
-        document.querySelectorAll('.dyn-school-about').forEach(el => {
-          el.innerHTML = s.about.replace(/\n/g, '<br>');
-        });
-      }
+      if (s.phone) document.querySelectorAll('.dyn-school-phone').forEach(el => { el.textContent = s.phone; if (el.closest('a')) el.closest('a').href = 'tel:' + s.phone; });
+      if (s.email1) document.querySelectorAll('.dyn-school-email').forEach(el => { el.textContent = s.email1; if (el.closest('a')) el.closest('a').href = 'mailto:' + s.email1; });
+      if (s.about) document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = s.about.replace(/\n/g, '<br>'));
     }
   }).catch(console.error);
 
-  // 2. Load Principal Info (Settings collection)
+  // 2. Load Principal Info
   const pNames = document.querySelectorAll('.principal-name');
   const pMessages = document.querySelectorAll('.message-text, .message-full');
-  
   db.collection('settings').doc('principal').get().then(doc => {
     if (doc.exists) {
       const p = doc.data();
       if (p.name) pNames.forEach(el => el.textContent = p.name);
       if (p.message) pMessages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
-      
-      // Update Principal Email explicitly
-      if (p.email) {
-        document.querySelectorAll('.principal-email').forEach(el => {
-          el.textContent = p.email;
-          if (el.closest('a')) el.closest('a').href = 'mailto:' + p.email;
-        });
-      }
+      if (p.email) document.querySelectorAll('.principal-email').forEach(el => { el.textContent = p.email; if (el.closest('a')) el.closest('a').href = 'mailto:' + p.email; });
 
       if (p.photoUrl) {
         const indexPhotoWrap = document.querySelector('.principal-photo-wrap');
-        if (indexPhotoWrap) {
-          indexPhotoWrap.innerHTML = \`<img src="\${p.photoUrl}" alt="\${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">\`;
-        }
+        if (indexPhotoWrap) indexPhotoWrap.innerHTML = \`<img src="\${p.photoUrl}" alt="\${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">\`;
         
         if (path.includes('faculty')) {
           const facultyPhotoContainer = document.querySelector('.principal-hero .grid-2 > div:first-child');
@@ -94,20 +57,15 @@ document.addEventListener('DOMContentLoaded', () => {
           staffGrid.innerHTML = '';
           snap.forEach(doc => {
             const s = doc.data();
-            const card = document.createElement('div');
-            card.className = 'glass-card staff-card reveal visible';
-            card.innerHTML = \`
-              \${s.photoUrl 
-                ? \`<img src="\${s.photoUrl}" class="staff-photo" alt="\${s.name}" onerror="this.outerHTML='<div class=\\'staff-photo-icon\\'>👤</div>'">\`
-                : \`<div class="staff-photo-icon">👤</div>\`}
+            staffGrid.innerHTML += \`<div class="glass-card staff-card reveal visible">
+              \${s.photoUrl ? \`<img src="\${s.photoUrl}" class="staff-photo" alt="\${s.name}" onerror="this.outerHTML='<div class=\\'staff-photo-icon\\'>👤</div>'">\` : \`<div class="staff-photo-icon">👤</div>\`}
               <div class="staff-name">\${s.name}</div>
               <div class="staff-role">\${s.role || 'Teacher'}</div>
               <div class="staff-subject">\${s.subject || ''}</div>
-            \`;
-            staffGrid.appendChild(card);
+            </div>\`;
           });
         } else {
-           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👩‍🏫</div><p>Staff directory is currently being updated.</p></div>';
+           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👩‍🏫</div><p>Staff directory is empty.</p></div>';
         }
       }).catch(console.error);
     }
@@ -122,20 +80,15 @@ document.addEventListener('DOMContentLoaded', () => {
           commGrid.innerHTML = '';
           snap.forEach(doc => {
             const c = doc.data();
-            const card = document.createElement('div');
-            card.className = 'glass-card member-card reveal visible';
-            card.innerHTML = \`
-              \${c.photoUrl 
-                ? \`<img src="\${c.photoUrl}" class="member-photo" alt="\${c.name}" onerror="this.outerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">\`
-                : \`<div class="member-photo-placeholder">👤</div>\`}
+            commGrid.innerHTML += \`<div class="glass-card member-card reveal visible">
+              \${c.photoUrl ? \`<img src="\${c.photoUrl}" class="member-photo" alt="\${c.name}" onerror="this.outerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">\` : \`<div class="member-photo-placeholder">👤</div>\`}
               <div class="member-name">\${c.name}</div>
               <div class="member-role">\${c.role}</div>
               \${c.contact ? \`<div class="member-contact">📞 <a href="tel:\${c.contact}">\${c.contact}</a></div>\` : ''}
-            \`;
-            commGrid.appendChild(card);
+            </div>\`;
           });
         } else {
-           commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👥</div><p>Committee directory is currently being updated.</p></div>';
+           commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👥</div><p>Committee directory is empty.</p></div>';
         }
       }).catch(console.error);
     }
@@ -144,51 +97,53 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. Load Gallery
   const galleryGrid = document.getElementById('gallery-grid');
   if (galleryGrid) {
-    const filterBtns = document.querySelectorAll('.filter-btn');
-    
-    async function renderGallery(category) {
-      galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">⏳</div><p>Loading photos...</p></div>';
-      try {
-        const snap = await db.collection('gallery').get();
-        let photos = [];
-        snap.forEach(doc => photos.push(doc.data()));
-        if (category !== 'All') photos = photos.filter(p => p.category === category);
-        photos.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-        
-        if (photos.length === 0) {
-          galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:3rem 0;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">📷</div><p>No photos in this category yet.</p></div>';
-          return;
-        }
-        
-        galleryGrid.innerHTML = '';
-        photos.forEach(p => {
-          const item = document.createElement('div');
-          item.className = 'gallery-item reveal visible';
-          item.dataset.lightbox = p.url;
-          item.innerHTML = \`<img src="\${p.url}" alt="Gallery Image" loading="lazy">
-                           <div class="gallery-overlay"><span>🔍 View</span></div>\`;
-          item.addEventListener('click', () => {
-            const lbOverlay = document.getElementById('lightbox-overlay');
-            const lbImg = document.getElementById('lightbox-img');
-            if (lbOverlay && lbImg) {
-              lbImg.src = p.url;
-              lbOverlay.classList.add('active');
-              document.body.style.overflow = 'hidden';
-            }
+    db.collection('gallery').orderBy('createdAt','desc').get().then(snap => {
+        if (!snap.empty) {
+          galleryGrid.innerHTML = '';
+          snap.forEach(doc => {
+            const p = doc.data();
+            const item = document.createElement('div');
+            item.className = 'gallery-item reveal visible';
+            item.innerHTML = \`<img src="\${p.url}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>🔍 View</span></div>\`;
+            item.addEventListener('click', () => {
+              document.getElementById('lightbox-img').src = p.url;
+              document.getElementById('lightbox-overlay').classList.add('active');
+            });
+            galleryGrid.appendChild(item);
           });
-          galleryGrid.appendChild(item);
+        }
+    }).catch(console.error);
+  }
+
+  // 6. Load Notices
+  const noticeList = document.getElementById('notice-preview-list');
+  const noticeGrid = document.getElementById('notice-grid');
+  if (noticeList || noticeGrid) {
+    db.collection('notices').orderBy('createdAt','desc').get().then(snap => {
+      if (!snap.empty) {
+        if (noticeList) noticeList.innerHTML = '';
+        if (noticeGrid) noticeGrid.innerHTML = '';
+        let count = 0;
+        snap.forEach(doc => {
+          const n = doc.data();
+          const cardHTML = \`<div class="\${noticeGrid ? 'notice-card reveal visible' : 'notice-preview-card'}">
+            <div class="notice-icon">\${n.important ? '⚠️' : '📄'}</div>
+            <div class="notice-info">
+              <h4>\${n.title}</h4>
+              <span>📅 \${n.date} &nbsp; <span class="badge \${n.important ? 'badge-red' : 'badge-gold'}">\${n.category}</span></span>
+            </div>
+            \${n.imageUrl && noticeGrid ? \`<a href="\${n.imageUrl}" target="_blank" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem">View Attachment</a>\` : ''}
+          </div>\`;
+          
+          if (noticeGrid) noticeGrid.innerHTML += cardHTML;
+          if (noticeList && count < 3) noticeList.innerHTML += cardHTML;
+          count++;
         });
-      } catch(e) { console.error('Error loading gallery:', e); }
-    }
-    
-    filterBtns.forEach(btn => {
-      btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderGallery(btn.textContent.trim());
-      });
-    });
-    renderGallery('All');
+      } else {
+        if (noticeList) noticeList.innerHTML = '<p style="text-align:center;color:var(--text-muted)">No notices yet.</p>';
+        if (noticeGrid) noticeGrid.innerHTML = '<p style="text-align:center;color:var(--text-muted)">No notices yet.</p>';
+      }
+    }).catch(console.error);
   }
 
 });
