@@ -465,6 +465,9 @@ const firebaseConfig = {
 };
 if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
 const db   = firebase.firestore();
+let editingNoticeId = null;
+let editingStaffId = null;
+let editingMemberId = null;
 const auth = firebase.auth();
 // Note: Images are uploaded via Cloudinary (not Firebase Storage)
 
