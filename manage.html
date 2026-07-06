@@ -506,6 +506,11 @@ function doLogout() {
 function initDashboard() {
   showSection('overview');
   loadOverviewStats();
+  db.collection('settings').doc('school').get().then(doc => {
+    if (doc.exists && doc.data().logoUrl) {
+      document.querySelectorAll('img[src="images/logo.png"]').forEach(img => img.src = doc.data().logoUrl);
+    }
+  }).catch(console.error);
 }
 
 // ─── Navigation ───────────────────────────────────────────────────────────
