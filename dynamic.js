@@ -1,4 +1,4 @@
-// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+﻿// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loads data from Firebase Firestore and updates the DOM dynamically.
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -75,14 +75,14 @@ document.addEventListener('DOMContentLoaded', () => {
           snap.forEach(doc => {
             const s = doc.data();
             staffGrid.innerHTML += `<div class="glass-card staff-card reveal visible">
-              ${s.photoUrl ? `<img src="${s.photoUrl}" class="staff-photo" alt="${s.name}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>ðŸ‘¤</div>'">` : `<div class="staff-photo-icon">ðŸ‘¤</div>`}
+              ${s.photoUrl ? `<img src="${s.photoUrl}" class="staff-photo" alt="${s.name}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
               <div class="staff-name">${s.name}</div>
               <div class="staff-role">${s.role || 'Teacher'}</div>
               <div class="staff-subject">${s.subject || ''}</div>
             </div>`;
           });
         } else {
-           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">ðŸ‘©â€ðŸ«</div><p>Staff directory is empty.</p></div>';
+           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👩‍🏫</div><p>Staff directory is empty.</p></div>';
         }
       }).catch(console.error);
     }
@@ -98,14 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
           snap.forEach(doc => {
             const c = doc.data();
             commGrid.innerHTML += `<div class="glass-card member-card reveal visible">
-              ${c.photoUrl ? `<img src="${c.photoUrl}" class="member-photo" alt="${c.name}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>ðŸ‘¤</div>'">` : `<div class="member-photo-placeholder">ðŸ‘¤</div>`}
+              ${c.photoUrl ? `<img src="${c.photoUrl}" class="member-photo" alt="${c.name}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>👤</div>'">` : `<div class="member-photo-placeholder">👤</div>`}
               <div class="member-name">${c.name}</div>
               <div class="member-role">${c.role}</div>
-              ${c.contact ? `<div class="member-contact">ðŸ“ž <a href="tel:${c.contact}">${c.contact}</a></div>` : ''}
+              ${c.contact ? `<div class="member-contact">📞 <a href="tel:${c.contact}">${c.contact}</a></div>` : ''}
             </div>`;
           });
         } else {
-           commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">ðŸ‘¥</div><p>Committee directory is empty.</p></div>';
+           commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👥</div><p>Committee directory is empty.</p></div>';
         }
       }).catch(console.error);
     }
@@ -119,13 +119,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function renderGallery(category) {
       if (allPhotos.length === 0) {
-        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">ðŸ“·</div><p>Gallery is empty.</p></div>';
+        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">📸</div><p>Gallery is empty.</p></div>';
         return;
       }
       
       let filtered = category === 'All' ? allPhotos : allPhotos.filter(p => p.category === category);
       if (filtered.length === 0) {
-        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">ðŸ“·</div><p>No photos in this category.</p></div>';
+        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">📸</div><p>No photos in this category.</p></div>';
         return;
       }
       
@@ -133,7 +133,7 @@ document.addEventListener('DOMContentLoaded', () => {
       filtered.forEach(p => {
         const item = document.createElement('div');
         item.className = 'gallery-item reveal visible';
-        item.innerHTML = `<img src="${p.url || p.imageUrl}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>ðŸ” View</span></div>`;
+        item.innerHTML = `<img src="${p.url || p.imageUrl}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>🔍 View</span></div>`;
         item.addEventListener('click', () => {
           document.getElementById('lightbox-img').src = p.url || p.imageUrl;
           document.getElementById('lightbox-overlay').classList.add('active');
