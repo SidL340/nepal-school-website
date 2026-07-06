@@ -15,17 +15,18 @@ document.addEventListener('DOMContentLoaded', () => {
         if (document.title === 'School Website' || document.title.includes('School Website')) document.title = s.name + ' - Official Website';
       }
       if (s.bgUrl) {
-        const heroBg = document.querySelector('.hero-bg img');
+        const heroBg = document.querySelector('.hero-bg img, #about-intro-bg');
         if (heroBg) heroBg.src = s.bgUrl;
       }
       if (s.logoUrl) {
-        document.querySelectorAll('img[alt="School Logo"]').forEach(img => img.src = s.logoUrl);
+        document.querySelectorAll('img[alt="School Logo"]').forEach(img => { img.src = s.logoUrl; img.style.display = ''; });
         const favicon = document.querySelector('link[rel="icon"]');
         if (favicon) favicon.href = s.logoUrl;
       }
       if (s.phone) document.querySelectorAll('.dyn-school-phone').forEach(el => { el.textContent = s.phone; if (el.closest('a')) el.closest('a').href = 'tel:' + s.phone; });
       if (s.email1) document.querySelectorAll('.dyn-school-email').forEach(el => { el.textContent = s.email1; if (el.closest('a')) el.closest('a').href = 'mailto:' + s.email1; });
       if (s.about) document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = s.about.replace(/\n/g, '<br>'));
+      else document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = 'Welcome to our school. We are dedicated to providing excellent education.');
     }
   }).catch(console.error);
 
@@ -37,6 +38,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const p = doc.data();
       if (p.name) pNames.forEach(el => el.textContent = p.name);
       if (p.message) pMessages.forEach(el => el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"');
+      else pMessages.forEach(el => el.innerHTML = '"We are committed to nurturing young minds and building a better future."');
       if (p.email) document.querySelectorAll('.principal-email').forEach(el => { el.textContent = p.email; if (el.closest('a')) el.closest('a').href = 'mailto:' + p.email; });
 
       if (p.photoUrl) {
