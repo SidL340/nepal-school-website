@@ -1,4 +1,4 @@
-﻿// ============================================================
+// ============================================================
 //  SHREE NEPAL SECONDARY SCHOOL — Global JavaScript
 // ============================================================
 
@@ -203,18 +203,10 @@ function renderNotices(list) {
           <span class="notice-date">📅 ${n.date}</span>
         </div>
         <h4>${n.title}</h4>
-        ${imgSrc ? `<a href="${openHref}" target="_blank" class="btn btn-outline" style="margin-top:0.75rem;font-size:0.8rem;padding:0.5rem 1.2rem">Open Full Size ↗</a>` : ''}
+
       </div>`;
     if (imgSrc) {
-      card.querySelector('.notice-img-wrap').addEventListener('click', () => {
-        const overlay = document.getElementById('lightbox-overlay');
-        const lbImg   = document.getElementById('lightbox-img');
-        if (overlay && lbImg) {
-          lbImg.src = imgSrc;
-          overlay.classList.add('active');
-          document.body.style.overflow = 'hidden';
-        }
-      });
+      card.querySelector('.notice-img-wrap').addEventListener('click', () => { if (window.openAttachmentModal) openAttachmentModal(openHref); });
     }
     grid.appendChild(card);
   });
