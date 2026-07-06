@@ -706,16 +706,15 @@ function loadStaff() {
   staffUnsub = db.collection('staff').onSnapshot(snap => {
         if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
     el.innerHTML = '';
-        const docs = []; snap.forEach(d => docs.push(d));
-    docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
-      const s = doc.data(); const id = doc.id;
+      const isTeaching = s.isTeachingStaff !== false;
+      const typeLabel = isTeaching ? '<span style="color:#28a745;font-size:0.75rem;padding-left:0.5rem;">(Teaching)</span>' : '<span style="color:#007bff;font-size:0.75rem;padding-left:0.5rem;">(Non-Teaching)</span>';
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
-        ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="item-thumb">` : `<div class="item-thumb-placeholder">👤</div>`}
-        <div class="item-info"><h4>${sanitizeHTML(s.name)}</h4><p> — </p></div>
+        ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="item-thumb">` : `<div class="item-thumb-placeholder">&#128100;</div>`}
+        <div class="item-info"><h4>${sanitizeHTML(s.name)} ${typeLabel}</h4><p>${sanitizeHTML(s.role||'')} | ${sanitizeHTML(s.qualification||s.subject||'')} ${s.position ? '| '+sanitizeHTML(s.position) : ''}</p></div>
                 <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="editStaff('${id}', '${sanitizeHTML(s.name).replace(/'/g, "\\'")}', '${sanitizeHTML(s.role||'').replace(/'/g, "\\'")}', '${sanitizeHTML(s.subject||'').replace(/'/g, "\\'")}', ${s.order||99}, '${s.photoUrl||''}')" style="color:var(--gold);border-color:var(--gold);">✏</button>
-          <button class="btn btn-danger btn-sm" onclick="deleteStaff('${id}','${s.photoUrl||''}')">🗑</button>
+          <button class="btn btn-outline btn-sm" onclick="editStaff('${id}', '${sanitizeHTML(s.name).replace(/'/g, \"\\\'\")}', '${sanitizeHTML(s.role||'').replace(/'/g, \"\\\'\")}', '${sanitizeHTML(s.qualification||s.subject||'').replace(/'/g, \"\\\'\")}', '${sanitizeHTML(s.position||'').replace(/'/g, \"\\\'\")}', ${isTeaching}, ${s.order||99}, '${s.photoUrl||''}')" style="color:var(--gold);border-color:var(--gold);">&#9998;</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteStaff('${id}','${s.photoUrl||''}')">&#128465;</button>
         </div>`;
       el.appendChild(card);
     });
