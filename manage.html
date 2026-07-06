@@ -262,7 +262,7 @@
           <button class="btn btn-outline" onclick="showSection('staff')">+ Add Staff</button>
           <button class="btn btn-outline" onclick="showSection('gallery')">+ Upload Photo</button>
           <button class="btn btn-outline" onclick="showSection('school')">✏ Edit School Info</button>
-          <button class="btn btn-danger" onclick="db.collection('staff').get().then(s=>s.forEach(d=>d.ref.delete())); db.collection('committee').get().then(s=>s.forEach(d=>d.ref.delete())); toast('Database Wiped! Refreshing...'); setTimeout(()=>location.reload(), 2000);">🗑 WIPE BUGGED DATA</button>
+          
         </div>
         <div class="divider"></div>
         <p style="color:var(--text-muted);font-size:.82rem">📌 Changes made here reflect on the public website immediately. The admin portal URL is hidden from visitors.</p>
