@@ -92,8 +92,8 @@ document.addEventListener('DOMContentLoaded', () => {
           tw.appendChild(tm);
           document.body.appendChild(tw);
         }
-        tw.style.cssText = 'display:block; background:var(--gold); color:var(--navy); padding:0.4rem 0; width:100%; z-index:999; position:absolute; top:var(--nav-height); left:0; right:0;';
-        tm.style.cssText = 'font-weight:700; font-size:0.95rem; letter-spacing:0.5px;';
+        tw.style.cssText = 'display:block; background:transparent; padding:0.4rem 0; width:100%; z-index:999; position:absolute; top:var(--nav-height); left:0; right:0;';
+        tm.style.cssText = 'font-weight:bold; font-size:1.1rem; color:#ff4d4d; letter-spacing:0.5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);';
         tm.textContent = s.ticker;
       } else {
         const tw = document.getElementById('ticker-wrapper');
