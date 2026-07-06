@@ -1,4 +1,4 @@
-// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+﻿// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loads data from Firebase Firestore and updates the DOM dynamically.
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -199,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let compFound = false, smartFound = false, groundFound = false;
         snap.forEach(doc => {
           const d = doc.data();
-          if (facComp && !compFound && d.category === 'Computer Lab') { facComp.src = d.url || d.imageUrl; compFound = true; }
+          if (facComp && !compFound && d.category === 'Lab') { facComp.src = d.url || d.imageUrl; compFound = true; }
           if (facSmart && !smartFound && d.category === 'Classroom') { facSmart.src = d.url || d.imageUrl; smartFound = true; }
           if (facGround && !groundFound && d.category === 'Sports') { facGround.src = d.url || d.imageUrl; groundFound = true; }
         });
