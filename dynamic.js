@@ -75,10 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (path.includes('faculty')) {
     const staffGrid = document.querySelector('.grid-4'); 
     if (staffGrid) {
-      db.collection('staff').orderBy('order').get().then(snap => {
+      db.collection('staff').get().then(snap => {
         if (!snap.empty) {
           staffGrid.innerHTML = '';
-          snap.forEach(doc => {
+          snap.docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
             const s = doc.data();
             staffGrid.innerHTML += `<div class="glass-card staff-card reveal visible">
               ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="staff-photo" alt="${sanitizeHTML(s.name)}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
@@ -98,10 +98,10 @@ document.addEventListener('DOMContentLoaded', () => {
   if (path.includes('committee')) {
     const commGrid = document.querySelector('.grid-3');
     if (commGrid) {
-      db.collection('committee').orderBy('order').get().then(snap => {
+      db.collection('committee').get().then(snap => {
         if (!snap.empty) {
           commGrid.innerHTML = '';
-          snap.forEach(doc => {
+          snap.docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
             const c = doc.data();
             const isChair = c.isChairperson === true || (c.role && c.role.toLowerCase().includes('chair'));
             const cardStyle = isChair ? 'grid-column: 1 / -1; max-width: 380px; margin: 0 auto 1.5rem; border: 2px solid var(--gold); background: rgba(255, 183, 3, 0.05); transform: scale(1.03);' : '';

@@ -690,10 +690,10 @@ function loadStaff() {
   if (staffUnsub) { staffUnsub(); staffUnsub = null; }
   const el = document.getElementById('staff-list');
   el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>Loading...</div>';
-  staffUnsub = db.collection('staff').orderBy('order').onSnapshot(snap => {
-    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
+  staffUnsub = db.collection('staff').onSnapshot(snap => {
+        if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
     el.innerHTML = '';
-    snap.forEach(doc => {
+    snap.docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
       const s = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
@@ -763,10 +763,10 @@ function loadCommittee() {
   if (committeeUnsub) { committeeUnsub(); committeeUnsub = null; }
   const el = document.getElementById('committee-list');
   el.innerHTML = '<div class="empty"><div class="empty-icon">🏛️</div>Loading...</div>';
-  committeeUnsub = db.collection('committee').orderBy('order').onSnapshot(snap => {
-    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">🏛️</div>No committee members yet.</div>'; return; }
+  committeeUnsub = db.collection('committee').onSnapshot(snap => {
+        if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
     el.innerHTML = '';
-    snap.forEach(doc => {
+    snap.docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
       const m = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
