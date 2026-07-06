@@ -102,20 +102,50 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. Load Gallery
   const galleryGrid = document.getElementById('gallery-grid');
   if (galleryGrid) {
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    let allPhotos = [];
+    
+    function renderGallery(category) {
+      if (allPhotos.length === 0) {
+        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">📷</div><p>Gallery is empty.</p></div>';
+        return;
+      }
+      
+      let filtered = category === 'All' ? allPhotos : allPhotos.filter(p => p.category === category);
+      if (filtered.length === 0) {
+        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">📷</div><p>No photos in this category.</p></div>';
+        return;
+      }
+      
+      galleryGrid.innerHTML = '';
+      filtered.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'gallery-item reveal visible';
+        item.innerHTML = `<img src="${p.url || p.imageUrl}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>🔍 View</span></div>`;
+        item.addEventListener('click', () => {
+          document.getElementById('lightbox-img').src = p.url || p.imageUrl;
+          document.getElementById('lightbox-overlay').classList.add('active');
+        });
+        galleryGrid.appendChild(item);
+      });
+    }
+
     db.collection('gallery').orderBy('createdAt','desc').get().then(snap => {
         if (!snap.empty) {
-          galleryGrid.innerHTML = '';
-          snap.forEach(doc => {
-            const p = doc.data();
-            const item = document.createElement('div');
-            item.className = 'gallery-item reveal visible';
-            item.innerHTML = \`<img src="\${p.url}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>🔍 View</span></div>\`;
-            item.addEventListener('click', () => {
-              document.getElementById('lightbox-img').src = p.url;
-              document.getElementById('lightbox-overlay').classList.add('active');
+          snap.forEach(doc => allPhotos.push(doc.data()));
+          renderGallery('All');
+          
+          if (filterBtns) {
+            filterBtns.forEach(btn => {
+              btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderGallery(btn.textContent.trim());
+              });
             });
-            galleryGrid.appendChild(item);
-          });
+          }
+        } else {
+          renderGallery('All');
         }
     }).catch(console.error);
   }
