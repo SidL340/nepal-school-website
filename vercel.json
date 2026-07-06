@@ -3,18 +3,6 @@
     "redirects": [
     { "source": "/home", "destination": "/", "permanent": true }
   ],
-  "rewrites": [
-    { "source": "/about",        "destination": "/about.html" },
-    { "source": "/academics",    "destination": "/academics.html" },
-    { "source": "/faculty",      "destination": "/faculty.html" },
-    { "source": "/committee",    "destination": "/committee.html" },
-    { "source": "/notices",      "destination": "/notices.html" },
-    { "source": "/gallery",      "destination": "/gallery.html" },
-    { "source": "/links",        "destination": "/links.html" },
-    { "source": "/contact",      "destination": "/contact.html" },
-    { "source": "/epustakalaya", "destination": "/epustakalaya.html" },
-    { "source": "/manage",       "destination": "/manage.html" }
-  ],
   "headers": [
     {
       "source": "/(.*)",
