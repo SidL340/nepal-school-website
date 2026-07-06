@@ -25,6 +25,11 @@ window.openAttachmentModal = function(url) {
   
   const safeUrl = sanitizeHTML(url);
   if (safeUrl.toLowerCase().includes('.pdf')) {
+    // Open PDFs directly in a new tab to bypass mobile iframe restrictions
+    closeAttachmentModal();
+    window.open(safeUrl, '_blank');
+    return;
+  }
     const viewerUrl = 'https://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(url);
     content.innerHTML = `<iframe src="${viewerUrl}" style="width:100%;max-width:900px;height:90vh;border:none;border-radius:12px;background:white;box-shadow:0 20px 50px rgba(0,0,0,0.5);"></iframe>`;
   } else {
@@ -293,10 +298,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (noticeList) {
           allNotices.slice(0, 3).forEach(n => {
             noticeList.innerHTML += `<div class="notice-preview-card">
-              <div class="notice-icon">${n.important ? '??' : '??'}</div>
+              <div class="notice-icon">${n.important ? '&#10071;' : '&#128227;'}</div>
               <div class="notice-info">
                 <h4>${sanitizeHTML(n.title)}</h4>
-                <span>?? ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
+                <span>&#128197; ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? '&#10071;' : '&#128227;'}">${n.category}</span></span>
               </div>
             </div>`;
           });
@@ -308,10 +313,10 @@ document.addEventListener('DOMContentLoaded', () => {
             allNotices.forEach(n => {
               if (filterCat !== 'All' && n.category !== filterCat) return;
               noticeGrid.innerHTML += `<div class="notice-card reveal visible" data-category="${n.category}">
-                <div class="notice-icon">${n.important ? '??' : '??'}</div>
+                <div class="notice-icon">${n.important ? '&#10071;' : '&#128227;'}</div>
                 <div class="notice-info">
                   <h4>${sanitizeHTML(n.title)}</h4>
-                  <span>?? ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
+                  <span>&#128197; ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? '&#10071;' : '&#128227;'}">${n.category}</span></span>
                 </div>
                 ${n.imageUrl ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem;cursor:pointer;">View Attachment</button>` : ''}
               </div>`;
