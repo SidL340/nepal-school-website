@@ -693,7 +693,7 @@ function loadStaff() {
   staffUnsub = db.collection('staff').onSnapshot(snap => {
         if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
     el.innerHTML = '';
-    snap.docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
+    [...snap.docs].sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
       const s = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
@@ -766,7 +766,7 @@ function loadCommittee() {
   committeeUnsub = db.collection('committee').onSnapshot(snap => {
         if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
     el.innerHTML = '';
-    snap.docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
+    [...snap.docs].sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
       const m = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
