@@ -297,7 +297,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <div class="notice-icon">${n.important ? '&#10071;' : '&#128227;'}</div>
               <div class="notice-info">
                 <h4>${sanitizeHTML(n.title)}</h4>
-                <span>&#128197; ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? '&#10071;' : '&#128227;'}">${n.category}</span></span>
+                <span>&#128197; ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
               </div>
             </div>`;
           });
@@ -312,7 +312,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="notice-icon">${n.important ? '&#10071;' : '&#128227;'}</div>
                 <div class="notice-info">
                   <h4>${sanitizeHTML(n.title)}</h4>
-                  <span>&#128197; ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? '&#10071;' : '&#128227;'}">${n.category}</span></span>
+                  <span>&#128197; ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
                 </div>
                 ${n.imageUrl ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem;cursor:pointer;">View Attachment</button>` : ''}
               </div>`;
@@ -365,3 +365,4 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 });
+
