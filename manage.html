@@ -706,6 +706,9 @@ function loadStaff() {
   staffUnsub = db.collection('staff').onSnapshot(snap => {
         if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
     el.innerHTML = '';
+    const docs = []; snap.forEach(d => docs.push(d));
+    docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
+      const s = doc.data(); const id = doc.id;
       const isTeaching = s.isTeachingStaff !== false;
       const typeLabel = isTeaching ? '<span style="color:#28a745;font-size:0.75rem;padding-left:0.5rem;">(Teaching)</span>' : '<span style="color:#007bff;font-size:0.75rem;padding-left:0.5rem;">(Non-Teaching)</span>';
       const card = document.createElement('div'); card.className = 'item-card';
