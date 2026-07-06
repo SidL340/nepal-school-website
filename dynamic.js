@@ -277,30 +277,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(console.error);
   }
 
-  // 6. Load Notices
+    // 6. Load Notices
   const noticeList = document.getElementById('notice-preview-list');
   const noticeGrid = document.getElementById('notice-grid');
+  const noticeFilter = document.getElementById('notice-filter');
   if (noticeList || noticeGrid) {
     db.collection('notices').orderBy('createdAt','desc').get().then(snap => {
       if (!snap.empty) {
         if (noticeList) noticeList.innerHTML = '';
         if (noticeGrid) noticeGrid.innerHTML = '';
-        let count = 0;
-        snap.forEach(doc => {
-          const n = doc.data();
-          const cardHTML = `<div class="${noticeGrid ? 'notice-card reveal visible' : 'notice-preview-card'}">
-            <div class="notice-icon">${n.important ? '⚠️' : '📄'}</div>
-            <div class="notice-info">
-              <h4>${sanitizeHTML(n.title)}</h4>
-              <span>📅 ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
-            </div>
-            ${n.imageUrl && noticeGrid ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem;cursor:pointer;">View Attachment</button>` : ''}
-          </div>`;
-          
-          if (noticeGrid) noticeGrid.innerHTML += cardHTML;
-          if (noticeList && count < 3) noticeList.innerHTML += cardHTML;
-          count++;
-        });
+        const allNotices = [];
+        snap.forEach(doc => allNotices.push(doc.data()));
+
+        if (noticeList) {
+          allNotices.slice(0, 3).forEach(n => {
+            noticeList.innerHTML += `<div class="notice-preview-card">
+              <div class="notice-icon">${n.important ? '??' : '??'}</div>
+              <div class="notice-info">
+                <h4>${sanitizeHTML(n.title)}</h4>
+                <span>?? ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
+              </div>
+            </div>`;
+          });
+        }
+
+        if (noticeGrid) {
+          const renderGrid = (filterCat) => {
+            noticeGrid.innerHTML = '';
+            allNotices.forEach(n => {
+              if (filterCat !== 'All' && n.category !== filterCat) return;
+              noticeGrid.innerHTML += `<div class="notice-card reveal visible" data-category="${n.category}">
+                <div class="notice-icon">${n.important ? '??' : '??'}</div>
+                <div class="notice-info">
+                  <h4>${sanitizeHTML(n.title)}</h4>
+                  <span>?? ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
+                </div>
+                ${n.imageUrl ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem;cursor:pointer;">View Attachment</button>` : ''}
+              </div>`;
+            });
+          };
+
+          renderGrid('All');
+
+          if (noticeFilter) {
+             const categories = ['All', ...new Set(allNotices.map(n => n.category))];
+             noticeFilter.innerHTML = '';
+             categories.forEach(cat => {
+               const btn = document.createElement('button');
+               btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
+               btn.textContent = cat;
+               btn.dataset.filter = cat;
+               btn.addEventListener('click', () => {
+                 noticeFilter.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                 btn.classList.add('active');
+                 renderGrid(cat);
+               });
+               noticeFilter.appendChild(btn);
+             });
+          }
+        }
       } else {
         if (noticeList) noticeList.innerHTML = '<p style="text-align:center;color:var(--text-muted)">No notices yet.</p>';
         if (noticeGrid) noticeGrid.innerHTML = '<p style="text-align:center;color:var(--text-muted)">No notices yet.</p>';

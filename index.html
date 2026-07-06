@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -217,7 +217,7 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name"></span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
@@ -244,7 +244,7 @@
 <!-- ═══ HERO ══════════════════════════════════════════════ -->
 <section class="hero">
   <div class="hero-bg">
-    <img src="images/school-bg.jpg" alt="School Background" />
+    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Background" />
   </div>
   <div class="hero-overlay"></div>
 
@@ -307,7 +307,7 @@
         </div>
         <div style="display:flex;gap:1.5rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;">
           <div class="principal-photo-wrap" style="flex-shrink:0;width:120px;height:120px;border-radius:50%;overflow:hidden;border:3px solid var(--gold);">
-            <img src="images/principal.jpg" alt="Principal"
+            <img src="" alt="" style="display:none"
                  onerror="this.outerHTML='<div style=\'width:100px;height:100px;border-radius:50%;background:var(--navy-light);border:3px solid var(--gold);display:flex;align-items:center;justify-content:center;font-size:2.8rem;\'>👨‍💼</div>'">
           </div>
           <div>
@@ -497,7 +497,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
         <h3><span class="dyn-school-name"></span></h3>
         <p>Providing quality education from ECD to Class 12 in the heart of Rautahat, Madhesh Province, Nepal.</p>
         <div class="footer-social">
@@ -579,21 +579,7 @@
     }
   }
 
-  // Notice preview on home page
-  document.addEventListener('DOMContentLoaded', () => {
-    const previewEl = document.getElementById('notice-preview-list');
-    if (previewEl && typeof notices !== 'undefined') {
-      const recent = notices.slice(0, 3);
-      recent.forEach(n => {
-        previewEl.innerHTML += `
-          <div class="notice-preview-card">
-            <div class="notice-icon">${n.important ? '⚠️' : '📄'}</div>
-            <div class="notice-info">
-              <h4>${n.title}</h4>
-              <span>📅 ${n.date} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
-            </div>
-          </div>`;
-      });
+  
     }
   });
 </script>

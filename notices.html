@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
@@ -75,7 +75,7 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
+      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name"></span></span>
         <span class="school-sub">Bishrampur-02, Rautahat, Nepal</span>
@@ -124,7 +124,7 @@
   <div class="container">
     <div class="footer-grid">
       <div class="footer-brand">
-        <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
+        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
         <h3><span class="dyn-school-name"></span></h3>
         <p>Providing quality education from ECD to Class 12 in the heart of Rautahat, Madhesh Province, Nepal.</p>
         <div class="footer-social">
@@ -188,43 +188,7 @@
 <script src="script.js?v=1783315054"></script>
 <script>
 // ── Load notices from Firebase Firestore ──────────────────────────────────
-(async function loadFirebaseNotices() {
-  try {
-    const snap = await db.collection('notices').orderBy('createdAt', 'desc').get();
-    if (snap.empty) {
-      // No Firebase data yet — load from static file as fallback
-      const s = document.createElement('script');
-      s.src = 'notices/notices-list.js';
-      document.body.appendChild(s);
-      return;
-    }
-    // Build notices array from Firestore
-    const notices = [];
-    snap.forEach(doc => {
-      const n = doc.data();
-      notices.push({
-        id: snap.docs.indexOf(doc) + 1,
-        title: n.title || 'Notice',
-        file: n.imageUrl || '',          // full Storage URL
-        date: n.date || '',
-        category: n.category || 'General',
-        important: n.important || false,
-        isUrl: !!n.imageUrl              // signal that 'file' is a full URL
-      });
-    });
-    // Trigger the existing render function from script.js (with slight delay to let it load)
-    if (typeof renderNotices === 'function') {
-      renderNotices(notices);
-    } else {
-      window._firestoreNotices = notices; // script.js will pick this up
-    }
-  } catch(e) {
-    console.warn('Firebase notices load failed, using static fallback:', e);
-    const s = document.createElement('script');
-    s.src = 'notices/notices-list.js';
-    document.body.appendChild(s);
-  }
-})();
+
 </script>
 <script src="dynamic.js?v=1783317144"></script>
 </body>
