@@ -1,4 +1,44 @@
-﻿function sanitizeHTML(str) {
+﻿// --- ATTACHMENT MODAL ---
+window.openAttachmentModal = function(url) {
+  let modal = document.getElementById('attachment-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'attachment-modal';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(5px);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s;';
+    
+    modal.innerHTML = 
+      <div style="position:absolute;top:20px;right:30px;color:white;font-size:3rem;cursor:pointer;user-select:none;line-height:1;transition:transform 0.2s;" onmouseover="this.style.transform='scale(1.2)'" onmouseout="this.style.transform='scale(1)'" onclick="closeAttachmentModal()">&times;</div>
+      <div id="attachment-content" style="max-width:90%;max-height:90%;width:100%;height:100%;display:flex;align-items:center;justify-content:center;"></div>
+    ;
+    document.body.appendChild(modal);
+    
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal || e.target.id === 'attachment-content') closeAttachmentModal();
+    });
+  }
+  
+  const content = document.getElementById('attachment-content');
+  content.innerHTML = '<div style="color:white;font-size:1.2rem;">Loading...</div>';
+  
+  modal.style.display = 'flex';
+  setTimeout(() => modal.style.opacity = '1', 10);
+  
+  const safeUrl = sanitizeHTML(url);
+  if (safeUrl.toLowerCase().includes('.pdf')) {
+    content.innerHTML = <iframe src="+safeUrl+" style="width:80%;max-width:900px;height:90vh;border:none;border-radius:12px;background:white;box-shadow:0 20px 50px rgba(0,0,0,0.5);"></iframe>;
+  } else {
+    content.innerHTML = <img src="+safeUrl+" style="max-width:100%;max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,0.5);">;
+  }
+}
+
+window.closeAttachmentModal = function() {
+  const modal = document.getElementById('attachment-modal');
+  if (modal) {
+    modal.style.opacity = '0';
+    setTimeout(() => modal.style.display = 'none', 300);
+  }
+}
+function sanitizeHTML(str) {
   if (typeof str !== 'string') return '';
   return str.replace(/[&<>"'=\/]/g, function (s) {
     return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '/': '&#x2F;', '': '&#x60;', '=': '&#x3D;' }[s];
@@ -192,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
               <h4>${sanitizeHTML(n.title)}</h4>
               <span>📅 ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
             </div>
-            ${n.imageUrl && noticeGrid ? `<a href="${n.imageUrl}" target="_blank" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem">View Attachment</a>` : ''}
+            ${n.imageUrl && noticeGrid ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem;cursor:pointer;">View Attachment</button>` : ''}
           </div>`;
           
           if (noticeGrid) noticeGrid.innerHTML += cardHTML;
