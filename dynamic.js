@@ -1,4 +1,4 @@
-﻿// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loads data from Firebase Firestore and updates the DOM dynamically.
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -97,10 +97,15 @@ document.addEventListener('DOMContentLoaded', () => {
           commGrid.innerHTML = '';
           snap.forEach(doc => {
             const c = doc.data();
-            commGrid.innerHTML += `<div class="glass-card member-card reveal visible">
+            const isChair = c.isChairperson === true || (c.role && c.role.toLowerCase().includes('chair'));
+            const cardStyle = isChair ? 'grid-column: 1 / -1; max-width: 380px; margin: 0 auto 1.5rem; border: 2px solid var(--gold); background: rgba(255, 183, 3, 0.05); transform: scale(1.03);' : '';
+            const tag = isChair ? '<div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--gold);color:var(--navy);padding:4px 20px;border-radius:20px;font-size:0.85rem;font-weight:700;box-shadow:0 4px 15px rgba(0,0,0,0.3);z-index:2;letter-spacing:1px;text-transform:uppercase;">' + (c.role || 'Chairperson') + '</div>' : '';
+            
+            commGrid.innerHTML += `<div class="glass-card member-card reveal visible" style="position:relative; ${cardStyle}">
+              ${tag}
               ${c.photoUrl ? `<img src="${c.photoUrl}" class="member-photo" alt="${c.name}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>👤</div>'">` : `<div class="member-photo-placeholder">👤</div>`}
-              <div class="member-name">${c.name}</div>
-              <div class="member-role">${c.role}</div>
+              <div class="member-name" style="${isChair ? 'color:var(--gold);font-size:1.4rem;' : ''}">${c.name}</div>
+              <div class="member-role" style="${isChair ? 'display:none' : ''}">${c.role}</div>
               ${c.contact ? `<div class="member-contact">📞 <a href="tel:${c.contact}">${c.contact}</a></div>` : ''}
             </div>`;
           });
