@@ -1,4 +1,4 @@
-﻿// --- ATTACHMENT MODAL ---
+// --- ATTACHMENT MODAL ---
 window.openAttachmentModal = function(url) {
   let modal = document.getElementById('attachment-modal');
   if (!modal) {
@@ -149,21 +149,48 @@ document.addEventListener('DOMContentLoaded', () => {
   if (path.includes('faculty')) {
     const staffGrid = document.querySelector('.grid-4'); 
     if (staffGrid) {
+      const parentContainer = staffGrid.parentNode;
+      
       db.collection('staff').get().then(snap => {
         if (!snap.empty) {
-          staffGrid.innerHTML = '';
-              const docs = []; snap.forEach(d => docs.push(d));
-    docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
-            const s = doc.data();
-            staffGrid.innerHTML += `<div class="glass-card staff-card reveal visible">
-              ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="staff-photo" alt="${sanitizeHTML(s.name)}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
-              <div class="staff-name">${sanitizeHTML(s.name)}</div>
-              <div class="staff-role">${sanitizeHTML(s.role)}</div>
-              <div class="staff-subject">${sanitizeHTML(s.subject)}</div>
-            </div>`;
-          });
+          parentContainer.innerHTML = ''; // clear existing
+          
+          const docs = []; snap.forEach(d => docs.push(d));
+          docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99));
+          
+          const teaching = docs.filter(d => d.data().isTeachingStaff !== false);
+          const nonTeaching = docs.filter(d => d.data().isTeachingStaff === false);
+          
+          function renderSection(title, list) {
+            if (list.length === 0) return;
+            const sec = document.createElement('div');
+            sec.style.marginBottom = "4rem";
+            sec.innerHTML = `
+              <div style="text-align:center; margin-bottom: 2rem;">
+                <h3 style="color:var(--gold); font-size:1.8rem; margin-top:2rem;">${title}</h3>
+                <div class="gold-line" style="margin:0.5rem auto 0; width:50px; height:3px; background:var(--gold);"></div>
+              </div>
+              <div class="grid-4">
+                ${list.map(doc => {
+                  const s = doc.data();
+                  return `<div class="glass-card staff-card reveal visible" style="position:relative;">
+                    ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="staff-photo" alt="${sanitizeHTML(s.name)}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
+                    <div class="staff-name">${sanitizeHTML(s.name)}</div>
+                    <div class="staff-role">${sanitizeHTML(s.role)}</div>
+                    <div class="staff-subject">${sanitizeHTML(s.qualification||s.subject||'')}</div>
+                    ${s.position ? `<div style="margin-top:0.75rem; background:rgba(244,169,0,0.15); border:1px solid rgba(244,169,0,0.3); color:var(--gold); padding:0.25rem 0.5rem; border-radius:50px; font-size:0.75rem; font-weight:600; display:inline-block;">${sanitizeHTML(s.position)}</div>` : ''}
+                  </div>`;
+                }).join('')}
+              </div>
+            `;
+            parentContainer.appendChild(sec);
+          }
+          
+          renderSection('Teaching Staff', teaching);
+          renderSection('Non-Teaching Staff', nonTeaching);
+          
         } else {
-           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👩‍🏫</div><p>Staff directory is empty.</p></div>';
+           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👥</div><p>Staff directory is empty.</p></div>';
         }
       }).catch(console.error);
     }

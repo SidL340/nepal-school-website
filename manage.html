@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -312,10 +312,14 @@
         <h3>+ Add Staff Member</h3>
         <div class="form-row">
           <div class="form-group"><label>Full Name *</label><input type="text" id="staff-name" placeholder="e.g. Ram Bahadur Shrestha"></div>
-          <div class="form-group"><label>Role / Designation</label><input type="text" id="staff-role" placeholder="e.g. Teacher"></div>
+          <div class="form-group"><label>Staff Category</label><select id="staff-type" style="width:100%; padding:0.6rem; border-radius:4px; border:1px solid var(--glass-border); background:var(--glass-bg); color:var(--white); outline:none;"><option value="teaching">Teaching Staff</option><option value="non-teaching">Non-Teaching Staff</option></select></div>
         </div>
         <div class="form-row">
-          <div class="form-group"><label>Subject(s)</label><input type="text" id="staff-subject" placeholder="e.g. Mathematics / Science"></div>
+          <div class="form-group"><label>Role / Designation</label><input type="text" id="staff-role" placeholder="e.g. Teacher, Accountant"></div>
+          <div class="form-group"><label>Qualification</label><input type="text" id="staff-qualification" placeholder="e.g. M.Ed., B.Sc."></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label>Extra Position (Optional)</label><input type="text" id="staff-position" placeholder="e.g. Secondary Level Incharge"></div>
           <div class="form-group"><label>Display Order</label><input type="number" id="staff-order" placeholder="1" min="1"></div>
         </div>
         <div class="form-group"><label>Photo</label><input type="file" id="staff-photo" accept="image/*"></div>
@@ -718,11 +722,13 @@ function loadStaff() {
   }, err => { el.innerHTML = '<div class="empty">Error: ' + err.message + '</div>'; });
 }
 
-function editStaff(id, name, role, sub, ord, img) {
+function editStaff(id, name, role, qual, pos, isTeaching, ord, img) {
   editingStaffId = id;
   document.getElementById('staff-name').value = name;
   document.getElementById('staff-role').value = role;
-  document.getElementById('staff-subject').value = sub;
+  document.getElementById('staff-qualification').value = qual;
+  document.getElementById('staff-position').value = pos;
+  document.getElementById('staff-type').value = isTeaching ? 'teaching' : 'non-teaching';
   document.getElementById('staff-order').value = ord;
   document.getElementById('staff-add-btn').textContent = 'Update Staff';
   window.scrollTo({top:0, behavior:'smooth'});
@@ -731,7 +737,9 @@ function editStaff(id, name, role, sub, ord, img) {
 async function addStaff() {
   const name    = document.getElementById('staff-name').value.trim();
   const role    = document.getElementById('staff-role').value.trim();
-  const subject = document.getElementById('staff-subject').value.trim();
+  const qualification = document.getElementById('staff-qualification').value.trim();
+  const position = document.getElementById('staff-position').value.trim();
+  const isTeachingStaff = document.getElementById('staff-type').value === 'teaching';
   const order   = parseInt(document.getElementById('staff-order').value) || 99;
   const file    = document.getElementById('staff-photo').files[0];
   if (!name) { toast('Name is required', 'error'); return; }
@@ -741,14 +749,14 @@ async function addStaff() {
     let photoUrl = '';
     if (file) photoUrl = await uploadImage(file, 'staff', 'staff-progress');
         if (editingStaffId) {
-      const updates = { name, role, subject, order };
+      const updates = { name, role, qualification, position, isTeachingStaff, order };
       if (file) updates.photoUrl = photoUrl;
       await db.collection('staff').doc(editingStaffId).update(updates);
       editingStaffId = null;
     } else {
-      await db.collection('staff').add({ name, role, subject, photoUrl, order });
+      await db.collection('staff').add({ name, role, qualification, position, isTeachingStaff, photoUrl, order });
     }
-    ['staff-name','staff-role','staff-subject','staff-order'].forEach(id => document.getElementById(id).value = '');
+    ['staff-name','staff-role','staff-qualification','staff-position','staff-order'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('staff-photo').value = '';
     document.getElementById('staff-progress').style.width = '0';
     toast('Staff member added! 🎉');
