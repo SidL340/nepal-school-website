@@ -1,4 +1,4 @@
-﻿// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loads data from Firebase Firestore and updates the DOM dynamically.
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -168,10 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
         snap.forEach(doc => {
           const n = doc.data();
           const cardHTML = `<div class="${noticeGrid ? 'notice-card reveal visible' : 'notice-preview-card'}">
-            <div class="notice-icon">${n.important ? 'âš ï¸' : 'ðŸ“„'}</div>
+            <div class="notice-icon">${n.important ? '⚠️' : '📄'}</div>
             <div class="notice-info">
               <h4>${n.title}</h4>
-              <span>ðŸ“… ${n.date} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
+              <span>📅 ${n.date} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
             </div>
             ${n.imageUrl && noticeGrid ? `<a href="${n.imageUrl}" target="_blank" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem">View Attachment</a>` : ''}
           </div>`;

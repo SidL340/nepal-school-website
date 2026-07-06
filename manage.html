@@ -28,7 +28,7 @@
     body{font-family:'Inter',sans-serif;background:var(--navy);color:var(--white);min-height:100vh;}
     a{text-decoration:none;color:inherit;}
 
-    /* â”€â”€ LOGIN â”€â”€ */
+    /* ── LOGIN ── */
     #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(ellipse at top,#1a3a5c,var(--navy));}
     .login-card{background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:16px;padding:2.5rem;width:100%;max-width:400px;box-shadow:0 20px 60px rgba(0,0,0,.5);}
     .login-logo{text-align:center;margin-bottom:2rem;}
@@ -37,7 +37,7 @@
     .login-logo p{color:var(--text-muted);font-size:.78rem;margin-top:.25rem;}
     #login-error{color:#ff6b8a;font-size:.8rem;text-align:center;margin-top:.75rem;display:none;}
 
-    /* â”€â”€ FORM ELEMENTS â”€â”€ */
+    /* ── FORM ELEMENTS ── */
     .form-group{margin-bottom:1.1rem;}
     .form-group label{display:block;color:var(--text-muted);font-size:.78rem;font-weight:600;margin-bottom:.35rem;letter-spacing:.5px;text-transform:uppercase;}
     .form-group input,.form-group textarea,.form-group select{
@@ -49,7 +49,7 @@
     .form-row{display:grid;grid-template-columns:1fr 1fr;gap:.9rem;}
     .form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.9rem;}
 
-    /* â”€â”€ BUTTONS â”€â”€ */
+    /* ── BUTTONS ── */
     .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.65rem 1.2rem;border-radius:var(--radius);border:none;cursor:pointer;font-family:inherit;font-size:.83rem;font-weight:600;transition:var(--tr);}
     .btn-gold{background:var(--gold);color:var(--navy);}
     .btn-gold:hover{background:var(--gold-light);}
@@ -61,7 +61,7 @@
     .btn-full{width:100%;justify-content:center;padding:.8rem;}
     .btn:disabled{opacity:.5;cursor:not-allowed;}
 
-    /* â”€â”€ TOGGLE â”€â”€ */
+    /* ── TOGGLE ── */
     .toggle-group{display:flex;align-items:center;gap:.75rem;padding:.5rem 0;}
     .toggle-group span{color:var(--white);font-size:.85rem;}
     .toggle{position:relative;width:44px;height:24px;flex-shrink:0;}
@@ -71,23 +71,23 @@
     .toggle input:checked+.slider{background:var(--gold);}
     .toggle input:checked+.slider::before{transform:translateX(20px);background:var(--navy);}
 
-    /* â”€â”€ BADGES â”€â”€ */
+    /* ── BADGES ── */
     .badge{font-size:.68rem;padding:.2rem .6rem;border-radius:50px;font-weight:600;}
     .badge-gold{background:rgba(244,169,0,.18);color:var(--gold);border:1px solid rgba(244,169,0,.3);}
     .badge-red{background:rgba(220,20,60,.18);color:#ff6b8a;border:1px solid rgba(220,20,60,.3);}
     .badge-blue{background:rgba(99,102,241,.18);color:#a5b4fc;border:1px solid rgba(99,102,241,.3);}
 
-    /* â”€â”€ PROGRESS â”€â”€ */
+    /* ── PROGRESS ── */
     .progress-wrap{margin-top:.5rem;}
     .progress-bar{width:100%;height:5px;background:var(--navy-light);border-radius:3px;overflow:hidden;}
     .progress-fill{height:100%;background:var(--gold);border-radius:3px;transition:width .3s;width:0;}
     .progress-label{color:var(--text-muted);font-size:.72rem;margin-top:.25rem;}
 
-    /* â”€â”€ DASHBOARD LAYOUT â”€â”€ */
+    /* ── DASHBOARD LAYOUT ── */
     #dashboard{display:none;min-height:100vh;}
     .dash-layout{display:grid;grid-template-columns:var(--sidebar) 1fr;min-height:100vh;}
 
-    /* â”€â”€ SIDEBAR â”€â”€ */
+    /* ── SIDEBAR ── */
     #sidebar{background:var(--navy-mid);border-right:1px solid var(--glass-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
     .sidebar-head{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--glass-border);}
     .sidebar-head h2{color:var(--gold);font-size:.85rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
@@ -101,7 +101,7 @@
     .sidebar-foot{padding:1rem 1.25rem;border-top:1px solid var(--glass-border);}
     .sidebar-foot p{color:var(--text-muted);font-size:.72rem;margin-bottom:.6rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
 
-    /* â”€â”€ CONTENT â”€â”€ */
+    /* ── CONTENT ── */
     #content{padding:2rem;overflow-y:auto;background:var(--navy);}
     .content-panel{display:none;animation:fadeIn .2s;}
     .content-panel.active{display:block;}
@@ -110,17 +110,17 @@
     .panel-header h2{color:var(--white);font-size:1.4rem;font-weight:700;}
     .panel-header p{color:var(--text-muted);font-size:.83rem;margin-top:.25rem;}
 
-    /* â”€â”€ STAT BOXES â”€â”€ */
+    /* ── STAT BOXES ── */
     .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:2rem;}
     .stat-box{background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:var(--radius);padding:1.25rem;text-align:center;}
     .stat-box .num{font-size:2.2rem;font-weight:800;color:var(--gold);line-height:1;}
     .stat-box .lbl{color:var(--text-muted);font-size:.75rem;margin-top:.35rem;}
 
-    /* â”€â”€ ADD FORM CARD â”€â”€ */
+    /* ── ADD FORM CARD ── */
     .add-form{background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.75rem;}
     .add-form h3{color:var(--gold);font-size:.95rem;font-weight:700;margin-bottom:1.1rem;}
 
-    /* â”€â”€ ITEM CARDS â”€â”€ */
+    /* ── ITEM CARDS ── */
     .item-card{background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:var(--radius);padding:1rem 1.25rem;display:flex;align-items:center;gap:1rem;margin-bottom:.65rem;transition:var(--tr);}
     .item-card:hover{border-color:rgba(244,169,0,.25);}
     .item-thumb{width:48px;height:48px;border-radius:50%;object-fit:cover;border:2px solid var(--gold);flex-shrink:0;}
@@ -130,7 +130,7 @@
     .item-info p{color:var(--text-muted);font-size:.75rem;margin-top:.1rem;}
     .item-actions{display:flex;gap:.4rem;flex-shrink:0;}
 
-    /* â”€â”€ NOTICE GRID â”€â”€ */
+    /* ── NOTICE GRID ── */
     .notice-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;}
     .notice-card{background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:var(--radius);overflow:hidden;transition:var(--tr);}
     .notice-card:hover{border-color:rgba(244,169,0,.25);}
@@ -140,7 +140,7 @@
     .notice-card-body h4{color:var(--white);font-size:.82rem;font-weight:600;margin:.4rem 0 .6rem;line-height:1.4;}
     .notice-meta{display:flex;gap:.35rem;flex-wrap:wrap;align-items:center;margin-bottom:.6rem;}
 
-    /* â”€â”€ GALLERY â”€â”€ */
+    /* ── GALLERY ── */
     .cat-tabs{display:flex;gap:.5rem;flex-wrap:wrap;margin-bottom:1.25rem;}
     .cat-tab{padding:.4rem .9rem;border-radius:50px;font-size:.78rem;font-weight:600;cursor:pointer;border:1px solid var(--glass-border);color:var(--text-muted);transition:var(--tr);}
     .cat-tab:hover,.cat-tab.active{background:var(--gold);color:var(--navy);border-color:var(--gold);}
@@ -150,23 +150,23 @@
     .gal-delete{position:absolute;inset:0;background:rgba(0,0,0,.6);display:flex;align-items:center;justify-content:center;opacity:0;transition:var(--tr);}
     .gal-item:hover .gal-delete{opacity:1;}
 
-    /* â”€â”€ SECTION DIVIDER â”€â”€ */
+    /* ── SECTION DIVIDER ── */
     .divider{height:1px;background:var(--glass-border);margin:1.5rem 0;}
 
-    /* â”€â”€ PHOTO PREVIEW â”€â”€ */
+    /* ── PHOTO PREVIEW ── */
     .photo-preview{width:100px;height:100px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);display:none;margin-bottom:.75rem;}
 
-    /* â”€â”€ EMPTY STATE â”€â”€ */
+    /* ── EMPTY STATE ── */
     .empty{text-align:center;padding:3rem 1rem;color:var(--text-muted);font-size:.85rem;}
     .empty .empty-icon{font-size:2.5rem;margin-bottom:.5rem;}
 
-    /* â”€â”€ TOAST â”€â”€ */
+    /* ── TOAST ── */
     #toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:var(--radius);padding:.85rem 1.25rem;min-width:220px;transform:translateX(120%);transition:transform .3s;font-size:.85rem;display:flex;align-items:center;gap:.6rem;}
     #toast.show{transform:translateX(0);}
     #toast.success{border-color:rgba(34,197,94,.4);}
     #toast.error{border-color:rgba(220,20,60,.4);}
 
-    /* â”€â”€ RESPONSIVE â”€â”€ */
+    /* ── RESPONSIVE ── */
     @media(max-width:768px){
       .dash-layout{grid-template-columns:1fr;}
       #sidebar{height:auto;position:relative;}
@@ -181,13 +181,13 @@
 </head>
 <body>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• LOGIN â•â• -->
+<!-- ═══════════════════════════════════════════════════════ LOGIN ══ -->
 <div id="login-screen">
   <div class="login-card">
     <div class="login-logo">
-      <span class="icon">ðŸ«</span>
+      <span class="icon">🏫</span>
       <h1>SNSS Admin Portal</h1>
-      <p>Shree Nepal Secondary School Â· Bishrampur</p>
+      <p>Shree Nepal Secondary School · Bishrampur</p>
     </div>
     <div class="form-group">
       <label>Email Address</label>
@@ -195,70 +195,70 @@
     </div>
     <div class="form-group">
       <label>Password</label>
-      <input type="password" id="login-password" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
+      <input type="password" id="login-password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <button class="btn btn-gold btn-full" id="login-btn" onclick="doLogin()">ðŸ” Sign In</button>
+    <button class="btn btn-gold btn-full" id="login-btn" onclick="doLogin()">🔐 Sign In</button>
     <div id="login-error"></div>
   </div>
 </div>
 
-<!-- â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• DASHBOARD â•â• -->
+<!-- ════════════════════════════════════════════════ DASHBOARD ══ -->
 <div id="dashboard">
 <div class="dash-layout">
 
   <!-- Sidebar -->
   <aside id="sidebar">
     <div class="sidebar-head">
-      <h2>âš™ Admin Portal</h2>
+      <h2>⚙ Admin Portal</h2>
       <p>SNSS Bishrampur</p>
     </div>
     <nav class="sidebar-nav">
-      <div class="nav-item active" data-section="overview" onclick="showSection('overview')"><span class="nav-icon">ðŸ“Š</span> Overview</div>
-      <div class="nav-item" data-section="notices" onclick="showSection('notices')"><span class="nav-icon">ðŸ“‹</span> Notices</div>
-      <div class="nav-item" data-section="staff" onclick="showSection('staff')"><span class="nav-icon">ðŸ‘©â€ðŸ«</span> Staff</div>
-      <div class="nav-item" data-section="committee" onclick="showSection('committee')"><span class="nav-icon">ðŸ›ï¸</span> Committee</div>
-      <div class="nav-item" data-section="gallery" onclick="showSection('gallery')"><span class="nav-icon">ðŸ“¸</span> Gallery</div>
+      <div class="nav-item active" data-section="overview" onclick="showSection('overview')"><span class="nav-icon">📊</span> Overview</div>
+      <div class="nav-item" data-section="notices" onclick="showSection('notices')"><span class="nav-icon">📋</span> Notices</div>
+      <div class="nav-item" data-section="staff" onclick="showSection('staff')"><span class="nav-icon">👩‍🏫</span> Staff</div>
+      <div class="nav-item" data-section="committee" onclick="showSection('committee')"><span class="nav-icon">🏛️</span> Committee</div>
+      <div class="nav-item" data-section="gallery" onclick="showSection('gallery')"><span class="nav-icon">📸</span> Gallery</div>
       <div class="nav-divider"></div>
-      <div class="nav-item" data-section="school" onclick="showSection('school')"><span class="nav-icon">ðŸ«</span> School Info</div>
-      <div class="nav-item" data-section="principal" onclick="showSection('principal')"><span class="nav-icon">ðŸ‘¨â€ðŸ’¼</span> Principal</div>
+      <div class="nav-item" data-section="school" onclick="showSection('school')"><span class="nav-icon">🏫</span> School Info</div>
+      <div class="nav-item" data-section="principal" onclick="showSection('principal')"><span class="nav-icon">👨‍💼</span> Principal</div>
     </nav>
     <div class="sidebar-foot">
       <p id="user-email">admin@school.np</p>
-      <button class="btn btn-outline btn-full btn-sm" onclick="doLogout()">ðŸšª Logout</button>
+      <button class="btn btn-outline btn-full btn-sm" onclick="doLogout()">🚪 Logout</button>
     </div>
   </aside>
 
   <!-- Main Content -->
   <main id="content">
 
-    <!-- â”€â”€ OVERVIEW â”€â”€ -->
+    <!-- ── OVERVIEW ── -->
     <div id="section-overview" class="content-panel active">
       <div class="panel-header">
-        <h2>ðŸ“Š Overview</h2>
+        <h2>📊 Overview</h2>
         <p>Summary of all content on the website</p>
       </div>
       <div class="stats-row">
-        <div class="stat-box"><div class="num" id="stat-notices">â€“</div><div class="lbl">Notices</div></div>
-        <div class="stat-box"><div class="num" id="stat-staff">â€“</div><div class="lbl">Staff Members</div></div>
-        <div class="stat-box"><div class="num" id="stat-committee">â€“</div><div class="lbl">Committee</div></div>
-        <div class="stat-box"><div class="num" id="stat-gallery">â€“</div><div class="lbl">Gallery Photos</div></div>
+        <div class="stat-box"><div class="num" id="stat-notices">–</div><div class="lbl">Notices</div></div>
+        <div class="stat-box"><div class="num" id="stat-staff">–</div><div class="lbl">Staff Members</div></div>
+        <div class="stat-box"><div class="num" id="stat-committee">–</div><div class="lbl">Committee</div></div>
+        <div class="stat-box"><div class="num" id="stat-gallery">–</div><div class="lbl">Gallery Photos</div></div>
       </div>
       <div style="background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:var(--radius);padding:1.5rem">
-        <h3 style="color:var(--gold);margin-bottom:1rem;font-size:1rem">ðŸš€ Quick Actions</h3>
+        <h3 style="color:var(--gold);margin-bottom:1rem;font-size:1rem">🚀 Quick Actions</h3>
         <div style="display:flex;gap:.75rem;flex-wrap:wrap">
           <button class="btn btn-gold" onclick="showSection('notices')">+ Add Notice</button>
           <button class="btn btn-outline" onclick="showSection('staff')">+ Add Staff</button>
           <button class="btn btn-outline" onclick="showSection('gallery')">+ Upload Photo</button>
-          <button class="btn btn-outline" onclick="showSection('school')">âœ Edit School Info</button>
+          <button class="btn btn-outline" onclick="showSection('school')">✏ Edit School Info</button>
         </div>
         <div class="divider"></div>
-        <p style="color:var(--text-muted);font-size:.82rem">ðŸ“Œ Changes made here reflect on the public website immediately. The admin portal URL is hidden from visitors.</p>
+        <p style="color:var(--text-muted);font-size:.82rem">📌 Changes made here reflect on the public website immediately. The admin portal URL is hidden from visitors.</p>
       </div>
     </div>
 
-    <!-- â”€â”€ NOTICES â”€â”€ -->
+    <!-- ── NOTICES ── -->
     <div id="section-notices" class="content-panel">
-      <div class="panel-header"><h2>ðŸ“‹ Notice Board</h2><p>Add, view and delete school notices</p></div>
+      <div class="panel-header"><h2>📋 Notice Board</h2><p>Add, view and delete school notices</p></div>
       <div class="add-form">
         <h3>+ Add New Notice</h3>
         <div class="form-row">
@@ -285,12 +285,12 @@
         <div class="progress-wrap" style="margin-bottom:.75rem"><div class="progress-bar"><div class="progress-fill" id="notice-progress"></div></div></div>
         <button class="btn btn-gold" id="notice-add-btn" onclick="addNotice()">+ Add Notice</button>
       </div>
-      <div id="notices-list"><div class="empty"><div class="empty-icon">ðŸ“‹</div>Loading notices...</div></div>
+      <div id="notices-list"><div class="empty"><div class="empty-icon">📋</div>Loading notices...</div></div>
     </div>
 
-    <!-- â”€â”€ STAFF â”€â”€ -->
+    <!-- ── STAFF ── -->
     <div id="section-staff" class="content-panel">
-      <div class="panel-header"><h2>ðŸ‘©â€ðŸ« Teaching Staff</h2><p>Manage all staff members shown on the Faculty page</p></div>
+      <div class="panel-header"><h2>👩‍🏫 Teaching Staff</h2><p>Manage all staff members shown on the Faculty page</p></div>
       <div class="add-form">
         <h3>+ Add Staff Member</h3>
         <div class="form-row">
@@ -305,17 +305,17 @@
         <div class="progress-wrap" style="margin-bottom:.75rem"><div class="progress-bar"><div class="progress-fill" id="staff-progress"></div></div></div>
         <button class="btn btn-gold" id="staff-add-btn" onclick="addStaff()">+ Add Staff</button>
       </div>
-      <div id="staff-list"><div class="empty"><div class="empty-icon">ðŸ‘©â€ðŸ«</div>Loading staff...</div></div>
+      <div id="staff-list"><div class="empty"><div class="empty-icon">👩‍🏫</div>Loading staff...</div></div>
     </div>
 
-    <!-- â”€â”€ COMMITTEE â”€â”€ -->
+    <!-- ── COMMITTEE ── -->
     <div id="section-committee" class="content-panel">
-      <div class="panel-header"><h2>ðŸ›ï¸ Management Committee</h2><p>Manage Bidhyala Bebastapan Samiti members</p></div>
+      <div class="panel-header"><h2>🏛️ Management Committee</h2><p>Manage Bidhyala Bebastapan Samiti members</p></div>
       <div class="add-form">
         <h3>+ Add Committee Member</h3>
         <div class="form-row">
           <div class="form-group"><label>Full Name *</label><input type="text" id="member-name" placeholder="e.g. Mr. Amindra Patel"></div>
-          <div class="form-group"><label>Role</label><input type="text" id="member-role" placeholder="e.g. Sadasya â€” Member"></div>
+          <div class="form-group"><label>Role</label><input type="text" id="member-role" placeholder="e.g. Sadasya — Member"></div>
         </div>
         <div class="form-row">
           <div class="form-group"><label>Contact Number</label><input type="text" id="member-contact" placeholder="e.g. +977 9800000000"></div>
@@ -329,46 +329,46 @@
         <div class="progress-wrap" style="margin-bottom:.75rem"><div class="progress-bar"><div class="progress-fill" id="member-progress"></div></div></div>
         <button class="btn btn-gold" id="member-add-btn" onclick="addMember()">+ Add Member</button>
       </div>
-      <div id="committee-list"><div class="empty"><div class="empty-icon">ðŸ›ï¸</div>Loading committee...</div></div>
+      <div id="committee-list"><div class="empty"><div class="empty-icon">🏛️</div>Loading committee...</div></div>
     </div>
 
-    <!-- â”€â”€ GALLERY â”€â”€ -->
+    <!-- ── GALLERY ── -->
     <div id="section-gallery" class="content-panel">
-      <div class="panel-header"><h2>ðŸ“¸ Photo Gallery</h2><p>Upload and manage school photos by category</p></div>
+      <div class="panel-header"><h2>📸 Photo Gallery</h2><p>Upload and manage school photos by category</p></div>
       <div class="add-form">
         <h3>Upload Photo</h3>
         <div class="form-row">
           <div class="form-group">
             <label>Category</label>
             <select id="gallery-category" onchange="setGalleryCat(this.value)">
-              <option value="Building">ðŸ« Building</option>
-              <option value="Lab">ðŸ–¥ Computer Lab</option>
-              <option value="Classroom">ðŸ“š Smart Classroom</option>
-              <option value="Events">ðŸŽ‰ Events</option>
-              <option value="Sports">âš½ Sports</option>
-              <option value="Other">ðŸ“· Other</option>
+              <option value="Building">🏫 Building</option>
+              <option value="Lab">🖥 Computer Lab</option>
+              <option value="Classroom">📚 Smart Classroom</option>
+              <option value="Events">🎉 Events</option>
+              <option value="Sports">⚽ Sports</option>
+              <option value="Other">📷 Other</option>
             </select>
           </div>
           <div class="form-group"><label>Caption (optional)</label><input type="text" id="gallery-caption" placeholder="Short description of the photo"></div>
         </div>
         <div class="form-group"><label>Photo *</label><input type="file" id="gallery-file" accept="image/*"></div>
         <div class="progress-wrap" style="margin-bottom:.75rem"><div class="progress-bar"><div class="progress-fill" id="gallery-progress"></div></div></div>
-        <button class="btn btn-gold" id="gallery-upload-btn" onclick="uploadGalleryPhoto()">ðŸ“¤ Upload Photo</button>
+        <button class="btn btn-gold" id="gallery-upload-btn" onclick="uploadGalleryPhoto()">📤 Upload Photo</button>
       </div>
       <div class="cat-tabs" id="cat-tabs">
-        <span class="cat-tab active" data-cat="Building" onclick="setGalleryCat('Building')">ðŸ« Building</span>
-        <span class="cat-tab" data-cat="Lab" onclick="setGalleryCat('Lab')">ðŸ–¥ Computer Lab</span>
-        <span class="cat-tab" data-cat="Classroom" onclick="setGalleryCat('Classroom')">ðŸ“š Classroom</span>
-        <span class="cat-tab" data-cat="Events" onclick="setGalleryCat('Events')">ðŸŽ‰ Events</span>
-        <span class="cat-tab" data-cat="Sports" onclick="setGalleryCat('Sports')">âš½ Sports</span>
-        <span class="cat-tab" data-cat="Other" onclick="setGalleryCat('Other')">ðŸ“· Other</span>
+        <span class="cat-tab active" data-cat="Building" onclick="setGalleryCat('Building')">🏫 Building</span>
+        <span class="cat-tab" data-cat="Lab" onclick="setGalleryCat('Lab')">🖥 Computer Lab</span>
+        <span class="cat-tab" data-cat="Classroom" onclick="setGalleryCat('Classroom')">📚 Classroom</span>
+        <span class="cat-tab" data-cat="Events" onclick="setGalleryCat('Events')">🎉 Events</span>
+        <span class="cat-tab" data-cat="Sports" onclick="setGalleryCat('Sports')">⚽ Sports</span>
+        <span class="cat-tab" data-cat="Other" onclick="setGalleryCat('Other')">📷 Other</span>
       </div>
-      <div id="gallery-grid" class="gallery-grid"><div class="empty"><div class="empty-icon">ðŸ“·</div>No photos yet.</div></div>
+      <div id="gallery-grid" class="gallery-grid"><div class="empty"><div class="empty-icon">📷</div>No photos yet.</div></div>
     </div>
 
-    <!-- â”€â”€ SCHOOL INFO â”€â”€ -->
+    <!-- ── SCHOOL INFO ── -->
     <div id="section-school" class="content-panel">
-      <div class="panel-header"><h2>ðŸ« School Information</h2><p>Edit general school details shown across the website</p></div>
+      <div class="panel-header"><h2>🏫 School Information</h2><p>Edit general school details shown across the website</p></div>
       <div class="add-form" style="margin-bottom:0">
         <h3>Edit School Details</h3>
         <div class="form-row">
@@ -408,13 +408,13 @@
           <div class="form-group"><label>Facebook URL 2</label><input type="url" id="school-facebook2"></div>
         </div>
         <div class="form-group"><label>About the School (About page)</label><textarea id="school-about" rows="5" placeholder="Write about the school history and vision..."></textarea></div>
-        <button class="btn btn-gold" id="school-save-btn" onclick="saveSchoolInfo()" style="margin-top:.5rem">ðŸ’¾ Save Changes</button>
+        <button class="btn btn-gold" id="school-save-btn" onclick="saveSchoolInfo()" style="margin-top:.5rem">💾 Save Changes</button>
       </div>
     </div>
 
-    <!-- â”€â”€ PRINCIPAL â”€â”€ -->
+    <!-- ── PRINCIPAL ── -->
     <div id="section-principal" class="content-panel">
-      <div class="panel-header"><h2>ðŸ‘¨â€ðŸ’¼ Principal Details</h2><p>Update principal information and message shown on the website</p></div>
+      <div class="panel-header"><h2>👨‍💼 Principal Details</h2><p>Update principal information and message shown on the website</p></div>
       <div class="add-form" style="margin-bottom:0">
         <h3>Principal Information</h3>
         <img id="principal-photo-preview" class="photo-preview" alt="Principal">
@@ -426,7 +426,7 @@
         <div class="form-group"><label>Message to Students & Parents</label><textarea id="principal-message" rows="8" placeholder="Dear Students, Parents and Well-wishers..."></textarea></div>
         <div class="form-group"><label>Upload Photo</label><input type="file" id="principal-photo" accept="image/*"></div>
         <div class="progress-wrap" style="margin-bottom:.75rem"><div class="progress-bar"><div class="progress-fill" id="principal-progress"></div></div></div>
-        <button class="btn btn-gold" id="principal-save-btn" onclick="savePrincipal()" style="margin-top:.25rem">ðŸ’¾ Save Changes</button>
+        <button class="btn btn-gold" id="principal-save-btn" onclick="savePrincipal()" style="margin-top:.25rem">💾 Save Changes</button>
       </div>
     </div>
 
@@ -438,7 +438,7 @@
 <div id="toast"></div>
 
 <script>
-// â”€â”€â”€ Firebase Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Firebase Init ──────────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyD0-OAeAAXI6irXO2msUvqF2RqOPVheuuw",
   authDomain: "nepal-school-website.firebaseapp.com",
@@ -452,7 +452,7 @@ const db   = firebase.firestore();
 const auth = firebase.auth();
 // Note: Images are uploaded via Cloudinary (not Firebase Storage)
 
-// â”€â”€â”€ Auth â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Auth ──────────────────────────────────────────────────────────────────
 auth.onAuthStateChanged(user => {
   if (user) {
     document.getElementById('login-screen').style.display = 'none';
@@ -478,7 +478,7 @@ async function doLogin() {
   } catch(e) {
     err.textContent = 'Login failed: ' + (e.code === 'auth/wrong-password' || e.code === 'auth/user-not-found' ? 'Incorrect email or password.' : e.message);
     err.style.display = 'block';
-    btn.disabled = false; btn.textContent = 'ðŸ” Sign In';
+    btn.disabled = false; btn.textContent = '🔐 Sign In';
   }
 }
 
@@ -486,13 +486,13 @@ function doLogout() {
   if (confirm('Are you sure you want to log out?')) auth.signOut();
 }
 
-// â”€â”€â”€ Init â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Init ──────────────────────────────────────────────────────────────────
 function initDashboard() {
   showSection('overview');
   loadOverviewStats();
 }
 
-// â”€â”€â”€ Navigation â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Navigation ───────────────────────────────────────────────────────────
 function showSection(name) {
   document.querySelectorAll('.content-panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
@@ -508,7 +508,7 @@ function showSection(name) {
   if (name === 'principal') loadPrincipal();
 }
 
-// â”€â”€â”€ Image Upload via Cloudinary (always free â€” 25GB) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Image Upload via Cloudinary (always free — 25GB) ─────────────────────
 const CLOUDINARY_CLOUD = 'ugowk6kp';
 const CLOUDINARY_PRESET = 'school_uploads';
 
@@ -548,16 +548,16 @@ function uploadImage(file, folder, progressId) {
 async function deleteStorageImage(url) {
   // Cloudinary deletion requires server-side API secret (not possible in browser)
   // The item is removed from the website. To permanently remove from Cloudinary,
-  // go to cloudinary.com â†’ Media Library and delete manually.
+  // go to cloudinary.com → Media Library and delete manually.
   return;
 }
 
 
-// â”€â”€â”€ Toast â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Toast ────────────────────────────────────────────────────────────────
 let toastTimer;
 function toast(msg, type = 'success') {
   const t = document.getElementById('toast');
-  t.innerHTML = (type === 'success' ? 'âœ… ' : 'âŒ ') + msg;
+  t.innerHTML = (type === 'success' ? '✅ ' : '❌ ') + msg;
   t.className = 'show ' + type;
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => t.className = '', 3200);
@@ -565,7 +565,7 @@ function toast(msg, type = 'success') {
 
 
 
-// â”€â”€â”€ Overview Stats â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Overview Stats ───────────────────────────────────────────────────────
 async function loadOverviewStats() {
   try {
     const [n, s, c, g] = await Promise.all([
@@ -581,28 +581,28 @@ async function loadOverviewStats() {
   } catch(e) { console.error(e); }
 }
 
-// â”€â”€â”€ NOTICES â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── NOTICES ─────────────────────────────────────────────────────────────
 let noticesUnsub = null;
 function loadNotices() {
   if (noticesUnsub) { noticesUnsub(); noticesUnsub = null; }
   const el = document.getElementById('notices-list');
-  el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ“‹</div>Loading...</div>';
+  el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Loading...</div>';
   noticesUnsub = db.collection('notices').orderBy('createdAt','desc').onSnapshot(snap => {
-    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ“‹</div>No notices yet. Add one above.</div>'; return; }
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>No notices yet. Add one above.</div>'; return; }
     el.innerHTML = '';
     const grid = document.createElement('div'); grid.className = 'notice-grid';
     snap.forEach(doc => {
       const n = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'notice-card';
       card.innerHTML = `
-        ${n.imageUrl ? `<img src="${n.imageUrl}" alt="${n.title}">` : `<div class="notice-card-placeholder">ðŸ“‹</div>`}
-        <div class="notice-card-body">
+        ${n.imageUrl ? `<img src="${n.imageUrl}" alt="${n.title}">` : `<div class="notice-card-placeholder">📋</div>`}
+        <div class="notice-card-bo📷>
           <div class="notice-meta">
-            <span class="badge ${n.important ? 'badge-red' : 'badge-blue'}">${n.important ? 'âš  Important' : n.category}</span>
-            <span style="color:var(--text-muted);font-size:.7rem">ðŸ“… ${n.date||''}</span>
+            <span class="badge ${n.important ? 'badge-red' : 'badge-blue'}">${n.important ? '⚠ Important' : n.category}</span>
+            <span style="color:var(--text-muted);font-size:.7rem">📅 ${n.date||''}</span>
           </div>
           <h4>${n.title}</h4>
-          <button class="btn btn-danger btn-sm" onclick="deleteNotice('${id}','${n.imageUrl||''}')">ðŸ—‘ Delete</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteNotice('${id}','${n.imageUrl||''}')">🗑 Delete</button>
         </div>`;
       grid.appendChild(card);
     });
@@ -627,7 +627,7 @@ async function addNotice() {
     document.getElementById('notice-date').value  = '';
     document.getElementById('notice-image').value = '';
     document.getElementById('notice-progress').style.width = '0';
-    toast('Notice added! ðŸŽ‰');
+    toast('Notice added! 🎉');
     loadOverviewStats();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
   btn.disabled = false; btn.textContent = '+ Add Notice';
@@ -643,23 +643,23 @@ async function deleteNotice(id, imgUrl) {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
-// â”€â”€â”€ STAFF â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── STAFF ───────────────────────────────────────────────────────────────
 let staffUnsub = null;
 function loadStaff() {
   if (staffUnsub) { staffUnsub(); staffUnsub = null; }
   const el = document.getElementById('staff-list');
-  el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ‘©â€ðŸ«</div>Loading...</div>';
+  el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>Loading...</div>';
   staffUnsub = db.collection('staff').orderBy('order').onSnapshot(snap => {
-    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ‘©â€ðŸ«</div>No staff members yet.</div>'; return; }
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">👩‍🏫</div>No staff members yet.</div>'; return; }
     el.innerHTML = '';
     snap.forEach(doc => {
       const s = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
-        ${s.photoUrl ? `<img src="${s.photoUrl}" class="item-thumb">` : `<div class="item-thumb-placeholder">ðŸ‘¤</div>`}
-        <div class="item-info"><h4>${s.name}</h4><p>${s.role||'Teacher'} â€” ${s.subject||''}</p></div>
+        ${s.photoUrl ? `<img src="${s.photoUrl}" class="item-thumb">` : `<div class="item-thumb-placeholder">👤</div>`}
+        <div class="item-info"><h4>${s.name}</h4><p>${s.role||'Teacher'} — ${s.subject||''}</p></div>
         <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteStaff('${id}','${s.photoUrl||''}')">ðŸ—‘</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteStaff('${id}','${s.photoUrl||''}')">🗑</button>
         </div>`;
       el.appendChild(card);
     });
@@ -682,7 +682,7 @@ async function addStaff() {
     ['staff-name','staff-role','staff-subject','staff-order'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('staff-photo').value = '';
     document.getElementById('staff-progress').style.width = '0';
-    toast('Staff member added! ðŸŽ‰');
+    toast('Staff member added! 🎉');
     loadOverviewStats();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
   btn.disabled = false; btn.textContent = '+ Add Staff';
@@ -698,26 +698,26 @@ async function deleteStaff(id, photoUrl) {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
-// â”€â”€â”€ COMMITTEE â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── COMMITTEE ───────────────────────────────────────────────────────────
 let committeeUnsub = null;
 function loadCommittee() {
   if (committeeUnsub) { committeeUnsub(); committeeUnsub = null; }
   const el = document.getElementById('committee-list');
-  el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ›ï¸</div>Loading...</div>';
+  el.innerHTML = '<div class="empty"><div class="empty-icon">🏛️</div>Loading...</div>';
   committeeUnsub = db.collection('committee').orderBy('order').onSnapshot(snap => {
-    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ›ï¸</div>No committee members yet.</div>'; return; }
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">🏛️</div>No committee members yet.</div>'; return; }
     el.innerHTML = '';
     snap.forEach(doc => {
       const m = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
-        ${m.photoUrl ? `<img src="${m.photoUrl}" class="item-thumb">` : `<div class="item-thumb-placeholder">${m.isChairperson ? 'ðŸ‘‘' : 'ðŸ‘¤'}</div>`}
+        ${m.photoUrl ? `<img src="${m.photoUrl}" class="item-thumb">` : `<div class="item-thumb-placeholder">${m.isChairperson ? '👑' : '👤'}</div>`}
         <div class="item-info">
           <h4>${m.name} ${m.isChairperson ? '<span class="badge badge-gold">Chairperson</span>' : ''}</h4>
-          <p>${m.role||'Member'}${m.contact ? ' Â· '+m.contact : ''}</p>
+          <p>${m.role||'Member'}${m.contact ? ' · '+m.contact : ''}</p>
         </div>
         <div class="item-actions">
-          <button class="btn btn-danger btn-sm" onclick="deleteMember('${id}','${m.photoUrl||''}')">ðŸ—‘</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteMember('${id}','${m.photoUrl||''}')">🗑</button>
         </div>`;
       el.appendChild(card);
     });
@@ -742,7 +742,7 @@ async function addMember() {
     document.getElementById('member-chairperson').checked = false;
     document.getElementById('member-photo').value = '';
     document.getElementById('member-progress').style.width = '0';
-    toast('Member added! ðŸŽ‰');
+    toast('Member added! 🎉');
     loadOverviewStats();
   } catch(e) { toast('Error: ' + e.message, 'error'); }
   btn.disabled = false; btn.textContent = '+ Add Member';
@@ -758,7 +758,7 @@ async function deleteMember(id, photoUrl) {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
-// â”€â”€â”€ GALLERY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── GALLERY ─────────────────────────────────────────────────────────────
 let currentGalleryCat = 'Building';
 function setGalleryCat(cat) {
   currentGalleryCat = cat;
@@ -769,16 +769,16 @@ function setGalleryCat(cat) {
 }
 function loadGallery(cat) {
   const el = document.getElementById('gallery-grid');
-  el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ“·</div>Loading...</div>';
+  el.innerHTML = '<div class="empty"><div class="empty-icon">📷</div>Loading...</div>';
   db.collection('gallery').where('category','==',cat).get().then(snap => {
-    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">ðŸ“·</div>No photos in this category yet.</div>'; return; }
+    if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">📷</div>No photos in this category yet.</div>'; return; }
     el.innerHTML = '';
     el.className = 'gallery-grid';
     snap.forEach(doc => {
       const g = doc.data(); const id = doc.id;
       const item = document.createElement('div'); item.className = 'gal-item';
       item.innerHTML = `<img src="${g.imageUrl}" alt="${g.caption||cat}">
-        <div class="gal-delete"><button class="btn btn-danger btn-sm" onclick="deleteGalleryPhoto('${id}','${g.imageUrl}')">ðŸ—‘ Delete</button></div>`;
+        <div class="gal-delete"><button class="btn btn-danger btn-sm" onclick="deleteGalleryPhoto('${id}','${g.imageUrl}')">🗑 Delete</button></div>`;
       el.appendChild(item);
     });
   }).catch(err => { el.innerHTML = '<div class="empty">Error: ' + err.message + '</div>'; });
@@ -799,9 +799,9 @@ async function uploadGalleryPhoto() {
     document.getElementById('gallery-progress').style.width = '0';
     loadGallery(cat);
     loadOverviewStats();
-    toast('Photo uploaded! ðŸŽ‰');
+    toast('Photo uploaded! 🎉');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
-  btn.disabled = false; btn.textContent = 'ðŸ“¤ Upload Photo';
+  btn.disabled = false; btn.textContent = '📤 Upload Photo';
 }
 
 async function deleteGalleryPhoto(id, imgUrl) {
@@ -815,7 +815,7 @@ async function deleteGalleryPhoto(id, imgUrl) {
   } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
-// â”€â”€â”€ SCHOOL INFO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── SCHOOL INFO ─────────────────────────────────────────────────────────
 async function loadSchoolInfo() {
   try {
     const doc = await db.collection('settings').doc('school').get();
@@ -854,12 +854,12 @@ async function saveSchoolInfo() {
       if (prev) { prev.src = data.logoUrl; prev.style.display = 'block'; }
     }
     await db.collection('settings').doc('school').set(data, { merge: true });
-    toast('School info saved! âœ…');
+    toast('School info saved! ✅');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
-  btn.disabled = false; btn.textContent = 'ðŸ’¾ Save Changes';
+  btn.disabled = false; btn.textContent = '💾 Save Changes';
 }
 
-// â”€â”€â”€ PRINCIPAL â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── PRINCIPAL ───────────────────────────────────────────────────────────
 async function loadPrincipal() {
   try {
     const doc = await db.collection('settings').doc('principal').get();
@@ -897,9 +897,9 @@ async function savePrincipal() {
       prev.src = data.photoUrl; prev.style.display = 'block';
     }
     await db.collection('settings').doc('principal').set(data, { merge: true });
-    toast('Principal info saved! âœ…');
+    toast('Principal info saved! ✅');
   } catch(e) { toast('Error: ' + e.message, 'error'); }
-  btn.disabled = false; btn.textContent = 'ðŸ’¾ Save Changes';
+  btn.disabled = false; btn.textContent = '💾 Save Changes';
 }
 </script>
 </body>
