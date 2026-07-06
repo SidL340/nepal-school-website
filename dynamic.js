@@ -86,14 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tw) {
           tw = document.createElement('div');
           tw.id = 'ticker-wrapper';
-          tm = document.createElement('marquee');
+          tm = document.createElement('div');
           tm.id = 'home-ticker';
-          tm.scrollAmount = '5';
           tw.appendChild(tm);
           document.body.appendChild(tw);
         }
-        tw.style.cssText = 'display:block; background:transparent; padding:0.4rem 0; width:100%; z-index:999; position:absolute; top:var(--nav-height); left:0; right:0;';
-        tm.style.cssText = 'font-weight:bold; font-size:1.1rem; color:#ff4d4d; letter-spacing:0.5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);';
+        tw.style.cssText = 'display:block; overflow:hidden; white-space:nowrap; background:transparent; padding:0.4rem 0; width:100%; z-index:999; position:absolute; top:var(--nav-height); left:0; right:0;';
+        tm.style.cssText = 'display:inline-block; padding-left:100%; animation: tickerSlide 15s linear infinite; font-weight:bold; font-size:1.1rem; color:#ff4d4d; letter-spacing:0.5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);';
         tm.textContent = s.ticker;
       } else {
         const tw = document.getElementById('ticker-wrapper');
