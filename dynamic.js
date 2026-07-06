@@ -1,4 +1,4 @@
-// ── Dynamic Data Loader for Shree Nepal Secondary School ─────────────────────
+﻿// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loads data from Firebase Firestore and updates the DOM dynamically.
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,6 +13,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (s.name) {
         document.querySelectorAll('.dyn-school-name').forEach(el => el.textContent = s.name);
         if (document.title === 'School Website' || document.title.includes('School Website')) document.title = s.name + ' - Official Website';
+      }
+      if (s.bgUrl) {
+        const heroBg = document.querySelector('.hero-bg img');
+        if (heroBg) heroBg.src = s.bgUrl;
       }
       if (s.logoUrl) {
         document.querySelectorAll('img[alt="School Logo"]').forEach(img => img.src = s.logoUrl);
@@ -47,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
             facultyPhotoContainer.insertAdjacentHTML('afterbegin', `<img src="${p.photoUrl}" alt="${p.name}" class="principal-photo">`);
           }
           const facultyName = document.querySelector('.principal-hero p[style*="var(--gold)"]');
-          if (facultyName) facultyName.textContent = '— ' + p.name;
+          if (facultyName) facultyName.textContent = 'â€” ' + p.name;
         }
       }
     }
@@ -63,14 +67,14 @@ document.addEventListener('DOMContentLoaded', () => {
           snap.forEach(doc => {
             const s = doc.data();
             staffGrid.innerHTML += `<div class="glass-card staff-card reveal visible">
-              ${s.photoUrl ? `<img src="${s.photoUrl}" class="staff-photo" alt="${s.name}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
+              ${s.photoUrl ? `<img src="${s.photoUrl}" class="staff-photo" alt="${s.name}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>ðŸ‘¤</div>'">` : `<div class="staff-photo-icon">ðŸ‘¤</div>`}
               <div class="staff-name">${s.name}</div>
               <div class="staff-role">${s.role || 'Teacher'}</div>
               <div class="staff-subject">${s.subject || ''}</div>
             </div>`;
           });
         } else {
-           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👩‍🏫</div><p>Staff directory is empty.</p></div>';
+           staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">ðŸ‘©â€ðŸ«</div><p>Staff directory is empty.</p></div>';
         }
       }).catch(console.error);
     }
@@ -86,14 +90,14 @@ document.addEventListener('DOMContentLoaded', () => {
           snap.forEach(doc => {
             const c = doc.data();
             commGrid.innerHTML += `<div class="glass-card member-card reveal visible">
-              ${c.photoUrl ? `<img src="${c.photoUrl}" class="member-photo" alt="${c.name}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>👤</div>'">` : `<div class="member-photo-placeholder">👤</div>`}
+              ${c.photoUrl ? `<img src="${c.photoUrl}" class="member-photo" alt="${c.name}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>ðŸ‘¤</div>'">` : `<div class="member-photo-placeholder">ðŸ‘¤</div>`}
               <div class="member-name">${c.name}</div>
               <div class="member-role">${c.role}</div>
-              ${c.contact ? `<div class="member-contact">📞 <a href="tel:${c.contact}">${c.contact}</a></div>` : ''}
+              ${c.contact ? `<div class="member-contact">ðŸ“ž <a href="tel:${c.contact}">${c.contact}</a></div>` : ''}
             </div>`;
           });
         } else {
-           commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👥</div><p>Committee directory is empty.</p></div>';
+           commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">ðŸ‘¥</div><p>Committee directory is empty.</p></div>';
         }
       }).catch(console.error);
     }
@@ -107,13 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
     
     function renderGallery(category) {
       if (allPhotos.length === 0) {
-        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">📷</div><p>Gallery is empty.</p></div>';
+        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">ðŸ“·</div><p>Gallery is empty.</p></div>';
         return;
       }
       
       let filtered = category === 'All' ? allPhotos : allPhotos.filter(p => p.category === category);
       if (filtered.length === 0) {
-        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">📷</div><p>No photos in this category.</p></div>';
+        galleryGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;margin-bottom:1rem;">ðŸ“·</div><p>No photos in this category.</p></div>';
         return;
       }
       
@@ -121,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       filtered.forEach(p => {
         const item = document.createElement('div');
         item.className = 'gallery-item reveal visible';
-        item.innerHTML = `<img src="${p.url || p.imageUrl}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>🔍 View</span></div>`;
+        item.innerHTML = `<img src="${p.url || p.imageUrl}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>ðŸ” View</span></div>`;
         item.addEventListener('click', () => {
           document.getElementById('lightbox-img').src = p.url || p.imageUrl;
           document.getElementById('lightbox-overlay').classList.add('active');
@@ -162,10 +166,10 @@ document.addEventListener('DOMContentLoaded', () => {
         snap.forEach(doc => {
           const n = doc.data();
           const cardHTML = `<div class="${noticeGrid ? 'notice-card reveal visible' : 'notice-preview-card'}">
-            <div class="notice-icon">${n.important ? '⚠️' : '📄'}</div>
+            <div class="notice-icon">${n.important ? 'âš ï¸' : 'ðŸ“„'}</div>
             <div class="notice-info">
               <h4>${n.title}</h4>
-              <span>📅 ${n.date} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
+              <span>ðŸ“… ${n.date} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
             </div>
             ${n.imageUrl && noticeGrid ? `<a href="${n.imageUrl}" target="_blank" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem">View Attachment</a>` : ''}
           </div>`;
@@ -181,4 +185,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }).catch(console.error);
   }
 
+  // 7. Load Facilities Photos (Home Page)
+  if (path === '/' || path.includes('index')) {
+    const facComp = document.getElementById('fac-computer');
+    const facSmart = document.getElementById('fac-smart');
+    const facGround = document.getElementById('fac-ground');
+    
+    if (facComp || facSmart || facGround) {
+      db.collection('gallery').orderBy('createdAt', 'desc').get().then(snap => {
+        if (snap.empty) return;
+        let compFound = false, smartFound = false, groundFound = false;
+        snap.forEach(doc => {
+          const d = doc.data();
+          if (facComp && !compFound && d.category === 'Computer Lab') { facComp.src = d.url || d.imageUrl; compFound = true; }
+          if (facSmart && !smartFound && d.category === 'Classroom') { facSmart.src = d.url || d.imageUrl; smartFound = true; }
+          if (facGround && !groundFound && d.category === 'Sports') { facGround.src = d.url || d.imageUrl; groundFound = true; }
+        });
+      }).catch(console.error);
+    }
+  }
 });
