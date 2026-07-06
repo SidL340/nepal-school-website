@@ -1,5 +1,8 @@
 ﻿{
   "cleanUrls": true,
+    "redirects": [
+    { "source": "/home", "destination": "/", "permanent": true }
+  ],
   "rewrites": [
     { "source": "/about",        "destination": "/about.html" },
     { "source": "/academics",    "destination": "/academics.html" },
