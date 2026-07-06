@@ -455,6 +455,11 @@
 <div id="toast"></div>
 
 <script>
+function sanitizeHTML(str) {
+  if (!str) return '';
+  const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;', '/': '&#x2F;' };
+  return String(str).replace(/[&<>"'/]/ig, (match)=>(map[match]));
+}
 // ─── Firebase Init ──────────────────────────────────────────────────────────
 const firebaseConfig = {
   apiKey: "AIzaSyD0-OAeAAXI6irXO2msUvqF2RqOPVheuuw",
