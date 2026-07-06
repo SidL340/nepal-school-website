@@ -80,7 +80,28 @@ document.addEventListener('DOMContentLoaded', () => {
       if (s.about) document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = s.about.replace(/\n/g, '<br>'));
       else document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = 'Welcome to our school. We are dedicated to providing excellent education.');
 
-      if (s.ticker) { const tw = document.getElementById('ticker-wrapper'); const tm = document.getElementById('home-ticker'); if (tw && tm) { tm.textContent = s.ticker; tw.style.display = 'block'; } } else { const tw = document.getElementById('ticker-wrapper'); if (tw) tw.style.display = 'none'; }
+      if (s.ticker) {
+        let tw = document.getElementById('ticker-wrapper');
+        let tm = document.getElementById('home-ticker');
+        if (!tw) {
+          tw = document.createElement('div');
+          tw.id = 'ticker-wrapper';
+          tw.style.cssText = 'display:block; background:var(--gold); color:var(--navy); padding:0.4rem 0; width:100%; z-index:999; position:relative;';
+          tm = document.createElement('marquee');
+          tm.id = 'home-ticker';
+          tm.scrollAmount = '5';
+          tm.style.cssText = 'font-weight:700; font-size:0.95rem; letter-spacing:0.5px;';
+          tw.appendChild(tm);
+          const nav = document.getElementById('navbar');
+          if (nav && nav.parentNode) { nav.parentNode.insertBefore(tw, nav.nextSibling); }
+          else { document.body.insertBefore(tw, document.body.firstChild); }
+        }
+        tm.textContent = s.ticker;
+        tw.style.display = 'block';
+      } else {
+        const tw = document.getElementById('ticker-wrapper');
+        if (tw) tw.style.display = 'none';
+      }
     }
   }).catch(console.error);
 
