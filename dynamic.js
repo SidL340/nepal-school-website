@@ -1,4 +1,4 @@
-﻿// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loads data from Firebase Firestore and updates the DOM dynamically.
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -23,8 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const favicon = document.querySelector('link[rel="icon"]');
         if (favicon) favicon.href = s.logoUrl;
       }
-      if (s.phone) document.querySelectorAll('.dyn-school-phone').forEach(el => { el.textContent = s.phone; if (el.closest('a')) el.closest('a').href = 'tel:' + s.phone; });
-      if (s.email1) document.querySelectorAll('.dyn-school-email').forEach(el => { el.textContent = s.email1; if (el.closest('a')) el.closest('a').href = 'mailto:' + s.email1; });
+      if (s.phone) {
+        document.querySelectorAll('.dyn-school-phone').forEach(el => { el.textContent = s.phone; if (el.closest('a')) el.closest('a').href = 'tel:' + s.phone; });
+        document.querySelectorAll('.dyn-school-phone-link').forEach(el => el.href = 'tel:' + s.phone);
+      }
+      if (s.email1) {
+        document.querySelectorAll('.dyn-school-email').forEach(el => { el.textContent = s.email1; if (el.closest('a')) el.closest('a').href = 'mailto:' + s.email1; });
+        document.querySelectorAll('.dyn-school-email-link').forEach(el => el.href = 'mailto:' + s.email1);
+      }
       if (s.about) document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = s.about.replace(/\n/g, '<br>'));
       else document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = 'Welcome to our school. We are dedicated to providing excellent education.');
     }
