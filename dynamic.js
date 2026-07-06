@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (s.bgUrl) {
         const heroBg = document.querySelector('.hero-bg img, #about-intro-bg');
-        if (heroBg) heroBg.src = s.bgUrl;
+        if (heroBg) { heroBg.src = s.bgUrl; heroBg.style.display = ""; }
       }
       if (s.logoUrl) {
         document.querySelectorAll('img[alt="School Logo"]').forEach(img => { img.src = s.logoUrl; img.style.display = ''; });
