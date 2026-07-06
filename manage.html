@@ -90,7 +90,7 @@
 
     /* ── SIDEBAR ── */
     #sidebar{background:var(--navy-mid);border-right:1px solid var(--glass-border);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;}
-    .sidebar-head{padding:1.25rem 1.25rem 1rem;border-bottom:1px solid var(--glass-border);}
+    .sidebar-head { border-bottom: 1px solid var(--glass-border); }
     .sidebar-head h2{color:var(--gold);font-size:.85rem;font-weight:700;letter-spacing:.5px;text-transform:uppercase;}
     .sidebar-head p{color:var(--text-muted);font-size:.72rem;margin-top:.15rem;}
     .sidebar-nav{flex:1;padding:.75rem 0;}
@@ -209,9 +209,10 @@
 
   <!-- Sidebar -->
   <aside id="sidebar">
-    <div class="sidebar-head">
-      <h2>⚙ Admin Portal</h2>
-      <p>SNSS Bishrampur</p>
+        <div class="sidebar-head" style="text-align:center; padding: 1.5rem 1rem;">
+      <img src="images/logo.png" alt="Logo" style="width:70px;height:70px;margin:0 auto 0.5rem;border:2px solid var(--gold);border-radius:50%;object-fit:cover;">
+      <h2 style="font-size:1.1rem; line-height:1.2; margin-bottom:0.25rem; font-weight:700;">Shree Nepal Secondary School</h2>
+      <p style="font-size:0.75rem; color:var(--gold); line-height:1.3; font-weight:500;">Bishrampur, Brindaban<br>Rautahat</p>
     </div>
     <nav class="sidebar-nav">
       <div class="nav-item active" data-section="overview" onclick="showSection('overview')"><span class="nav-icon">📊</span> Overview</div>
@@ -234,9 +235,19 @@
 
     <!-- ── OVERVIEW ── -->
     <div id="section-overview" class="content-panel active">
-      <div class="panel-header">
-        <h2>📊 Overview</h2>
-        <p>Summary of all content on the website</p>
+            <div style="background: linear-gradient(135deg, rgba(255,183,3,0.05), rgba(10,22,40,0.8)); border: 1px solid var(--gold); border-radius: 12px; padding: 2rem; margin-bottom: 2rem; display: flex; gap: 1.5rem; align-items: center; flex-wrap: wrap;">
+        <img src="images/logo.png" style="width: 100px; height: 100px; border-radius: 50%; border: 3px solid var(--gold);">
+        <div>
+          <h2 style="color: var(--gold); margin-bottom: 0.5rem; font-size: 1.8rem; font-weight: 800; letter-spacing: -0.5px;">Shree Nepal Secondary School</h2>
+          <p style="color: var(--text-body); font-size: 0.95rem; line-height: 1.4;">Bishrampur, Brindaban-02, Rautahat<br>Madhesh Province, Nepal</p>
+          <div style="margin-top: 1rem; display: flex; gap: 0.5rem;">
+            <a href="/" target="_blank" class="btn btn-outline btn-sm" style="padding: 0.4rem 0.8rem; font-size: 0.8rem;">🌍 View Live Website</a>
+          </div>
+        </div>
+      </div>
+      <div class="panel-header" style="margin-bottom: 1.5rem;">
+        <h2>📊 Dashboard Statistics</h2>
+        <p>Real-time summary of the database content</p>
       </div>
       <div class="stats-row">
         <div class="stat-box"><div class="num" id="stat-notices">–</div><div class="lbl">Notices</div></div>
