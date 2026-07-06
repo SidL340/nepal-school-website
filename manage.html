@@ -595,13 +595,13 @@ function loadNotices() {
       const n = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'notice-card';
       card.innerHTML = `
-        ${n.imageUrl ? `<img src="${n.imageUrl}" alt="${n.title}">` : `<div class="notice-card-placeholder">📋</div>`}
+        ${n.imageUrl ? `<img src="${n.imageUrl}" alt="${sanitizeHTML(n.title)}">` : `<div class="notice-card-placeholder">📋</div>`}
         <div class="notice-card-bo📷>
           <div class="notice-meta">
             <span class="badge ${n.important ? 'badge-red' : 'badge-blue'}">${n.important ? '⚠ Important' : n.category}</span>
             <span style="color:var(--text-muted);font-size:.7rem">📅 ${n.date||''}</span>
           </div>
-          <h4>${n.title}</h4>
+          <h4>${sanitizeHTML(n.title)}</h4>
           <button class="btn btn-danger btn-sm" onclick="deleteNotice('${id}','${n.imageUrl||''}')">🗑 Delete</button>
         </div>`;
       grid.appendChild(card);
@@ -656,8 +656,8 @@ function loadStaff() {
       const s = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
-        ${s.photoUrl ? `<img src="${s.photoUrl}" class="item-thumb">` : `<div class="item-thumb-placeholder">👤</div>`}
-        <div class="item-info"><h4>${s.name}</h4><p>${s.role||'Teacher'} — ${s.subject||''}</p></div>
+        ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="item-thumb">` : `<div class="item-thumb-placeholder">👤</div>`}
+        <div class="item-info"><h4>${sanitizeHTML(s.name)}</h4><p> — </p></div>
         <div class="item-actions">
           <button class="btn btn-danger btn-sm" onclick="deleteStaff('${id}','${s.photoUrl||''}')">🗑</button>
         </div>`;
@@ -711,10 +711,10 @@ function loadCommittee() {
       const m = doc.data(); const id = doc.id;
       const card = document.createElement('div'); card.className = 'item-card';
       card.innerHTML = `
-        ${m.photoUrl ? `<img src="${m.photoUrl}" class="item-thumb">` : `<div class="item-thumb-placeholder">${m.isChairperson ? '👑' : '👤'}</div>`}
+        ${m.photoUrl ? `<img src="${sanitizeHTML(m.photoUrl)}" class="item-thumb">` : `<div class="item-thumb-placeholder">${m.isChairperson ? '👑' : '👤'}</div>`}
         <div class="item-info">
-          <h4>${m.name} ${m.isChairperson ? '<span class="badge badge-gold">Chairperson</span>' : ''}</h4>
-          <p>${m.role||'Member'}${m.contact ? ' · '+m.contact : ''}</p>
+          <h4>${sanitizeHTML(m.name)} ${m.isChairperson ? '<span class="badge badge-gold">Chairperson</span>' : ''}</h4>
+          <p>${m.contact ? ' · '+m.contact : ''}</p>
         </div>
         <div class="item-actions">
           <button class="btn btn-danger btn-sm" onclick="deleteMember('${id}','${m.photoUrl||''}')">🗑</button>

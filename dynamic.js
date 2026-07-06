@@ -1,3 +1,9 @@
+﻿function sanitizeHTML(str) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/[&<>"'=\/]/g, function (s) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;', '/': '&#x2F;', '': '&#x60;', '=': '&#x3D;' }[s];
+  });
+}
 // â”€â”€ Dynamic Data Loader for Shree Nepal Secondary School â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 // Loads data from Firebase Firestore and updates the DOM dynamically.
 
@@ -75,10 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
           snap.forEach(doc => {
             const s = doc.data();
             staffGrid.innerHTML += `<div class="glass-card staff-card reveal visible">
-              ${s.photoUrl ? `<img src="${s.photoUrl}" class="staff-photo" alt="${s.name}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
-              <div class="staff-name">${s.name}</div>
-              <div class="staff-role">${s.role || 'Teacher'}</div>
-              <div class="staff-subject">${s.subject || ''}</div>
+              ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="staff-photo" alt="${sanitizeHTML(s.name)}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
+              <div class="staff-name">${sanitizeHTML(s.name)}</div>
+              <div class="staff-role"></div>
+              <div class="staff-subject"></div>
             </div>`;
           });
         } else {
@@ -103,10 +109,10 @@ document.addEventListener('DOMContentLoaded', () => {
             
             commGrid.innerHTML += `<div class="glass-card member-card reveal visible" style="position:relative; ${cardStyle}">
               ${tag}
-              ${c.photoUrl ? `<img src="${c.photoUrl}" class="member-photo" alt="${c.name}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>👤</div>'">` : `<div class="member-photo-placeholder">👤</div>`}
-              <div class="member-name" style="${isChair ? 'color:var(--gold);font-size:1.4rem;' : ''}">${c.name}</div>
-              <div class="member-role" style="${isChair ? 'display:none' : ''}">${c.role}</div>
-              ${c.contact ? `<div class="member-contact">📞 <a href="tel:${c.contact}">${c.contact}</a></div>` : ''}
+              ${c.photoUrl ? `<img src="${sanitizeHTML(c.photoUrl)}" class="member-photo" alt="${sanitizeHTML(c.name)}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>👤</div>'">` : `<div class="member-photo-placeholder">👤</div>`}
+              <div class="member-name" style="${isChair ? 'color:var(--gold);font-size:1.4rem;' : ''}">${sanitizeHTML(c.name)}</div>
+              <div class="member-role" style="${isChair ? 'display:none' : ''}">${sanitizeHTML(c.role)}</div>
+              ${c.contact ? `<div class="member-contact">📞 <a href="tel:${sanitizeHTML(c.contact)}">${sanitizeHTML(c.contact)}</a></div>` : ''}
             </div>`;
           });
         } else {
@@ -138,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
       filtered.forEach(p => {
         const item = document.createElement('div');
         item.className = 'gallery-item reveal visible';
-        item.innerHTML = `<img src="${p.url || p.imageUrl}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>🔍 View</span></div>`;
+        item.innerHTML = `<img src="${sanitizeHTML(p.url || p.imageUrl)}" alt="Gallery Image" loading="lazy"><div class="gallery-overlay"><span>🔍 View</span></div>`;
         item.addEventListener('click', () => {
           document.getElementById('lightbox-img').src = p.url || p.imageUrl;
           document.getElementById('lightbox-overlay').classList.add('active');
@@ -181,8 +187,8 @@ document.addEventListener('DOMContentLoaded', () => {
           const cardHTML = `<div class="${noticeGrid ? 'notice-card reveal visible' : 'notice-preview-card'}">
             <div class="notice-icon">${n.important ? '⚠️' : '📄'}</div>
             <div class="notice-info">
-              <h4>${n.title}</h4>
-              <span>📅 ${n.date} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
+              <h4>${sanitizeHTML(n.title)}</h4>
+              <span>📅 ${sanitizeHTML(n.date)} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
             </div>
             ${n.imageUrl && noticeGrid ? `<a href="${n.imageUrl}" target="_blank" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem">View Attachment</a>` : ''}
           </div>`;
