@@ -390,7 +390,7 @@
         <h3>Edit School Details</h3>
         <div class="form-row">
           <div class="form-group"><label>School Name</label><input type="text" id="school-name" placeholder="Shree Nepal Secondary School"></div>
-          <div class="form-group"><label>Tagline</label><input type="text" id="school-tagline" placeholder="Nurturing Young Minds..."></div>
+          <div class="form-group"><label>Tagline</label><input type="text" id="school-tagline" placeholder="Nurturing Young Minds..."></div></div><div class="form-row"><div class="form-group" style="grid-column:1/-1"><label>Scrolling Marquee Notice (Home Page Only)</label><input type="text" id="school-ticker" placeholder="Leave blank to disable. E.g., Happy Dashain to all our students and parents!"></div>
         </div>
         <div class="form-row" style="align-items:flex-end">
           <div class="form-group">
@@ -910,7 +910,7 @@ async function loadSchoolInfo() {
     const doc = await db.collection('settings').doc('school').get();
     if (!doc.exists) return;
     const d = doc.data();
-    const fields = ['name','tagline','address','province','phone','estd','email1','email2','facebook1','facebook2','about'];
+    const fields = ['name','tagline','ticker','address','province','phone','estd','email1','email2','facebook1','facebook2','about'];
     fields.forEach(f => { const el = document.getElementById('school-'+f); if (el && d[f] !== undefined) el.value = d[f]; });
     if (d.bgUrl) {
       const bgPrev = document.getElementById('school-bg-preview');
@@ -924,7 +924,7 @@ async function loadSchoolInfo() {
 }
 
 async function saveSchoolInfo() {
-  const fields = ['name','tagline','address','province','phone','estd','email1','email2','facebook1','facebook2','about'];
+  const fields = ['name','tagline','ticker','address','province','phone','estd','email1','email2','facebook1','facebook2','about'];
   const data = {};
   fields.forEach(f => { const el = document.getElementById('school-'+f); if (el) data[f] = el.value; });
   const file = document.getElementById('school-logo')?.files[0];

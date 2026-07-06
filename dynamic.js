@@ -1,4 +1,4 @@
-// --- ATTACHMENT MODAL ---
+﻿// --- ATTACHMENT MODAL ---
 window.openAttachmentModal = function(url) {
   let modal = document.getElementById('attachment-modal');
   if (!modal) {
@@ -78,6 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelectorAll('.dyn-school-email-link').forEach(el => el.href = 'mailto:' + s.email1);
       }
       if (s.about) document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = s.about.replace(/\n/g, '<br>'));
+      if (s.ticker) { const tw = document.getElementById('ticker-wrapper'); const tm = document.getElementById('home-ticker'); if (tw && tm) { tm.textContent = s.ticker; tw.style.display = 'block'; } } else { const tw = document.getElementById('ticker-wrapper'); if (tw) tw.style.display = 'none'; }
       else document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = 'Welcome to our school. We are dedicated to providing excellent education.');
     }
   }).catch(console.error);
