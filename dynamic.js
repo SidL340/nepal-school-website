@@ -205,9 +205,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let compFound = false, smartFound = false, groundFound = false;
         snap.forEach(doc => {
           const d = doc.data();
-          if (facComp && !compFound && d.category === 'Lab') { facComp.src = d.url || d.imageUrl; compFound = true; }
-          if (facSmart && !smartFound && d.category === 'Classroom') { facSmart.src = d.url || d.imageUrl; smartFound = true; }
-          if (facGround && !groundFound && d.category === 'Sports') { facGround.src = d.url || d.imageUrl; groundFound = true; }
+          if (facComp && !compFound && d.category === 'Lab') { facComp.src = d.url || d.imageUrl; facComp.style.display = ""; compFound = true; }
+          if (facSmart && !smartFound && d.category === 'Classroom') { facSmart.src = d.url || d.imageUrl; facSmart.style.display = ""; smartFound = true; }
+          if (facGround && !groundFound && d.category === 'Ground') { facGround.src = d.url || d.imageUrl; facGround.style.display = ""; groundFound = true; }
         });
       }).catch(console.error);
     }
