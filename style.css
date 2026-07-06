@@ -1,4 +1,4 @@
-/* =============================================
+﻿/* =============================================
    SHREE NEPAL SECONDARY SCHOOL - BISHRAMPUR
    Global Stylesheet
    ============================================= */
@@ -312,4 +312,11 @@ footer {
   .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
   .footer-grid { grid-template-columns: 1fr; gap: 2rem; }
   .section { padding: 3.5rem 0; }
+}
+
+@media (max-width: 450px) {
+  .nav-brand-text .school-name { font-size: 0.75rem; }
+  .nav-brand-text .school-sub { font-size: 0.55rem; }
+  .nav-brand img { width: 40px; height: 40px; }
+  .nav-brand { gap: 0.5rem; }
 }

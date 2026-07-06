@@ -1,5 +1,8 @@
 {
   "cleanUrls": true,
+  "redirects": [
+    { "source": "/hajiri", "destination": "https://hajirinepal.vercel.app", "permanent": false }
+  ],
   "rewrites": [
     { "source": "/home", "destination": "/index.html" }
   ],
