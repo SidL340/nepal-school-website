@@ -716,7 +716,7 @@ function loadStaff() {
         ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="item-thumb">` : `<div class="item-thumb-placeholder">&#128100;</div>`}
         <div class="item-info"><h4>${sanitizeHTML(s.name)} ${typeLabel}</h4><p>${sanitizeHTML(s.role||'')} | ${sanitizeHTML(s.qualification||s.subject||'')} ${s.position ? '| '+sanitizeHTML(s.position) : ''}</p></div>
                 <div class="item-actions">
-          <button class="btn btn-outline btn-sm" onclick="editStaff('${id}', '${sanitizeHTML(s.name).replace(/'/g, &quot;\\'&quot;)}', '${sanitizeHTML(s.role||'').replace(/'/g, &quot;\\'&quot;)}', '${sanitizeHTML(s.qualification||s.subject||'').replace(/'/g, &quot;\\'&quot;)}', '${sanitizeHTML(s.position||'').replace(/'/g, &quot;\\'&quot;)}', ${isTeaching}, ${s.order||99}, '${s.photoUrl||''}')" style="color:var(--gold);border-color:var(--gold);">&#9998;</button>
+          <button class="btn btn-outline btn-sm" onclick="editStaff('${id}', '${sanitizeHTML(s.name)}', '${sanitizeHTML(s.role||'')}', '${sanitizeHTML(s.qualification||s.subject||'')}', '${sanitizeHTML(s.position||'')}', ${isTeaching}, ${s.order||99}, '${s.photoUrl||''}')" style="color:var(--gold);border-color:var(--gold);">&#9998;</button>
           <button class="btn btn-danger btn-sm" onclick="deleteStaff('${id}','${s.photoUrl||''}')">&#128465;</button>
         </div>`;
       el.appendChild(card);
