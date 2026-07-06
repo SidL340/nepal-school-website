@@ -80,20 +80,30 @@ document.addEventListener('DOMContentLoaded', () => {
       if (s.about) document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = s.about.replace(/\n/g, '<br>'));
       else document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = 'Welcome to our school. We are dedicated to providing excellent education.');
 
-      if (s.ticker) {
+      if (s.ticker || s.ticker2) {
         let tw = document.getElementById('ticker-wrapper');
-        let tm = document.getElementById('home-ticker');
         if (!tw) {
           tw = document.createElement('div');
           tw.id = 'ticker-wrapper';
-          tm = document.createElement('div');
-          tm.id = 'home-ticker';
-          tw.appendChild(tm);
-          document.body.appendChild(tw);
+          const nav = document.getElementById('navbar');
+          if (nav && nav.parentNode) { nav.parentNode.insertBefore(tw, nav.nextSibling); }
+          else { document.body.insertBefore(tw, document.body.firstChild); }
         }
-        tw.style.cssText = 'display:block; overflow:hidden; white-space:nowrap; background:transparent; padding:0.4rem 0; width:100%; z-index:999; position:absolute; top:var(--nav-height); left:0; right:0;';
-        tm.style.cssText = 'display:inline-block; padding-left:100%; animation: tickerSlide 15s linear infinite; font-weight:bold; font-size:1.1rem; color:#ff4d4d; letter-spacing:0.5px; text-shadow: 1px 1px 3px rgba(0,0,0,0.5);';
-        tm.textContent = s.ticker;
+        tw.innerHTML = ''; // clear existing
+        tw.style.display = 'flex';
+        
+        if (s.ticker) {
+          const tm1 = document.createElement('div');
+          tm1.className = 'home-ticker-line';
+          tm1.textContent = s.ticker;
+          tw.appendChild(tm1);
+        }
+        if (s.ticker2) {
+          const tm2 = document.createElement('div');
+          tm2.className = 'home-ticker-line';
+          tm2.textContent = s.ticker2;
+          tw.appendChild(tm2);
+        }
       } else {
         const tw = document.getElementById('ticker-wrapper');
         if (tw) tw.style.display = 'none';
