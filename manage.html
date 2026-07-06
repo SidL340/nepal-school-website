@@ -274,9 +274,13 @@
               <option>Holiday</option><option>Meeting</option><option>General</option>
             </select>
           </div>
-          <div class="form-group">
-            <label>Notice Image (optional)</label>
-            <input type="file" id="notice-image" accept="image/*">
+                    <div class="form-group">
+            <label>Attachment (Image/PDF)</label>
+            <div style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+              <input type="file" id="notice-image" accept="image/*, application/pdf" style="flex:1">
+              <label for="notice-camera" class="btn btn-outline" style="cursor:pointer; padding:0.5rem 1rem; border-radius:8px; margin:0; font-size:0.85rem">📷 Capture</label>
+              <input type="file" id="notice-camera" accept="image/*" capture="environment" style="display:none;" onchange="if(this.files.length > 0) { const dt = new DataTransfer(); dt.items.add(this.files[0]); document.getElementById('notice-image').files = dt.files; }">
+            </div>
           </div>
         </div>
         <div class="toggle-group" style="margin-bottom:1rem">
@@ -521,7 +525,7 @@ function uploadImage(file, folder, progressId) {
     formData.append('folder', 'nepal-school/' + folder);
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/image/upload`);
+    xhr.open('POST', `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD}/auto/upload`);
 
     // Track upload progress
     if (progressId) {
