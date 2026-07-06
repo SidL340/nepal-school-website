@@ -90,20 +90,25 @@ document.addEventListener('DOMContentLoaded', () => {
           else { document.body.insertBefore(tw, document.body.firstChild); }
         }
         tw.innerHTML = ''; // clear existing
-        tw.style.display = 'flex';
+        tw.style.display = 'block';
+        
+        const slider = document.createElement('div');
+        slider.id = 'ticker-slider';
         
         if (s.ticker) {
           const tm1 = document.createElement('div');
           tm1.className = 'home-ticker-line';
           tm1.textContent = s.ticker;
-          tw.appendChild(tm1);
+          slider.appendChild(tm1);
         }
         if (s.ticker2) {
           const tm2 = document.createElement('div');
           tm2.className = 'home-ticker-line';
           tm2.textContent = s.ticker2;
-          tw.appendChild(tm2);
+          slider.appendChild(tm2);
         }
+        
+        tw.appendChild(slider);
       } else {
         const tw = document.getElementById('ticker-wrapper');
         if (tw) tw.style.display = 'none';
