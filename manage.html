@@ -626,6 +626,16 @@ function loadNotices() {
   }, err => { el.innerHTML = '<div class="empty">Error loading notices: ' + err.message + '</div>'; });
 }
 
+function editNotice(id, title, date, cat, imp, img) {
+  editingNoticeId = id;
+  document.getElementById('notice-title').value = title;
+  document.getElementById('notice-date').value = date;
+  document.getElementById('notice-category').value = cat;
+  document.getElementById('notice-important').checked = imp;
+  document.getElementById('notice-add-btn').textContent = 'Update Notice';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
 async function addNotice() {
   const title    = document.getElementById('notice-title').value.trim();
   const date     = document.getElementById('notice-date').value;
@@ -638,7 +648,14 @@ async function addNotice() {
   try {
     let imageUrl = '';
     if (file) imageUrl = await uploadImage(file, 'notices', 'notice-progress');
-    await db.collection('notices').add({ title, date, category, important, imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+        if (editingNoticeId) {
+      const updates = { title, date, category, important };
+      if (file) updates.imageUrl = imageUrl;
+      await db.collection('notices').doc(editingNoticeId).update(updates);
+      editingNoticeId = null;
+    } else {
+      await db.collection('notices').add({ title, date, category, important, imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+    }
     document.getElementById('notice-title').value = '';
     document.getElementById('notice-date').value  = '';
     document.getElementById('notice-image').value = '';
@@ -682,6 +699,16 @@ function loadStaff() {
   }, err => { el.innerHTML = '<div class="empty">Error: ' + err.message + '</div>'; });
 }
 
+function editStaff(id, name, role, sub, ord, img) {
+  editingStaffId = id;
+  document.getElementById('staff-name').value = name;
+  document.getElementById('staff-role').value = role;
+  document.getElementById('staff-subject').value = sub;
+  document.getElementById('staff-order').value = ord;
+  document.getElementById('staff-add-btn').textContent = 'Update Staff';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
 async function addStaff() {
   const name    = document.getElementById('staff-name').value.trim();
   const role    = document.getElementById('staff-role').value.trim();
@@ -694,7 +721,14 @@ async function addStaff() {
   try {
     let photoUrl = '';
     if (file) photoUrl = await uploadImage(file, 'staff', 'staff-progress');
-    await db.collection('staff').add({ name, role, subject, photoUrl, order });
+        if (editingStaffId) {
+      const updates = { name, role, subject, order };
+      if (file) updates.photoUrl = photoUrl;
+      await db.collection('staff').doc(editingStaffId).update(updates);
+      editingStaffId = null;
+    } else {
+      await db.collection('staff').add({ name, role, subject, photoUrl, order });
+    }
     ['staff-name','staff-role','staff-subject','staff-order'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('staff-photo').value = '';
     document.getElementById('staff-progress').style.width = '0';
@@ -740,6 +774,17 @@ function loadCommittee() {
   }, err => { el.innerHTML = '<div class="empty">Error: ' + err.message + '</div>'; });
 }
 
+function editMember(id, name, role, cont, isC, ord, img) {
+  editingMemberId = id;
+  document.getElementById('member-name').value = name;
+  document.getElementById('member-role').value = role;
+  document.getElementById('member-contact').value = cont;
+  document.getElementById('member-chairperson').checked = isC;
+  document.getElementById('member-order').value = ord;
+  document.getElementById('member-add-btn').textContent = 'Update Member';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
 async function addMember() {
   const name          = document.getElementById('member-name').value.trim();
   const role          = document.getElementById('member-role').value.trim();
@@ -753,7 +798,14 @@ async function addMember() {
   try {
     let photoUrl = '';
     if (file) photoUrl = await uploadImage(file, 'committee', 'member-progress');
-    await db.collection('committee').add({ name, role, contact, isChairperson, photoUrl, order });
+        if (editingMemberId) {
+      const updates = { name, role, contact, isChairperson, order };
+      if (file) updates.photoUrl = photoUrl;
+      await db.collection('committee').doc(editingMemberId).update(updates);
+      editingMemberId = null;
+    } else {
+      await db.collection('committee').add({ name, role, contact, isChairperson, photoUrl, order });
+    }
     ['member-name','member-role','member-contact','member-order'].forEach(id => document.getElementById(id).value = '');
     document.getElementById('member-chairperson').checked = false;
     document.getElementById('member-photo').value = '';
