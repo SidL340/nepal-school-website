@@ -37,14 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (p.photoUrl) {
         const indexPhotoWrap = document.querySelector('.principal-photo-wrap');
-        if (indexPhotoWrap) indexPhotoWrap.innerHTML = \`<img src="\${p.photoUrl}" alt="\${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">\`;
+        if (indexPhotoWrap) indexPhotoWrap.innerHTML = `<img src="${p.photoUrl}" alt="${p.name}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
         
         if (path.includes('faculty')) {
           const facultyPhotoContainer = document.querySelector('.principal-hero .grid-2 > div:first-child');
           if (facultyPhotoContainer) {
             const oldImg = facultyPhotoContainer.querySelector('img, .principal-photo-placeholder');
             if (oldImg) oldImg.remove();
-            facultyPhotoContainer.insertAdjacentHTML('afterbegin', \`<img src="\${p.photoUrl}" alt="\${p.name}" class="principal-photo">\`);
+            facultyPhotoContainer.insertAdjacentHTML('afterbegin', `<img src="${p.photoUrl}" alt="${p.name}" class="principal-photo">`);
           }
           const facultyName = document.querySelector('.principal-hero p[style*="var(--gold)"]');
           if (facultyName) facultyName.textContent = '— ' + p.name;
@@ -62,12 +62,12 @@ document.addEventListener('DOMContentLoaded', () => {
           staffGrid.innerHTML = '';
           snap.forEach(doc => {
             const s = doc.data();
-            staffGrid.innerHTML += \`<div class="glass-card staff-card reveal visible">
-              \${s.photoUrl ? \`<img src="\${s.photoUrl}" class="staff-photo" alt="\${s.name}" onerror="this.outerHTML='<div class=\\'staff-photo-icon\\'>👤</div>'">\` : \`<div class="staff-photo-icon">👤</div>\`}
-              <div class="staff-name">\${s.name}</div>
-              <div class="staff-role">\${s.role || 'Teacher'}</div>
-              <div class="staff-subject">\${s.subject || ''}</div>
-            </div>\`;
+            staffGrid.innerHTML += `<div class="glass-card staff-card reveal visible">
+              ${s.photoUrl ? `<img src="${s.photoUrl}" class="staff-photo" alt="${s.name}" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon">👤</div>`}
+              <div class="staff-name">${s.name}</div>
+              <div class="staff-role">${s.role || 'Teacher'}</div>
+              <div class="staff-subject">${s.subject || ''}</div>
+            </div>`;
           });
         } else {
            staffGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👩‍🏫</div><p>Staff directory is empty.</p></div>';
@@ -85,12 +85,12 @@ document.addEventListener('DOMContentLoaded', () => {
           commGrid.innerHTML = '';
           snap.forEach(doc => {
             const c = doc.data();
-            commGrid.innerHTML += \`<div class="glass-card member-card reveal visible">
-              \${c.photoUrl ? \`<img src="\${c.photoUrl}" class="member-photo" alt="\${c.name}" onerror="this.outerHTML='<div class=\\'member-photo-placeholder\\'>👤</div>'">\` : \`<div class="member-photo-placeholder">👤</div>\`}
-              <div class="member-name">\${c.name}</div>
-              <div class="member-role">\${c.role}</div>
-              \${c.contact ? \`<div class="member-contact">📞 <a href="tel:\${c.contact}">\${c.contact}</a></div>\` : ''}
-            </div>\`;
+            commGrid.innerHTML += `<div class="glass-card member-card reveal visible">
+              ${c.photoUrl ? `<img src="${c.photoUrl}" class="member-photo" alt="${c.name}" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>👤</div>'">` : `<div class="member-photo-placeholder">👤</div>`}
+              <div class="member-name">${c.name}</div>
+              <div class="member-role">${c.role}</div>
+              ${c.contact ? `<div class="member-contact">📞 <a href="tel:${c.contact}">${c.contact}</a></div>` : ''}
+            </div>`;
           });
         } else {
            commGrid.innerHTML = '<div style="grid-column:1/-1;text-align:center;color:var(--text-muted);"><div style="font-size:3rem;">👥</div><p>Committee directory is empty.</p></div>';
@@ -102,7 +102,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // 5. Load Gallery
   const galleryGrid = document.getElementById('gallery-grid');
   if (galleryGrid) {
-    const filterBtns = document.querySelectorAll('.filter-btn');
+    const filterBtns = document.querySelectorAll('.gfilter-btn');
     let allPhotos = [];
     
     function renderGallery(category) {
@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
               btn.addEventListener('click', () => {
                 filterBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                renderGallery(btn.textContent.trim());
+                renderGallery(btn.dataset.category || btn.textContent.trim());
               });
             });
           }
@@ -161,14 +161,14 @@ document.addEventListener('DOMContentLoaded', () => {
         let count = 0;
         snap.forEach(doc => {
           const n = doc.data();
-          const cardHTML = \`<div class="\${noticeGrid ? 'notice-card reveal visible' : 'notice-preview-card'}">
-            <div class="notice-icon">\${n.important ? '⚠️' : '📄'}</div>
+          const cardHTML = `<div class="${noticeGrid ? 'notice-card reveal visible' : 'notice-preview-card'}">
+            <div class="notice-icon">${n.important ? '⚠️' : '📄'}</div>
             <div class="notice-info">
-              <h4>\${n.title}</h4>
-              <span>📅 \${n.date} &nbsp; <span class="badge \${n.important ? 'badge-red' : 'badge-gold'}">\${n.category}</span></span>
+              <h4>${n.title}</h4>
+              <span>📅 ${n.date} &nbsp; <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.category}</span></span>
             </div>
-            \${n.imageUrl && noticeGrid ? \`<a href="\${n.imageUrl}" target="_blank" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem">View Attachment</a>\` : ''}
-          </div>\`;
+            ${n.imageUrl && noticeGrid ? `<a href="${n.imageUrl}" target="_blank" class="btn btn-outline" style="margin-top:1rem;display:inline-block;padding:0.35rem 0.8rem;font-size:0.8rem">View Attachment</a>` : ''}
+          </div>`;
           
           if (noticeGrid) noticeGrid.innerHTML += cardHTML;
           if (noticeList && count < 3) noticeList.innerHTML += cardHTML;
