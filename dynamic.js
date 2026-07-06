@@ -28,10 +28,6 @@ window.openAttachmentModal = function(url) {
     // Open PDFs directly in a new tab to bypass mobile iframe restrictions
     closeAttachmentModal();
     window.open(safeUrl, '_blank');
-    return;
-  }
-    const viewerUrl = 'https://docs.google.com/gview?embedded=true&url=' + encodeURIComponent(url);
-    content.innerHTML = `<iframe src="${viewerUrl}" style="width:100%;max-width:900px;height:90vh;border:none;border-radius:12px;background:white;box-shadow:0 20px 50px rgba(0,0,0,0.5);"></iframe>`;
   } else {
     content.innerHTML = `<img src="${safeUrl}" style="max-width:100%;max-height:90vh;object-fit:contain;border-radius:12px;box-shadow:0 20px 50px rgba(0,0,0,0.5);">`;
   }
