@@ -80,7 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
       if (s.about) document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = s.about.replace(/\n/g, '<br>'));
       else document.querySelectorAll('.dyn-school-about').forEach(el => el.innerHTML = 'Welcome to our school. We are dedicated to providing excellent education.');
 
-      if (s.ticker || s.ticker2) {
+      const isHomePage = document.querySelector('.hero-content') !== null;
+      if ((s.ticker || s.ticker2) && isHomePage) {
         let tw = document.getElementById('ticker-wrapper');
         if (!tw) {
           tw = document.createElement('div');

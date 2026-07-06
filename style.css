@@ -333,17 +333,17 @@ footer {
   width: 100%; 
   z-index: 999; 
   position: absolute; 
-  top: var(--nav-height); 
+  top: calc(var(--nav-height) - 10px); 
   left: 0; 
   right: 0;
-  padding: 0.5rem 0;
+  padding: 0;
 }
 #ticker-slider {
   display: inline-flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 0.4rem;
+  gap: 0;
   min-width: fit-content;
   animation: tickerSlide 25s linear infinite; 
 }
