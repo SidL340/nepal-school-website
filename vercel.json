@@ -1,7 +1,6 @@
-{
+﻿{
   "cleanUrls": true,
   "rewrites": [
-    { "source": "/home", "destination": "/index.html" },
     { "source": "/about",        "destination": "/about.html" },
     { "source": "/academics",    "destination": "/academics.html" },
     { "source": "/faculty",      "destination": "/faculty.html" },
