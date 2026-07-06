@@ -86,18 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!tw) {
           tw = document.createElement('div');
           tw.id = 'ticker-wrapper';
-          tw.style.cssText = 'display:block; background:var(--gold); color:var(--navy); padding:0.4rem 0; width:100%; z-index:999; position:relative;';
           tm = document.createElement('marquee');
           tm.id = 'home-ticker';
           tm.scrollAmount = '5';
-          tm.style.cssText = 'font-weight:700; font-size:0.95rem; letter-spacing:0.5px;';
           tw.appendChild(tm);
-          const nav = document.getElementById('navbar');
-          if (nav && nav.parentNode) { nav.parentNode.insertBefore(tw, nav.nextSibling); }
-          else { document.body.insertBefore(tw, document.body.firstChild); }
+          document.body.appendChild(tw);
         }
+        tw.style.cssText = 'display:block; background:var(--gold); color:var(--navy); padding:0.4rem 0; width:100%; z-index:999; position:absolute; top:var(--nav-height); left:0; right:0;';
+        tm.style.cssText = 'font-weight:700; font-size:0.95rem; letter-spacing:0.5px;';
         tm.textContent = s.ticker;
-        tw.style.display = 'block';
       } else {
         const tw = document.getElementById('ticker-wrapper');
         if (tw) tw.style.display = 'none';
