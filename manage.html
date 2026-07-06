@@ -613,12 +613,15 @@ function loadNotices() {
       card.innerHTML = `
         ${n.imageUrl ? `<img src="${n.imageUrl}" alt="${sanitizeHTML(n.title)}">` : `<div class="notice-card-placeholder">📋</div>`}
         <div class="notice-card-bo📷>
-          <div class="notice-meta">
-            <span class="badge ${n.important ? 'badge-red' : 'badge-blue'}">${n.important ? '⚠ Important' : n.category}</span>
-            <span style="color:var(--text-muted);font-size:.7rem">📅 ${n.date||''}</span>
+                    <div class="notice-meta">
+            <span class="badge ${n.important ? 'badge-red' : 'badge-blue'}"></span>
+            <span class="notice-date">📅 ${n.date}</span>
           </div>
           <h4>${sanitizeHTML(n.title)}</h4>
-          <button class="btn btn-danger btn-sm" onclick="deleteNotice('${id}','${n.imageUrl||''}')">🗑 Delete</button>
+          <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
+            <button class="btn btn-outline btn-sm" onclick="editNotice('${id}', '${sanitizeHTML(n.title).replace(/'/g, "\\'")}', '${n.date}', '${n.category}', ${n.important}, '${n.imageUrl||''}')" style="color:var(--gold);border-color:var(--gold);">✏ Edit</button>
+            <button class="btn btn-danger btn-sm" onclick="deleteNotice('${id}','${n.imageUrl||''}')">🗑 Delete</button>
+          </div>
         </div>`;
       grid.appendChild(card);
     });
@@ -691,7 +694,8 @@ function loadStaff() {
       card.innerHTML = `
         ${s.photoUrl ? `<img src="${sanitizeHTML(s.photoUrl)}" class="item-thumb">` : `<div class="item-thumb-placeholder">👤</div>`}
         <div class="item-info"><h4>${sanitizeHTML(s.name)}</h4><p> — </p></div>
-        <div class="item-actions">
+                <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="editStaff('${id}', '${sanitizeHTML(s.name).replace(/'/g, "\\'")}', '${sanitizeHTML(s.role||'').replace(/'/g, "\\'")}', '${sanitizeHTML(s.subject||'').replace(/'/g, "\\'")}', ${s.order||99}, '${s.photoUrl||''}')" style="color:var(--gold);border-color:var(--gold);">✏</button>
           <button class="btn btn-danger btn-sm" onclick="deleteStaff('${id}','${s.photoUrl||''}')">🗑</button>
         </div>`;
       el.appendChild(card);
@@ -766,7 +770,8 @@ function loadCommittee() {
           <h4>${sanitizeHTML(m.name)} ${m.isChairperson ? '<span class="badge badge-gold">Chairperson</span>' : ''}</h4>
           <p>${m.contact ? ' · '+m.contact : ''}</p>
         </div>
-        <div class="item-actions">
+                <div class="item-actions">
+          <button class="btn btn-outline btn-sm" onclick="editMember('${id}', '${sanitizeHTML(m.name).replace(/'/g, "\\'")}', '${sanitizeHTML(m.role||'').replace(/'/g, "\\'")}', '${sanitizeHTML(m.contact||'').replace(/'/g, "\\'")}', ${m.isChairperson}, ${m.order||99}, '${m.photoUrl||''}')" style="color:var(--gold);border-color:var(--gold);">✏</button>
           <button class="btn btn-danger btn-sm" onclick="deleteMember('${id}','${m.photoUrl||''}')">🗑</button>
         </div>`;
       el.appendChild(card);
