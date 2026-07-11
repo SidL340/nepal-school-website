@@ -40,6 +40,13 @@ window.closeAttachmentModal = function() {
     setTimeout(() => modal.style.display = 'none', 300);
   }
 }
+function optimizeImage(url) {
+  if (!url || typeof url !== 'string') return url;
+  if (url.includes('/image/upload/') && !url.includes('c_limit') && !url.toLowerCase().includes('.pdf')) {
+    return url.replace('/image/upload/', '/image/upload/c_limit,w_1200,q_auto,f_auto/');
+  }
+  return url;
+}
 function sanitizeHTML(str) {
   if (typeof str !== 'string') return '';
   return str.replace(/[&<>"'=\/]/g, function (s) {
@@ -64,10 +71,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       if (s.bgUrl) {
         const heroBg = document.querySelector('.hero-bg img, #about-intro-bg');
-        if (heroBg) { heroBg.src = s.bgUrl; heroBg.style.display = ""; }
+        if (heroBg) { heroBg.src = optimizeImage(s.bgUrl); heroBg.style.display = ""; }
       }
       if (s.logoUrl) {
-        document.querySelectorAll('img[alt="School Logo"]').forEach(img => { img.src = s.logoUrl; img.style.display = ''; });
+        document.querySelectorAll('img[alt="School Logo"]').forEach(img => { img.src = optimizeImage(s.logoUrl); img.style.display = ''; });
         const favicon = document.querySelector('link[rel="icon"]');
         if (favicon) favicon.href = s.logoUrl;
       }
@@ -357,9 +364,9 @@ document.addEventListener('DOMContentLoaded', () => {
         let compFound = false, smartFound = false, groundFound = false;
         snap.forEach(doc => {
           const d = doc.data();
-          if (facComp && !compFound && d.category === 'Lab') { facComp.src = d.url || d.imageUrl; facComp.style.display = ""; compFound = true; }
-          if (facSmart && !smartFound && d.category === 'Classroom') { facSmart.src = d.url || d.imageUrl; facSmart.style.display = ""; smartFound = true; }
-          if (facGround && !groundFound && d.category === 'Ground') { facGround.src = d.url || d.imageUrl; facGround.style.display = ""; groundFound = true; }
+          if (facComp && !compFound && d.category === 'Lab') { facComp.src = optimizeImage(d.url || d.imageUrl); facComp.style.display = ""; compFound = true; }
+          if (facSmart && !smartFound && d.category === 'Classroom') { facSmart.src = optimizeImage(d.url || d.imageUrl); facSmart.style.display = ""; smartFound = true; }
+          if (facGround && !groundFound && d.category === 'Ground') { facGround.src = optimizeImage(d.url || d.imageUrl); facGround.style.display = ""; groundFound = true; }
         });
       }).catch(console.error);
     }

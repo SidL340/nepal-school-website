@@ -569,7 +569,12 @@ function uploadImage(file, folder, progressId) {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         const data = JSON.parse(xhr.responseText);
-        resolve(data.secure_url);
+        let finalUrl = data.secure_url;
+        // Apply automatic compression & resizing to images (skip PDFs)
+        if (finalUrl.includes('/image/upload/') && !finalUrl.toLowerCase().includes('.pdf')) {
+          finalUrl = finalUrl.replace('/image/upload/', '/image/upload/c_limit,w_1200,q_auto,f_auto/');
+        }
+        resolve(finalUrl);
       } else {
         reject(new Error('Upload failed. Please try again.'));
       }
