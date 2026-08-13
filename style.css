@@ -419,6 +419,8 @@ p  { color: var(--text-body); font-size: 0.97rem; line-height: 1.75; }
   min-height: 85vh;
   display: flex;
   align-items: center;
+  justify-content: center;
+  text-align: center;
   padding: calc(var(--nav-height) + 3.5rem) 0 5rem;
 }
 
@@ -434,15 +436,17 @@ p  { color: var(--text-body); font-size: 0.97rem; line-height: 1.75; }
 .hero-overlay {
   position: absolute; inset: 0; z-index: 1;
   background:
-    linear-gradient(to right, rgba(6,13,25,0.96) 0%, rgba(6,13,25,0.5) 60%, rgba(6,13,25,0.15) 100%),
-    linear-gradient(to top, rgba(6,13,25,0.85) 0%, transparent 50%);
+    radial-gradient(ellipse at 50% 40%, rgba(6,13,25,0.65) 0%, rgba(6,13,25,0.95) 85%),
+    linear-gradient(to top, rgba(6,13,25,0.95) 0%, transparent 50%);
 }
 
 .hero-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
 
 .hero-content {
   position: relative; z-index: 2;
-  max-width: 760px;
+  max-width: 860px;
+  margin: 0 auto;
+  text-align: center;
 }
 
 .hero-badge {
@@ -457,14 +461,14 @@ p  { color: var(--text-body); font-size: 0.97rem; line-height: 1.75; }
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.5px;
-  margin-bottom: 1.25rem;
+  margin: 0 auto 1.25rem;
   backdrop-filter: blur(10px);
 }
 
-.hero h1 { color: var(--white); margin-bottom: 1rem; line-height: 1.15; }
-.hero .hero-tagline { font-size: 1.05rem; color: var(--text-body); margin-bottom: 2rem; line-height: 1.7; }
+.hero h1 { color: var(--white); margin-bottom: 1rem; line-height: 1.15; text-align: center; }
+.hero .hero-tagline { font-size: 1.05rem; color: var(--text-body); margin: 0 auto 2rem; max-width: 720px; line-height: 1.7; text-align: center; }
 
-.hero-actions { display: flex; align-items: center; gap: 0.85rem; flex-wrap: wrap; }
+.hero-actions { display: flex; align-items: center; justify-content: center; gap: 0.85rem; flex-wrap: wrap; }
 
 /* ── STATS BAR ───────────────────────────────────────────────────────────────── */
 .stats-bar {
