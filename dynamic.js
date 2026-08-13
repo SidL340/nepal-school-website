@@ -167,18 +167,26 @@ document.addEventListener('DOMContentLoaded', () => {
     if (doc.exists) {
       const p = doc.data();
       if (p.name) pNames.forEach(el => { el.textContent = p.name; });
-      if (p.message) pMessages.forEach(el => { el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"'; });
+      if (p.message) {
+        pMessages.forEach(el => {
+          if (el.classList.contains('message-text')) {
+            const cleanMsg = p.message.replace(/\n+/g, ' ');
+            const shortMsg = cleanMsg.length > 200 ? cleanMsg.substring(0, 195) + '...' : cleanMsg;
+            el.innerHTML = '"' + sanitizeHTML(shortMsg) + '"';
+          } else {
+            el.innerHTML = '"' + p.message.replace(/\n/g, '<br>') + '"';
+          }
+        });
+      }
       if (p.email) document.querySelectorAll('.principal-email').forEach(el => { el.textContent = p.email; if (el.closest('a')) el.closest('a').href = 'mailto:' + p.email; });
 
       if (p.photoUrl) {
         const indexPhotoWrap = document.querySelector('.principal-photo-wrap');
         if (indexPhotoWrap) indexPhotoWrap.innerHTML = `<img src="${optimizeImage(p.photoUrl)}" alt="${sanitizeHTML(p.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid var(--gold);">`;
         
-        if (path.includes('faculty')) {
-          const facultyPhotoContainer = document.querySelector('.principal-hero .grid-2 > div:first-child');
-          if (facultyPhotoContainer) {
-            facultyPhotoContainer.innerHTML = `<img src="${optimizeImage(p.photoUrl)}" alt="${sanitizeHTML(p.name)}" class="principal-photo" style="border-radius:50%;width:180px;height:180px;object-fit:cover;border:4px solid var(--gold);margin:0 auto;box-shadow:var(--shadow-gold);">`;
-          }
+        const facultyPhotoContainer = document.querySelector('.principal-photo-container');
+        if (facultyPhotoContainer) {
+          facultyPhotoContainer.innerHTML = `<img src="${optimizeImage(p.photoUrl)}" alt="${sanitizeHTML(p.name)}" class="principal-photo" style="border-radius:50%;width:150px;height:150px;object-fit:cover;border:4px solid var(--gold);margin:0 auto;box-shadow:var(--shadow-gold);">`;
         }
       }
     }
@@ -243,11 +251,11 @@ document.addEventListener('DOMContentLoaded', () => {
           const docs = []; snap.forEach(d => docs.push(d));
           docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99)).forEach(doc => {
             const c = doc.data();
-            const isChair = c.isChairperson === true || (c.role && c.role.toLowerCase().includes('chair'));
-            const cardStyle = isChair ? 'grid-column: 1 / -1; max-width: 420px; margin: 0 auto 2rem; border: 2px solid var(--gold); background: rgba(245, 158, 11, 0.1);' : '';
-            const tag = isChair ? '<div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--gold-gradient);color:var(--navy);padding:4px 22px;border-radius:20px;font-size:0.85rem;font-weight:800;box-shadow:0 4px 15px rgba(245,158,11,0.4);z-index:2;letter-spacing:1px;text-transform:uppercase;">' + (c.role || 'Chairperson') + '</div>' : '';
+            const isChair = c.isChairperson === true || (c.role && (c.role.toLowerCase().includes('chair') || c.role.includes('अध्यक्ष')));
+            const cardStyle = isChair ? 'grid-column: 1 / -1; max-width: 420px; margin: 0 auto 2rem; border: 2px solid var(--gold); background: rgba(245, 158, 11, 0.1); overflow: visible !important;' : 'overflow: visible !important;';
+            const tag = isChair ? '<div style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#060d19;color:var(--gold-light);border:2px solid var(--gold);padding:5px 24px;border-radius:50px;font-size:0.92rem;font-weight:800;box-shadow:0 6px 25px rgba(0,0,0,0.85);z-index:10;white-space:nowrap;">' + sanitizeHTML(c.role || 'अध्यक्ष') + '</div>' : '';
             
-            commGrid.innerHTML += `<div class="glass-card member-card reveal visible" style="position:relative; text-align:center; padding:2rem 1.5rem; ${cardStyle}">
+            commGrid.innerHTML += `<div class="glass-card member-card reveal visible" style="position:relative; text-align:center; padding:2.25rem 1.5rem 1.75rem; ${cardStyle}">
               ${tag}
               ${c.photoUrl ? `<img src="${sanitizeHTML(optimizeImage(c.photoUrl))}" class="member-photo" alt="${sanitizeHTML(c.name)}" style="width:110px;height:110px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div class=&quot;member-photo-placeholder&quot;>👤</div>'">` : `<div class="member-photo-placeholder" style="width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin:0 auto 1rem;border:2px dashed var(--gold);">👤</div>`}
               <div class="member-name" style="font-size:1.2rem;font-weight:700;${isChair ? 'color:var(--gold-light);font-size:1.4rem;' : 'color:var(--white);'}">${sanitizeHTML(c.name)}</div>
