@@ -1,100 +1,87 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Photo Gallery - Shree Nepal Secondary School</title>
-  <meta name="description" content="Photo gallery showcasing school events, sports, infrastructure, computer lab, smart classroom, and campus life." />
-  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
-  <link rel="stylesheet" href="style.css?v=20260813" />
-
-  <!-- Firebase Compat SDK -->
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Photo Gallery — Shree Nepal Secondary School</title>
+  <meta name="description" content="Photo gallery of school events, sports, computer lab, smart classroom and campus life at Shree Nepal Secondary School." />
+  <meta name="theme-color" content="#060d19" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="style.css?v=4" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
   <script src="firebase-config.js"></script>
 </head>
 <body>
-
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li>
-      <li><a href="/committee">Committee</a></li>
-      <li><a href="/notices">Notices</a></li>
-      <li><a href="/gallery" class="active">Gallery</a></li>
-      <li><a href="/links">Edu Links</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/academics">Academics</a></li>
+      <li><a href="/faculty">Staff</a></li><li><a href="/committee">Committee</a></li><li><a href="/notices">Notices</a></li>
+      <li><a href="/gallery" class="active">Gallery</a></li><li><a href="/links">Edu Links</a></li><li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Campus Memories</div>
-    <h1>Interactive Photo Gallery</h1>
-    <p>Explore moments, academic events, sports competitions, and campus highlights</p>
+    <div class="tag">🖼️ Campus Memories</div>
+    <h1>Photo Gallery</h1>
+    <p>Explore moments, events, sports, and campus highlights</p>
   </div>
 </div>
 
-<section class="section" style="background:var(--navy)">
+<section class="section">
   <div class="container">
 
-    <!-- Category Filter Pills -->
-    <div class="gallery-filter" style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;margin-bottom:3rem;">
+    <div class="gallery-filter" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2.5rem;">
       <button class="gfilter-btn active" data-category="All">All Photos</button>
       <button class="gfilter-btn" data-category="Events">Events</button>
       <button class="gfilter-btn" data-category="Sports">Sports</button>
       <button class="gfilter-btn" data-category="Classroom">Classroom</button>
-      <button class="gfilter-btn" data-category="Lab">Lab</button>
+      <button class="gfilter-btn" data-category="Lab">Lab & Tech</button>
     </div>
 
-    <!-- Pre-populated Gallery Grid -->
     <div id="gallery-grid" class="gallery-grid">
-      <div class="gallery-item reveal visible" style="border-radius:16px;overflow:hidden;position:relative;">
-        <img src="images/assembly.jpg" alt="School Morning Assembly" style="width:100%;height:260px;object-fit:cover;">
-        <div class="gallery-overlay" style="border-radius:16px;"><span>🔍 View Photo</span></div>
+      <div class="gallery-item reveal visible">
+        <img src="images/assembly.jpg" alt="School Assembly" loading="lazy">
+        <div class="gallery-overlay">🔍 View Photo</div>
       </div>
-      <div class="gallery-item reveal visible" style="border-radius:16px;overflow:hidden;position:relative;">
-        <img src="images/students.jpg" alt="Students in Classroom" style="width:100%;height:260px;object-fit:cover;">
-        <div class="gallery-overlay" style="border-radius:16px;"><span>🔍 View Photo</span></div>
+      <div class="gallery-item reveal visible">
+        <img src="images/students.jpg" alt="Students" loading="lazy">
+        <div class="gallery-overlay">🔍 View Photo</div>
       </div>
-      <div class="gallery-item reveal visible" style="border-radius:16px;overflow:hidden;position:relative;">
-        <img src="images/staff-room.jpg" alt="Staff Room & Facilities" style="width:100%;height:260px;object-fit:cover;">
-        <div class="gallery-overlay" style="border-radius:16px;"><span>🔍 View Photo</span></div>
+      <div class="gallery-item reveal visible">
+        <img src="images/staff-room.jpg" alt="Staff Room" loading="lazy">
+        <div class="gallery-overlay">🔍 View Photo</div>
       </div>
     </div>
 
   </div>
 </section>
 
-<!-- Lightbox Modal -->
-<div id="lightbox-overlay">
-  <button id="lightbox-close" style="position:absolute;top:20px;right:30px;color:white;font-size:2.5rem;background:none;border:none;cursor:pointer;">&times;</button>
-  <img id="lightbox-img" src="" alt="Enlarged gallery view">
+<div id="lightbox-overlay" role="dialog">
+  <button id="lightbox-close" style="position:absolute;top:14px;right:18px;color:white;font-size:2rem;background:none;border:none;cursor:pointer;z-index:2;">&times;</button>
+  <img id="lightbox-img" src="" alt="Enlarged view">
 </div>
 
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom">
-      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span> — All Rights Reserved</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=20260813"></script>
-<script src="dynamic.js?v=20260813"></script>
-</body>
-</html>
+<script src="script.js?v=4"></script>
+<script src="dynamic.js?v=4"></script>
+</body></html>

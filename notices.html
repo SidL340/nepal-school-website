@@ -1,92 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Notice Board - Shree Nepal Secondary School</title>
-  <meta name="description" content="Official notices, examination schedules, holiday circulars, and announcements from Shree Nepal Secondary School." />
-  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
-  <link rel="stylesheet" href="style.css?v=20260813" />
-
-  <!-- Firebase Compat SDK -->
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Notice Board — Shree Nepal Secondary School</title>
+  <meta name="description" content="Official notices, examination schedules, holiday circulars and announcements from Shree Nepal Secondary School." />
+  <meta name="theme-color" content="#060d19" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="style.css?v=4" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
   <script src="firebase-config.js"></script>
 </head>
 <body>
-
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li>
-      <li><a href="/committee">Committee</a></li>
-      <li><a href="/notices" class="active">Notices</a></li>
-      <li><a href="/gallery">Gallery</a></li>
-      <li><a href="/links">Edu Links</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/academics">Academics</a></li>
+      <li><a href="/faculty">Staff</a></li><li><a href="/committee">Committee</a></li><li><a href="/notices" class="active">Notices</a></li>
+      <li><a href="/gallery">Gallery</a></li><li><a href="/links">Edu Links</a></li><li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Official Circulars</div>
-    <h1>Notice Board & Announcements</h1>
-    <p>Stay updated with examination schedules, events, holidays, and official updates</p>
+    <div class="tag">📋 Official Circulars</div>
+    <h1>Notice Board</h1>
+    <p>Examination schedules, holiday circulars, events and official school announcements</p>
   </div>
 </div>
 
-<section class="section" style="background:var(--navy)">
+<section class="section">
   <div class="container">
 
-    <!-- Notice Category Filter Pills -->
-    <div id="notice-filter" style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;margin-bottom:3rem;">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">General</button>
-      <button class="filter-btn">Exam</button>
-      <button class="filter-btn">Admissions</button>
+    <div id="notice-filter" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2.5rem;">
+      <button class="filter-btn active" data-filter="All">All</button>
+      <button class="filter-btn" data-filter="General">General</button>
+      <button class="filter-btn" data-filter="Exam">Exam</button>
+      <button class="filter-btn" data-filter="Admissions">Admissions</button>
     </div>
 
-    <!-- Pre-populated Notice Grid for Instant 0ms Load -->
     <div id="notice-grid" class="grid-3">
-      <div class="notice-card glass-card reveal visible" style="padding:1.75rem;position:relative;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-          <span class="badge badge-gold">ADMISSION NOTICE</span>
-          <span style="font-size:0.8rem;color:var(--text-muted);">📅 2081 B.S.</span>
+      <div class="glass-card reveal visible notice-grid-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+          <span class="badge badge-gold">ADMISSIONS</span>
+          <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
         </div>
-        <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">Class 11 (+2 Management & Education) Admission Open</h3>
-        <p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">Admissions are now open for new Grade 11 students for academic session 2081. Form distribution is available from the school office.</p>
+        <h3 style="font-size:1rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">Class 11 Admission Open — Management & Education</h3>
+        <p style="color:var(--text-body);font-size:0.88rem;line-height:1.65;">Admissions open for Grade 11 students. Form distribution available at school office during working hours.</p>
       </div>
-
-      <div class="notice-card glass-card reveal visible" style="padding:1.75rem;position:relative;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-          <span class="badge badge-red">URGENT NOTICE</span>
-          <span style="font-size:0.8rem;color:var(--text-muted);">📅 2081 B.S.</span>
+      <div class="glass-card reveal visible notice-grid-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+          <span class="badge badge-red">URGENT</span>
+          <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
         </div>
-        <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">Terminal Examination Routine & Guidelines</h3>
-        <p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">All students from Class 1 to Class 12 are requested to check the examination timetable and prepare accordingly.</p>
+        <h3 style="font-size:1rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">Terminal Examination Routine Published</h3>
+        <p style="color:var(--text-body);font-size:0.88rem;line-height:1.65;">All students Grade 1–12 must check the examination timetable. Preparation starts immediately.</p>
       </div>
-
-      <div class="notice-card glass-card reveal visible" style="padding:1.75rem;position:relative;">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-          <span class="badge badge-blue">ANNOUNCEMENT</span>
-          <span style="font-size:0.8rem;color:var(--text-muted);">📅 2081 B.S.</span>
+      <div class="glass-card reveal visible notice-grid-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+          <span class="badge badge-blue">GENERAL</span>
+          <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
         </div>
-        <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">Parent-Teacher Association (PTA) Meeting</h3>
-        <p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">The upcoming PTA assembly will be held at the school auditorium to discuss student progress and infrastructure developments.</p>
+        <h3 style="font-size:1rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">Parent-Teacher Meeting — This Week</h3>
+        <p style="color:var(--text-body);font-size:0.88rem;line-height:1.65;">PTA assembly at the school auditorium. Parents are requested to attend and collect student progress reports.</p>
       </div>
     </div>
 
@@ -96,12 +83,11 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom">
-      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span> — All Rights Reserved</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=20260813"></script>
-<script src="dynamic.js?v=20260813"></script>
-</body>
-</html>
+<script src="script.js?v=4"></script>
+<script src="dynamic.js?v=4"></script>
+</body></html>

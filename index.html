@@ -2,16 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Shree Nepal Secondary School - Official Website</title>
-  <meta name="description" content="Official Website of Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal. Quality education from ECD to Class 12." />
-  <meta name="keywords" content="Shree Nepal Secondary School, Rautahat School, Nepal School, Brindaban Rautahat, NEB School" />
-  <meta property="og:title" content="Shree Nepal Secondary School - Official Website" />
-  <meta property="og:description" content="Quality education from ECD to Class 12 — Brindaban-02, Rautahat, Nepal" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Shree Nepal Secondary School — Official Website</title>
+  <meta name="description" content="Official Website of Shree Nepal Secondary School, Bishrampur, Brindaban-02, Rautahat, Nepal. NEB Affiliated. Quality education ECD to Class 12 (+2)." />
+  <meta name="theme-color" content="#060d19" />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=20260813" />
-  
-  <!-- Firebase Compat SDK -->
+  <link rel="stylesheet" href="style.css?v=4" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
@@ -19,11 +15,11 @@
 </head>
 <body>
 
-<!-- ═══ NAVIGATION BAR ════════════════════════════════════════════ -->
+<!-- ═══ NAVBAR ════════════════════════════════════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" style="width:48px;height:48px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
@@ -41,54 +37,53 @@
       <li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Navigation Menu">
+    <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
   </div>
 </nav>
 
+<!-- Sliding announcement ticker (populated by Firebase) -->
 <div id="ticker-wrapper" style="display:none;"></div>
 
-<!-- ═══ HERO SECTION (NO DOUBLED NAME!) ══════════════════════════ -->
-<section class="hero">
+<!-- ═══ HERO SECTION ═══════════════════════════════════════════════════════ -->
+<section class="hero" id="hero-section">
   <div class="hero-bg">
-    <img src="images/assembly.jpg" alt="School Assembly" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'1200\' height=\'800\' viewBox=\'0 0 1200 800\' fill=\'%230d1b2a\'><rect width=\'1200\' height=\'800\' fill=\'%230d1b2a\'/></svg>'" />
+    <img src="images/assembly.jpg" alt="" onerror="this.style.display='none'">
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-particles" id="hero-particles"></div>
 
-  <div class="container" style="position:relative;z-index:2;width:100%;">
-    <div class="hero-content">
+  <div class="container">
+    <div class="hero-content reveal visible">
+
       <div class="hero-badge">
-        <span>🇳🇵</span> NEB Affiliated &nbsp;&middot;&nbsp; ESTD 2007 B.S. &nbsp;&middot;&nbsp; Government School
+        🇳🇵 NEB Affiliated &nbsp;·&nbsp; Estd. 2007 B.S. &nbsp;·&nbsp; Govt. Secondary School
       </div>
-      <!-- Fixed doubled title issue! -->
-      <h1>
-        <span class="dyn-school-name">Shree Nepal Secondary School</span><br>
-        <span style="font-size:0.65em;color:var(--text-body);font-weight:600;">Bishrampur, Rautahat</span>
-      </h1>
-      <p class="dyn-school-about">
-        Nurturing Young Minds &nbsp;&middot;&nbsp; Empowering Students for 21st Century Excellence &nbsp;&middot;&nbsp; Quality Education from ECD to Class 12 (+2).
-      </p>
+
+      <h1><span class="dyn-school-name">Shree Nepal Secondary School</span></h1>
+      <p class="hero-tagline dyn-school-about">Nurturing Young Minds · Empowering Students for 21st Century Excellence · Quality Education from ECD to Class 12 (+2).</p>
+
       <div class="hero-actions">
-        <a href="/about" class="btn btn-gold">Explore Our School →</a>
-        <a href="/notices" class="btn btn-outline">Latest Notices 📢</a>
-        <a href="/epustakalaya" class="btn btn-white">E-Pustakalaya 📚</a>
+        <a href="/about"         class="btn btn-gold">Explore Our School →</a>
+        <a href="/notices"       class="btn btn-outline">Latest Notices 📢</a>
+        <a href="/epustakalaya"  class="btn btn-white">E-Library 📚</a>
       </div>
+
     </div>
   </div>
 </section>
 
-<!-- ═══ STATS COUNTER BAR ═════════════════════════════════════════ -->
+<!-- ═══ STATS BAR ══════════════════════════════════════════════════════════ -->
 <div class="container">
   <div class="stats-bar grid-4">
     <div class="stat-item">
       <div class="stat-number" data-count="1200" data-suffix="+">0</div>
-      <div class="stat-label">Active Students</div>
+      <div class="stat-label">Students</div>
     </div>
     <div class="stat-item">
       <div class="stat-number" data-count="35" data-suffix="+">0</div>
-      <div class="stat-label">Dedicated Staff</div>
+      <div class="stat-label">Staff</div>
     </div>
     <div class="stat-item">
       <div class="stat-number" data-count="100" data-suffix="%">0</div>
@@ -96,260 +91,231 @@
     </div>
     <div class="stat-item">
       <div class="stat-number" data-count="18" data-suffix="+">0</div>
-      <div class="stat-label">Years Excellence</div>
+      <div class="stat-label">Years Strong</div>
     </div>
   </div>
 </div>
 
-<!-- ═══ NOTICES & PRINCIPAL MESSAGE ═══════════════════════════════ -->
+<!-- ═══ NOTICES + PRINCIPAL ═══════════════════════════════════════════════ -->
 <section class="section">
   <div class="container">
-    <div class="grid-2" style="align-items:start;gap:3rem;">
+    <div class="grid-2" style="align-items:start;">
 
-      <!-- Notice Board -->
+      <!-- NOTICE BOARD -->
       <div>
-        <div class="section-header" style="text-align:left;margin-bottom:2rem">
-          <div class="tag">Recent Updates</div>
-          <h2>Notice Board</h2>
-          <div class="gold-line" style="margin:1rem 0 0;"></div>
+        <div style="margin-bottom:1.75rem;">
+          <div class="tag">📢 Recent Updates</div>
+          <h2 style="margin-top:0.5rem;margin-bottom:0;">Notice Board</h2>
+          <div class="gold-line" style="margin:0.75rem 0 0;margin-left:0;"></div>
         </div>
 
         <div id="notice-preview-list">
-          <div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;">
-            <div class="notice-icon" style="font-size:1.5rem;">📢</div>
-            <div class="notice-info" style="flex:1;">
-              <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">Admission Open for Grade 11 (+2 Management & Education)</h4>
-              <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                <span>📅 2081 B.S.</span>
+          <!-- Default notice cards shown instantly; Firebase replaces these -->
+          <div class="notice-preview-card glass-card">
+            <div style="font-size:1.4rem;flex-shrink:0;">📢</div>
+            <div>
+              <h4 style="color:var(--white);font-size:0.95rem;margin-bottom:0.3rem;font-weight:700;">Admission Open — Grade 11 (+2 Management & Education)</h4>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;">
+                <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
                 <span class="badge badge-gold">Admissions</span>
               </div>
             </div>
           </div>
-          <div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;">
-            <div class="notice-icon" style="font-size:1.5rem;">🚨</div>
-            <div class="notice-info" style="flex:1;">
-              <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">Terminal Examination Routine Published</h4>
-              <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                <span>📅 2081 B.S.</span>
+          <div class="notice-preview-card glass-card">
+            <div style="font-size:1.4rem;flex-shrink:0;">🚨</div>
+            <div>
+              <h4 style="color:var(--white);font-size:0.95rem;margin-bottom:0.3rem;font-weight:700;">Terminal Examination Routine Published</h4>
+              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;">
+                <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
                 <span class="badge badge-red">Urgent</span>
               </div>
             </div>
           </div>
         </div>
 
-        <a href="/notices" class="btn btn-outline" style="margin-top:1.5rem">
-          View All Official Notices →
-        </a>
+        <a href="/notices" class="btn btn-outline" style="margin-top:1.5rem;">View All Notices →</a>
       </div>
 
-      <!-- Principal Message -->
-      <div class="principal-section glass-card" style="padding:2.5rem">
-        <div class="section-header" style="text-align:left;margin-bottom:1.5rem">
-          <div class="tag">Leadership Message</div>
-          <h2>Principal's Message</h2>
-        </div>
-        <div style="display:flex;gap:1.5rem;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;">
+      <!-- PRINCIPAL MESSAGE -->
+      <div class="glass-card" style="padding:2rem;">
+        <div class="tag" style="margin-bottom:0.75rem;">Leadership Message</div>
+        <h3 style="color:var(--white);margin-bottom:1.25rem;">Principal's Message</h3>
+        <div style="display:flex;gap:1.15rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;">
           <div class="principal-photo-wrap" style="flex-shrink:0;">
-            <div style="width:110px;height:110px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:3rem;border:3px solid var(--gold);">👨‍💼</div>
+            <div style="width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:2.2rem;border:2.5px solid var(--gold);">👨‍💼</div>
           </div>
           <div>
-            <div class="principal-name" style="font-size:1.2rem;font-weight:700;color:var(--gold);"><span class="principal-name">Premlal Prasad Raut</span></div>
-            <div class="principal-title" style="color:var(--text-muted);font-size:0.85rem;">Principal, <span class="dyn-school-name">Shree Nepal Secondary School</span></div>
-            <div style="margin-top:0.35rem;font-size:0.85rem;"><a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="principal-email" style="color:var(--gold-light);">✉️ Contact Principal</a></div>
+            <div class="principal-name" style="font-size:1.05rem;font-weight:800;color:var(--gold);">Premlal Prasad Raut</div>
+            <div style="color:var(--text-muted);font-size:0.82rem;margin-top:0.15rem;">Principal, <span class="dyn-school-name">Shree Nepal Secondary School</span></div>
           </div>
         </div>
-        <div id="principal-msg-wrapper" style="max-height: 160px; overflow: hidden; position: relative; transition: max-height 0.4s ease-in-out;">
-          <p class="message-text" style="margin-bottom:0;">
-            "Dear Students, Parents, and Well-wishers,<br><br>
-            It is my great honor to welcome you to <span class="dyn-school-name">Shree Nepal Secondary School</span>. 
-            We are dedicated to offering holistic, future-ready education that builds knowledge, character, and leadership."
-          </p>
-          <div id="principal-msg-fade" style="position:absolute; bottom:0; left:0; right:0; height:60px; background:linear-gradient(transparent, var(--navy-mid));"></div>
-        </div>
-        <button id="principal-msg-btn" class="btn btn-outline btn-sm" style="margin-top:1.5rem;" onclick="togglePrincipalMessage()">
-          Read Full Message ↓
-        </button>
-        <script>
-          function togglePrincipalMessage() {
-            const wrap = document.getElementById('principal-msg-wrapper');
-            const fade = document.getElementById('principal-msg-fade');
-            const btn = document.getElementById('principal-msg-btn');
-            if (wrap.style.maxHeight === '160px' || !wrap.style.maxHeight) {
-              wrap.style.maxHeight = '2000px';
-              fade.style.display = 'none';
-              btn.innerHTML = 'Show Less ↑';
-            } else {
-              wrap.style.maxHeight = '160px';
-              fade.style.display = 'block';
-              btn.innerHTML = 'Read Full Message ↓';
-            }
-          }
-        </script>
+        <p class="message-text" style="font-size:0.92rem;line-height:1.75;font-style:italic;color:var(--text-body);">
+          "Dear Students, Parents, and Well-wishers — It is my great honor to welcome you to Shree Nepal Secondary School. We are dedicated to offering holistic, future-ready education that builds knowledge, character, and leadership."
+        </p>
+        <a href="/about" class="btn btn-outline btn-sm" style="margin-top:1.25rem;">Read More ↓</a>
       </div>
 
     </div>
   </div>
 </section>
 
-<!-- ═══ FACILITIES SECTION ═════════════════════════════════════════ -->
+<!-- ═══ FACILITIES ══════════════════════════════════════════════════════════ -->
 <section class="section" style="background:var(--navy-mid);">
   <div class="container">
     <div class="section-header">
-      <div class="tag">Campus Infrastructure</div>
-      <h2>Our Modern Facilities</h2>
-      <p>Providing state-of-the-art learning environments to support academic excellence</p>
-      <div class="gold-line"></div>
-    </div>
-    <div class="grid-3 reveal">
-      <div class="glass-card facility-card" style="padding:0;height:280px;position:relative;">
-        <img id="fac-computer" src="images/staff-room.jpg" alt="Computer Lab" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🖥️ Computer Lab</text></svg>'">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(6,13,25,0.9), transparent 60%);display:flex;align-items:flex-end;padding:1.5rem;">
-          <div>
-            <h3 style="color:var(--white);font-size:1.15rem;">🖥️ Computer Laboratory</h3>
-            <p style="color:var(--text-muted);font-size:0.85rem;">High-speed internet with modern desktop computers</p>
-          </div>
-        </div>
-      </div>
-      <div class="glass-card facility-card" style="padding:0;height:280px;position:relative;">
-        <img id="fac-smart" src="images/students.jpg" alt="Smart Classroom" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🏫 Smart Classroom</text></svg>'">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(6,13,25,0.9), transparent 60%);display:flex;align-items:flex-end;padding:1.5rem;">
-          <div>
-            <h3 style="color:var(--white);font-size:1.15rem;">🏫 Smart Classroom</h3>
-            <p style="color:var(--text-muted);font-size:0.85rem;">Interactive digital displays and multimedia learning</p>
-          </div>
-        </div>
-      </div>
-      <div class="glass-card facility-card" style="padding:0;height:280px;position:relative;">
-        <img id="fac-ground" src="images/assembly.jpg" alt="Sports Ground" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🏃 Sports Ground</text></svg>'">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(6,13,25,0.9), transparent 60%);display:flex;align-items:flex-end;padding:1.5rem;">
-          <div>
-            <h3 style="color:var(--white);font-size:1.15rem;">🏃 Sports Field</h3>
-            <p style="color:var(--text-muted);font-size:0.85rem;">Outdoor playground and physical sports arena</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:3rem">
-      <a href="/gallery" class="btn btn-gold">Explore Full Gallery →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ ACADEMIC PROGRAMS ═════════════════════════════════════════ -->
-<section class="section">
-  <div class="container">
-    <div class="section-header">
-      <div class="tag">Academic Streams</div>
-      <h2>Educational Programs</h2>
-      <p>Comprehensive education from early childhood development to Grade 12 (+2)</p>
+      <div class="tag">🏫 Campus Infrastructure</div>
+      <h2>Our Facilities</h2>
+      <p>State-of-the-art learning environments for academic excellence</p>
       <div class="gold-line"></div>
     </div>
     <div class="grid-3">
-      <div class="glass-card reveal" style="padding:2.25rem;text-align:center">
-        <div style="font-size:3.5rem;margin-bottom:1rem">🌱</div>
-        <h3 style="color:var(--gold);margin-bottom:0.75rem">ECD – Class 10</h3>
-        <p style="font-size:0.9rem">Foundational early learning through Secondary Education Examination (SEE) level with strong STEM and language focus.</p>
-        <div style="margin-top:1.25rem">
-          <span class="badge badge-gold">ECD</span>
-          <span class="badge badge-gold" style="margin-left:0.4rem">Grade 1-10</span>
+      <div class="facility-card glass-card reveal">
+        <img id="fac-computer" src="images/staff-room.jpg" alt="Computer Lab" onerror="this.style.display='none'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,13,25,0.9) 0%,transparent 55%);display:flex;align-items:flex-end;padding:1.25rem;">
+          <div>
+            <h3 style="color:var(--white);font-size:1rem;margin-bottom:0.2rem;">🖥️ Computer Lab</h3>
+            <p style="color:var(--text-muted);font-size:0.8rem;margin:0;">High-speed internet &amp; modern PCs</p>
+          </div>
         </div>
       </div>
-      <div class="glass-card reveal" style="padding:2.25rem;text-align:center">
-        <div style="font-size:3.5rem;margin-bottom:1rem">📊</div>
-        <h3 style="color:var(--gold);margin-bottom:0.75rem">+2 Management</h3>
-        <p style="font-size:0.9rem">NEB-accredited management stream covering Accountancy, Economics, Business Studies, and Computer Science.</p>
-        <div style="margin-top:1.25rem">
-          <span class="badge badge-blue">+2 Stream</span>
-          <span class="badge badge-blue" style="margin-left:0.4rem">NEB</span>
+      <div class="facility-card glass-card reveal">
+        <img id="fac-smart" src="images/students.jpg" alt="Smart Classroom" onerror="this.style.display='none'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,13,25,0.9) 0%,transparent 55%);display:flex;align-items:flex-end;padding:1.25rem;">
+          <div>
+            <h3 style="color:var(--white);font-size:1rem;margin-bottom:0.2rem;">📲 Smart Classroom</h3>
+            <p style="color:var(--text-muted);font-size:0.8rem;margin:0;">Interactive digital teaching boards</p>
+          </div>
         </div>
       </div>
-      <div class="glass-card reveal" style="padding:2.25rem;text-align:center">
-        <div style="font-size:3.5rem;margin-bottom:1rem">📖</div>
-        <h3 style="color:var(--gold);margin-bottom:0.75rem">+2 Education & Humanities</h3>
-        <p style="font-size:0.9rem">Fostering critical thinking, pedagogy, literature, and social sciences for future educators and leaders.</p>
-        <div style="margin-top:1.25rem">
-          <span class="badge badge-blue">Education</span>
-          <span class="badge badge-blue" style="margin-left:0.4rem">Humanities</span>
+      <div class="facility-card glass-card reveal">
+        <img id="fac-ground" src="images/assembly.jpg" alt="Sports Field" onerror="this.style.display='none'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,13,25,0.9) 0%,transparent 55%);display:flex;align-items:flex-end;padding:1.25rem;">
+          <div>
+            <h3 style="color:var(--white);font-size:1rem;margin-bottom:0.2rem;">🏃 Sports Field</h3>
+            <p style="color:var(--text-muted);font-size:0.8rem;margin:0;">Open-air playground &amp; sports arena</p>
+          </div>
         </div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:3rem">
-      <a href="/academics" class="btn btn-outline">Explore Academics & Curriculum →</a>
+    <div style="text-align:center;margin-top:2.5rem;">
+      <a href="/gallery" class="btn btn-gold">View Full Gallery →</a>
     </div>
   </div>
 </section>
 
-<!-- ═══ FOOTER ════════════════════════════════════════════════════ -->
+<!-- ═══ ACADEMIC PROGRAMS ══════════════════════════════════════════════════ -->
+<section class="section">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">🎓 Academic Streams</div>
+      <h2>Educational Programs</h2>
+      <p>From Early Childhood to Grade 12 (+2) — comprehensive NEB curriculum</p>
+      <div class="gold-line"></div>
+    </div>
+    <div class="grid-3">
+      <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid var(--gold);">
+        <div style="font-size:3rem;margin-bottom:0.85rem;">🌱</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.2rem;">ECD – Class 10</h3>
+        <p style="font-size:0.88rem;">Foundational early learning through SEE level with strong STEM, language and values focus.</p>
+        <div style="margin-top:1.1rem;display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;">
+          <span class="badge badge-gold">ECD</span>
+          <span class="badge badge-gold">Grade 1–10</span>
+        </div>
+      </div>
+      <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid #0ea5e9;">
+        <div style="font-size:3rem;margin-bottom:0.85rem;">📊</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.2rem;">+2 Management</h3>
+        <p style="font-size:0.88rem;">NEB Management stream — Accountancy, Economics, Business Studies, and Computer Science.</p>
+        <div style="margin-top:1.1rem;display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;">
+          <span class="badge badge-blue">+2 Stream</span>
+          <span class="badge badge-blue">NEB</span>
+        </div>
+      </div>
+      <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid #2dd4bf;">
+        <div style="font-size:3rem;margin-bottom:0.85rem;">📖</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.2rem;">+2 Education & Humanities</h3>
+        <p style="font-size:0.88rem;">Pedagogy, literature, social sciences — fostering future educators and community leaders.</p>
+        <div style="margin-top:1.1rem;display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;">
+          <span class="badge badge-blue">Education</span>
+          <span class="badge badge-blue">Humanities</span>
+        </div>
+      </div>
+    </div>
+    <div style="text-align:center;margin-top:2.5rem;">
+      <a href="/academics" class="btn btn-outline">View Academic Details →</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════════════════════════ -->
 <footer class="footer">
   <div class="container">
-    <div class="grid-4" style="gap:2.5rem;margin-bottom:3rem;">
-      <div class="footer-brand">
-        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
-          <img src="images/logo.png" alt="School Logo" style="width:45px;height:45px;object-fit:contain;border-radius:50%;">
-          <h3 style="color:var(--gold-light);font-size:1.1rem;"><span class="dyn-school-name">Shree Nepal Secondary School</span></h3>
+    <div class="grid-4" style="gap:2rem;margin-bottom:2rem;">
+      <div>
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.85rem;">
+          <img src="images/logo.png" alt="Logo" style="width:38px;height:38px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);" onerror="this.style.display='none'">
+          <h4 style="color:var(--gold-light);font-size:0.95rem;"><span class="dyn-school-name">Shree Nepal Secondary School</span></h4>
         </div>
-        <p>Providing quality education from ECD to Class 12 in Brindaban-02, Rautahat, Madhesh Province, Nepal.</p>
+        <p style="font-size:0.85rem;color:var(--text-muted);">Quality education from ECD to Class 12 in Brindaban-02, Rautahat, Madhesh Province, Nepal.</p>
       </div>
       <div class="footer-links">
-        <h4 style="color:var(--gold);margin-bottom:1rem;">Navigation</h4>
+        <h4>Navigation</h4>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About Us</a></li>
-          <li><a href="/academics">Academics</a></li>
-          <li><a href="/faculty">Staff Directory</a></li>
-          <li><a href="/committee">Management Committee</a></li>
+          <li><a href="/">🏠 Home</a></li>
+          <li><a href="/about">ℹ️ About Us</a></li>
+          <li><a href="/academics">📚 Academics</a></li>
+          <li><a href="/faculty">👨‍🏫 Staff</a></li>
+          <li><a href="/committee">🏛️ Committee</a></li>
         </ul>
       </div>
       <div class="footer-links">
-        <h4 style="color:var(--gold);margin-bottom:1rem;">Portals & Resources</h4>
+        <h4>Quick Links</h4>
         <ul>
-          <li><a href="/notices">Notice Board</a></li>
-          <li><a href="/gallery">Photo Gallery</a></li>
-          <li><a href="/epustakalaya">E-Pustakalaya Library</a></li>
-          <li><a href="/links">Edu Links</a></li>
-          <li><a href="/manage">Admin Portal</a></li>
+          <li><a href="/notices">📋 Notice Board</a></li>
+          <li><a href="/gallery">🖼️ Gallery</a></li>
+          <li><a href="/epustakalaya">📖 E-Library</a></li>
+          <li><a href="/links">🔗 Edu Links</a></li>
+          <li><a href="/manage">🔐 Admin Portal</a></li>
         </ul>
       </div>
       <div class="footer-links">
-        <h4 style="color:var(--gold);margin-bottom:1rem;">Contact Us</h4>
-        <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.5rem;">📍 Brindaban-02, Rautahat, Nepal</p>
-        <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.5rem;">📞 <a href="tel:9845000000" class="dyn-school-phone-link" style="color:var(--gold);"><span class="dyn-school-phone">Contact Phone</span></a></p>
-        <p style="font-size:0.9rem;color:var(--text-muted);">✉️ <a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="dyn-school-email-link" style="color:var(--gold);"><span class="dyn-school-email">Contact Email</span></a></p>
+        <h4>Contact</h4>
+        <ul>
+          <li><a href="#">📍 Brindaban-02, Rautahat</a></li>
+          <li><a href="tel:9845000000" class="dyn-school-phone-link">📞 <span class="dyn-school-phone">Call School</span></a></li>
+          <li><a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="dyn-school-email-link">✉️ <span class="dyn-school-email">Email Office</span></a></li>
+          <li><a href="https://nepalssb.edu.np">🌐 nepalssb.edu.np</a></li>
+        </ul>
       </div>
     </div>
     <div class="footer-bottom">
-      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved. | <a href="https://nepalssb.edu.np" style="color:var(--gold)">nepalssb.edu.np</a></p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span> — All Rights Reserved &nbsp;|&nbsp; <a href="https://nepalssb.edu.np" style="color:var(--gold);">nepalssb.edu.np</a></p>
     </div>
   </div>
 </footer>
 
-<!-- Lightbox Modal Overlay -->
-<div id="lightbox-overlay">
-  <button id="lightbox-close" style="position:absolute;top:20px;right:30px;color:white;font-size:2.5rem;background:none;border:none;cursor:pointer;">&times;</button>
+<!-- Lightbox -->
+<div id="lightbox-overlay" role="dialog" aria-label="Image lightbox">
+  <button id="lightbox-close" style="position:absolute;top:16px;right:20px;color:white;font-size:2.2rem;background:none;border:none;cursor:pointer;z-index:2;line-height:1;">&times;</button>
   <img id="lightbox-img" src="" alt="Enlarged view">
 </div>
 
-<script src="script.js?v=20260813"></script>
+<script src="script.js?v=4"></script>
 <script>
-  const particleContainer = document.getElementById('hero-particles');
-  if (particleContainer) {
-    for (let i = 0; i < 20; i++) {
-      const p = document.createElement('div');
-      p.style.cssText = `
-        position: absolute;
-        width: ${Math.random() * 6 + 2}px;
-        height: ${Math.random() * 6 + 2}px;
-        background: var(--gold);
-        border-radius: 50%;
-        opacity: ${Math.random() * 0.3 + 0.1};
-        left: ${Math.random() * 100}%;
-        top: ${Math.random() * 100}%;
-        animation: float ${Math.random() * 6 + 4}s ease-in-out infinite;
-      `;
-      particleContainer.appendChild(p);
+  // Floating particles
+  (() => {
+    const c = document.getElementById('hero-particles');
+    if (!c) return;
+    for (let i = 0; i < 18; i++) {
+      const d = document.createElement('div');
+      const s = Math.random() * 5 + 2;
+      d.style.cssText = `position:absolute;width:${s}px;height:${s}px;background:var(--gold);border-radius:50%;
+        opacity:${(Math.random()*0.25+0.07).toFixed(2)};left:${Math.random()*100}%;top:${Math.random()*100}%;
+        animation:float ${Math.random()*7+5}s ease-in-out ${Math.random()*4}s infinite;pointer-events:none;`;
+      c.appendChild(d);
     }
-  }
+  })();
 </script>
-<script src="dynamic.js?v=20260813"></script>
+<script src="dynamic.js?v=4"></script>
 </body>
 </html>

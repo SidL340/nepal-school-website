@@ -1,91 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>E-Pustakalaya Digital Library - Shree Nepal Secondary School</title>
-  <meta name="description" content="Access thousands of free educational e-books, textbooks, and learning materials on E-Pustakalaya for students of Shree Nepal Secondary School." />
-  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
-  <link rel="stylesheet" href="style.css?v=20260813" />
-
-  <!-- Firebase Compat SDK -->
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>E-Pustakalaya — Shree Nepal Secondary School</title>
+  <meta name="description" content="Access thousands of free educational e-books, textbooks and learning materials on E-Pustakalaya." />
+  <meta name="theme-color" content="#060d19" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="style.css?v=4" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
   <script src="firebase-config.js"></script>
 </head>
 <body>
-
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li>
-      <li><a href="/committee">Committee</a></li>
-      <li><a href="/notices">Notices</a></li>
-      <li><a href="/gallery">Gallery</a></li>
-      <li><a href="/links">Edu Links</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/academics">Academics</a></li>
+      <li><a href="/faculty">Staff</a></li><li><a href="/committee">Committee</a></li><li><a href="/notices">Notices</a></li>
+      <li><a href="/gallery">Gallery</a></li><li><a href="/links">Edu Links</a></li><li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya active">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Digital Learning Resource</div>
+    <div class="tag">📚 Digital Learning</div>
     <h1>E-Pustakalaya National E-Library</h1>
-    <p>Your gateway to thousands of free educational textbooks, reference materials, and literature</p>
+    <p>Your gateway to thousands of free educational textbooks, reference materials and literature</p>
   </div>
 </div>
 
-<section class="section" style="background:var(--navy)">
+<section class="section">
   <div class="container">
-    
-    <div class="glass-card reveal" style="padding:3.5rem 2.5rem;text-align:center;margin-bottom:3rem;">
-      <div style="font-size:4rem;margin-bottom:1.25rem;">📚</div>
-      <div class="tag" style="margin-bottom:1.25rem;">Nepal's Premier E-Library</div>
-      <h2 style="color:var(--white);margin-bottom:1rem;">Access E-Pustakalaya Portal</h2>
-      <p style="max-width:700px;margin:0 auto 2.25rem;color:var(--text-body);font-size:1.05rem;">
-        E-Pustakalaya is an open educational repository providing free access to digital textbooks, reference books, educational games, and audio-visual material developed for Nepali students and teachers.
-      </p>
-      
-      <div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;">
-        <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="btn btn-gold" style="font-size:1rem;padding:0.9rem 2.25rem">
-          📖 Launch E-Pustakalaya Web Portal ↗
-        </a>
-        <a href="https://gradewise.pustakalaya.org/grade/" target="_blank" rel="noopener" class="btn btn-outline" style="font-size:1rem;padding:0.9rem 2.25rem">
-          🎓 Browse Grade-wise Textbooks ↗
-        </a>
+
+    <!-- Hero CTA -->
+    <div class="glass-card reveal" style="padding:2.5rem;text-align:center;margin-bottom:3rem;border:1px solid rgba(245,158,11,0.3);">
+      <div style="font-size:4rem;margin-bottom:1rem;">📚</div>
+      <div class="tag" style="margin-bottom:1rem;">Nepal's Premier E-Library</div>
+      <h2 style="color:var(--white);margin-bottom:0.75rem;">Open Access Learning Portal</h2>
+      <p style="max-width:640px;margin:0 auto 2rem;font-size:0.95rem;">E-Pustakalaya is an open educational repository providing free access to digital textbooks, reference books, and educational materials developed for Nepali students and teachers of all grade levels.</p>
+      <div style="display:flex;gap:0.9rem;justify-content:center;flex-wrap:wrap;">
+        <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="btn btn-gold">📖 Launch E-Pustakalaya ↗</a>
+        <a href="https://gradewise.pustakalaya.org/grade/" target="_blank" rel="noopener" class="btn btn-outline">🎓 Browse by Grade ↗</a>
       </div>
     </div>
 
-    <!-- Features Row -->
-    <div class="grid-3" style="gap:2rem;">
-      <div class="glass-card" style="padding:2rem;text-align:center;">
-        <div style="font-size:2.8rem;margin-bottom:0.75rem;">📕</div>
-        <h3 style="color:var(--gold);margin-bottom:0.5rem;">CDC Textbooks</h3>
-        <p style="font-size:0.88rem;color:var(--text-body);">Full PDF editions of all official Curriculum Development Centre (CDC) school textbooks from Class 1 to 12.</p>
+    <!-- Feature Cards -->
+    <div class="grid-3">
+      <div class="glass-card reveal" style="padding:1.75rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">📕</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.5rem;font-size:1rem;">CDC Textbooks</h3>
+        <p style="font-size:0.85rem;">Official Curriculum Development Centre (CDC) school textbooks from Class 1 to 12 in PDF format — completely free.</p>
       </div>
-      <div class="glass-card" style="padding:2rem;text-align:center;">
-        <div style="font-size:2.8rem;margin-bottom:0.75rem;">🎧</div>
-        <h3 style="color:var(--gold);margin-bottom:0.5rem;">Audio Books</h3>
-        <p style="font-size:0.88rem;color:var(--text-body);">Interactive audio stories and spoken literature recordings for early grade and language learners.</p>
+      <div class="glass-card reveal" style="padding:1.75rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🎧</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.5rem;font-size:1rem;">Audio Books</h3>
+        <p style="font-size:0.85rem;">Interactive audio stories and spoken literature for early-grade and language learners to build reading skills.</p>
       </div>
-      <div class="glass-card" style="padding:2rem;text-align:center;">
-        <div style="font-size:2.8rem;margin-bottom:0.75rem;">💻</div>
-        <h3 style="color:var(--gold);margin-bottom:0.5rem;">Interactive Learning</h3>
-        <p style="font-size:0.88rem;color:var(--text-body);">Educational games, math exercises, and science experiment simulations for active self-learning.</p>
+      <div class="glass-card reveal" style="padding:1.75rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🎮</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.5rem;font-size:1rem;">Interactive Learning</h3>
+        <p style="font-size:0.85rem;">Educational games, math exercises and science simulations for active, engaging self-learning at any level.</p>
+      </div>
+      <div class="glass-card reveal" style="padding:1.75rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🌐</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.5rem;font-size:1rem;">Multilingual Content</h3>
+        <p style="font-size:0.85rem;">Content available in Nepali, English, and regional languages to support all communities across Nepal.</p>
+      </div>
+      <div class="glass-card reveal" style="padding:1.75rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">📱</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.5rem;font-size:1rem;">Mobile Friendly</h3>
+        <p style="font-size:0.85rem;">Accessible on smartphones and tablets so students can learn anywhere, anytime, even with limited connectivity.</p>
+      </div>
+      <div class="glass-card reveal" style="padding:1.75rem;text-align:center;">
+        <div style="font-size:2.5rem;margin-bottom:0.75rem;">🆓</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.5rem;font-size:1rem;">Completely Free</h3>
+        <p style="font-size:0.85rem;">No subscription, no login required. All resources are freely accessible to every student in Nepal.</p>
       </div>
     </div>
 
@@ -95,12 +95,11 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom">
-      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span> — All Rights Reserved</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=20260813"></script>
-<script src="dynamic.js?v=20260813"></script>
-</body>
-</html>
+<script src="script.js?v=4"></script>
+<script src="dynamic.js?v=4"></script>
+</body></html>

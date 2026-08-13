@@ -24,29 +24,50 @@ document.addEventListener('DOMContentLoaded', () => {
   // ── 2. Mobile Nav Drawer Toggle ────────────────────────────
   const toggle = document.querySelector('.nav-toggle');
   const navLinks = document.querySelector('.nav-links');
+
+  // Backdrop overlay for mobile nav
+  let navBackdrop = document.getElementById('nav-backdrop');
+  if (!navBackdrop) {
+    navBackdrop = document.createElement('div');
+    navBackdrop.id = 'nav-backdrop';
+    navBackdrop.style.cssText = 'position:fixed;inset:0;background:rgba(6,13,25,0.55);z-index:998;display:none;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);';
+    document.body.appendChild(navBackdrop);
+  }
+
+  function closeNav() {
+    if (!navLinks) return;
+    navLinks.classList.remove('open');
+    if (toggle) {
+      toggle.classList.remove('is-open');
+      toggle.setAttribute('aria-expanded', 'false');
+      const spans = toggle.querySelectorAll('span');
+      spans[0].style.transform = '';
+      spans[1].style.opacity = '';
+      spans[2].style.transform = '';
+    }
+    navBackdrop.style.display = 'none';
+    document.body.style.overflow = '';
+  }
+
   if (toggle && navLinks) {
     toggle.addEventListener('click', () => {
-      navLinks.classList.toggle('open');
-      toggle.classList.toggle('is-open');
+      const isOpen = navLinks.classList.toggle('open');
+      toggle.classList.toggle('is-open', isOpen);
+      toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       const spans = toggle.querySelectorAll('span');
-      if (toggle.classList.contains('is-open')) {
-        spans[0].style.transform = 'translateY(8.5px) rotate(45deg)';
+      if (isOpen) {
+        spans[0].style.transform = 'translateY(7.5px) rotate(45deg)';
         spans[1].style.opacity = '0';
-        spans[2].style.transform = 'translateY(-8.5px) rotate(-45deg)';
+        spans[2].style.transform = 'translateY(-7.5px) rotate(-45deg)';
+        navBackdrop.style.display = 'block';
+        document.body.style.overflow = 'hidden';
       } else {
-        spans[0].style.transform = '';
-        spans[1].style.opacity = '';
-        spans[2].style.transform = '';
+        closeNav();
       }
     });
 
-    navLinks.querySelectorAll('a').forEach(a => {
-      a.addEventListener('click', () => {
-        navLinks.classList.remove('open');
-        toggle.classList.remove('is-open');
-        toggle.querySelectorAll('span').forEach(s => { s.style.transform = ''; s.style.opacity = ''; });
-      });
-    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
+    navBackdrop.addEventListener('click', closeNav);
   }
 
   // ── 3. Active Nav Link Highlighting ────────────────────────

@@ -168,9 +168,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // 3. Real-Time Staff Directory
   if (path.includes('faculty')) {
-    const staffGrid = document.getElementById('staff-grid') || document.querySelector('.grid-4'); 
+    // Try staff-container (set in faculty.html) or fallback to any grid-4
+    const staffGrid = document.getElementById('staff-container') || document.getElementById('staff-grid') || document.querySelector('.grid-4');
     if (staffGrid) {
-      const parentContainer = staffGrid.parentNode;
+      const parentContainer = staffGrid.closest('#staff-container') || staffGrid.parentNode;
       
       db.collection('staff').onSnapshot(snap => {
         if (!snap.empty) {

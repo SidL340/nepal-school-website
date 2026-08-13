@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Us - Shree Nepal Secondary School</title>
-  <meta name="description" content="Learn about Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal. Our history, vision, mission, and leadership." />
-  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
-  <link rel="stylesheet" href="style.css?v=20260813" />
-
-  <!-- Firebase Compat SDK -->
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>About Us — Shree Nepal Secondary School</title>
+  <meta name="description" content="History, vision, mission and institutional profile of Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal." />
+  <meta name="theme-color" content="#060d19" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="style.css?v=4" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
@@ -19,68 +17,106 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/about" class="active">About</a></li>
-      <li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li>
-      <li><a href="/committee">Committee</a></li>
-      <li><a href="/notices">Notices</a></li>
-      <li><a href="/gallery">Gallery</a></li>
-      <li><a href="/links">Edu Links</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/">Home</a></li><li><a href="/about" class="active">About</a></li><li><a href="/academics">Academics</a></li>
+      <li><a href="/faculty">Staff</a></li><li><a href="/committee">Committee</a></li><li><a href="/notices">Notices</a></li>
+      <li><a href="/gallery">Gallery</a></li><li><a href="/links">Edu Links</a></li><li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu">
-      <span></span><span></span><span></span>
-    </button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Who We Are</div>
+    <div class="tag">🏫 Who We Are</div>
     <h1>About Our Institution</h1>
     <p>A pillar of educational excellence in Rautahat, Madhesh Province, Nepal since 2007 B.S.</p>
   </div>
 </div>
 
-<section class="section" style="background:var(--navy)">
+<!-- MISSION & PROFILE -->
+<section class="section">
   <div class="container">
-    <div class="grid-2" style="align-items:center;gap:3.5rem">
-      <div class="reveal">
-        <div class="glass-card" style="padding:2.75rem;">
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1.5rem;">
-            <img src="images/logo.svg" alt="School Seal" style="width:65px;height:65px;">
-            <div>
-              <h3 style="color:var(--gold-light);font-size:1.4rem;">Shree Nepal Secondary School</h3>
-              <p style="color:var(--text-muted);font-size:0.88rem;">Brindaban-02, Bishrampur, Rautahat, Nepal</p>
-            </div>
+    <div class="grid-2" style="align-items:start;">
+
+      <div class="glass-card reveal" style="padding:2.25rem;">
+        <div style="display:flex;align-items:center;gap:0.9rem;margin-bottom:1.35rem;">
+          <img src="images/logo.png" alt="Logo" style="width:55px;height:55px;border-radius:50%;border:2px solid var(--gold);object-fit:contain;" onerror="this.style.display='none'">
+          <div>
+            <h3 style="color:var(--gold-light);font-size:1.15rem;margin-bottom:0.1rem;"><span class="dyn-school-name">Shree Nepal Secondary School</span></h3>
+            <p style="color:var(--text-muted);font-size:0.8rem;margin:0;">Bishrampur, Brindaban-02, Rautahat</p>
           </div>
-          <h2 style="color:var(--gold);margin-bottom:1rem;font-size:1.6rem;">Our Mission & Legacy</h2>
-          <p class="dyn-school-about" style="font-size:1.05rem;line-height:1.8;">
-            Shree Nepal Secondary School is committed to providing inclusive, high-quality education from Early Childhood Development (ECD) to Grade 12 (+2). Our mission is to empower students with knowledge, digital literacy, and moral leadership to build a brighter future for Nepal.
-          </p>
+        </div>
+        <h2 style="color:var(--gold);margin-bottom:0.85rem;font-size:1.4rem;">Our Mission & Legacy</h2>
+        <p class="dyn-school-about" style="line-height:1.8;">
+          Shree Nepal Secondary School is committed to providing inclusive, high-quality education from Early Childhood Development (ECD) to Grade 12 (+2). Our mission is to empower students with knowledge, digital literacy, and moral leadership to build a brighter future for Nepal.
+        </p>
+        <div style="display:flex;gap:0.65rem;flex-wrap:wrap;margin-top:1.25rem;">
+          <span class="badge badge-gold">🎓 NEB Affiliated</span>
+          <span class="badge badge-blue">📍 Rautahat, Nepal</span>
+          <span class="badge badge-gold">✅ Govt. Registered</span>
         </div>
       </div>
-      
-      <div class="reveal">
-        <div class="glass-card" style="padding:2.5rem;">
-          <h3 style="color:var(--gold-light);margin-bottom:1.5rem;font-size:1.3rem;">Institutional Profile</h3>
-          <ul style="list-style:none;">
-            <li style="padding:0.85rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;"><strong style="color:var(--white);">School Name:</strong> <span class="dyn-school-name">Shree Nepal Secondary School</span></li>
-            <li style="padding:0.85rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;"><strong style="color:var(--white);">Location:</strong> <span>Brindaban-02, Rautahat, Nepal</span></li>
-            <li style="padding:0.85rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;"><strong style="color:var(--white);">Affiliation:</strong> <span>National Examination Board (NEB)</span></li>
-            <li style="padding:0.85rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;"><strong style="color:var(--white);">Education Level:</strong> <span>ECD to Class 12 (+2)</span></li>
-            <li style="padding:0.85rem 0;display:flex;justify-content:space-between;"><strong style="color:var(--white);">+2 Streams:</strong> <span>Management, Education, Humanities</span></li>
-          </ul>
-        </div>
+
+      <div class="glass-card reveal" style="padding:2.25rem;">
+        <h3 style="color:var(--gold-light);margin-bottom:1.25rem;font-size:1.15rem;">📋 Institutional Profile</h3>
+        <ul style="list-style:none;display:flex;flex-direction:column;gap:0;">
+          <li style="padding:0.8rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <strong style="color:var(--white);font-size:0.9rem;">School Name</strong>
+            <span style="color:var(--text-body);font-size:0.88rem;text-align:right;" class="dyn-school-name">Shree Nepal Secondary School</span>
+          </li>
+          <li style="padding:0.8rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <strong style="color:var(--white);font-size:0.9rem;">Location</strong>
+            <span style="color:var(--text-body);font-size:0.88rem;text-align:right;">Brindaban-02, Rautahat, Nepal</span>
+          </li>
+          <li style="padding:0.8rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <strong style="color:var(--white);font-size:0.9rem;">Affiliation</strong>
+            <span style="color:var(--text-body);font-size:0.88rem;text-align:right;">National Examination Board (NEB)</span>
+          </li>
+          <li style="padding:0.8rem 0;border-bottom:1px solid var(--glass-border);display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <strong style="color:var(--white);font-size:0.9rem;">Education Level</strong>
+            <span style="color:var(--text-body);font-size:0.88rem;text-align:right;">ECD to Class 12 (+2)</span>
+          </li>
+          <li style="padding:0.8rem 0;display:flex;justify-content:space-between;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+            <strong style="color:var(--white);font-size:0.9rem;">+2 Streams</strong>
+            <span style="color:var(--text-body);font-size:0.88rem;text-align:right;">Management · Education · Humanities</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VISION, MISSION, VALUES -->
+<section class="section" style="background:var(--navy-mid);">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">Our Guiding Principles</div>
+      <h2>Vision, Mission & Values</h2>
+      <div class="gold-line"></div>
+    </div>
+    <div class="grid-3">
+      <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid var(--gold);">
+        <div style="font-size:2.75rem;margin-bottom:0.85rem;">🎯</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.1rem;">Our Vision</h3>
+        <p style="font-size:0.88rem;">To become a leading educational institution in Madhesh Province that produces globally competent graduates with strong moral values.</p>
+      </div>
+      <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid #0ea5e9;">
+        <div style="font-size:2.75rem;margin-bottom:0.85rem;">📋</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.1rem;">Our Mission</h3>
+        <p style="font-size:0.88rem;">To provide accessible, quality education through student-centered approaches, technology integration, and community partnership.</p>
+      </div>
+      <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid #2dd4bf;">
+        <div style="font-size:2.75rem;margin-bottom:0.85rem;">🌟</div>
+        <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.1rem;">Our Values</h3>
+        <p style="font-size:0.88rem;">Integrity · Discipline · Inclusivity · Innovation · Respect · Service to Nation and Community.</p>
       </div>
     </div>
   </div>
@@ -89,12 +125,11 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom">
-      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span> — All Rights Reserved &nbsp;|&nbsp; <a href="https://nepalssb.edu.np" style="color:var(--gold);">nepalssb.edu.np</a></p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=20260813"></script>
-<script src="dynamic.js?v=20260813"></script>
-</body>
-</html>
+<script src="script.js?v=4"></script>
+<script src="dynamic.js?v=4"></script>
+</body></html>

@@ -1,91 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Educational Portals & Links - Shree Nepal Secondary School</title>
-  <meta name="description" content="Official Nepal educational portals — NEB Result, SEE Result, CDC Nepal, Sikai Chautari, and MoEST." />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Educational Links & Results — Shree Nepal Secondary School</title>
+  <meta name="description" content="Nepal educational portals — NEB Result, SEE Result, CDC Nepal, Sikai Chautari and MoEST." />
+  <meta name="theme-color" content="#060d19" />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=20260813" />
-
-  <!-- Firebase Compat SDK -->
+  <link rel="stylesheet" href="style.css?v=4" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
   <script src="firebase-config.js"></script>
 </head>
 <body>
-
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li>
-      <li><a href="/committee">Committee</a></li>
-      <li><a href="/notices">Notices</a></li>
-      <li><a href="/gallery">Gallery</a></li>
-      <li><a href="/links" class="active">Edu Links</a></li>
-      <li><a href="/contact">Contact</a></li>
+      <li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/academics">Academics</a></li>
+      <li><a href="/faculty">Staff</a></li><li><a href="/committee">Committee</a></li><li><a href="/notices">Notices</a></li>
+      <li><a href="/gallery">Gallery</a></li><li><a href="/links" class="active">Edu Links</a></li><li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">National Portals</div>
+    <div class="tag">🔗 National Portals</div>
     <h1>Educational Links & Results</h1>
-    <p>Quick access to examination results, Ministry portals, and digital learning platforms</p>
+    <p>Quick access to exam results, Ministry portals and digital learning platforms</p>
   </div>
 </div>
 
-<section class="section" style="background:var(--navy)">
+<section class="section">
   <div class="container">
-    <div class="grid-2" style="gap:2rem;">
-      
-      <a href="https://neb.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
-        <div style="font-size:3rem;">📋</div>
+    <div class="grid-2">
+
+      <a href="https://neb.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.75rem;display:flex;align-items:center;gap:1.25rem;">
+        <div style="font-size:2.5rem;flex-shrink:0;">📋</div>
         <div>
-          <h3 style="color:var(--white);margin-bottom:0.25rem;">NEB +2 Result Portal</h3>
-          <p style="color:var(--text-muted);font-size:0.88rem;">National Examination Board (Class 11 & 12 Result Check)</p>
-          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">neb.ntc.net.np ↗</span>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1.05rem;">NEB +2 Result Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.35rem;">National Examination Board — Class 11 & 12 Results</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.82rem;">neb.ntc.net.np ↗</span>
         </div>
       </a>
 
-      <a href="https://see.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
-        <div style="font-size:3rem;">🎓</div>
+      <a href="https://see.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.75rem;display:flex;align-items:center;gap:1.25rem;">
+        <div style="font-size:2.5rem;flex-shrink:0;">🎓</div>
         <div>
-          <h3 style="color:var(--white);margin-bottom:0.25rem;">SEE Result Portal</h3>
-          <p style="color:var(--text-muted);font-size:0.88rem;">Secondary Education Examination Grade 10 Results</p>
-          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">see.ntc.net.np ↗</span>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1.05rem;">SEE Result Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.35rem;">Secondary Education Examination — Grade 10 Results</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.82rem;">see.ntc.net.np ↗</span>
         </div>
       </a>
 
-      <a href="https://moecdc.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
-        <div style="font-size:3rem;">📚</div>
+      <a href="https://moecdc.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.75rem;display:flex;align-items:center;gap:1.25rem;">
+        <div style="font-size:2.5rem;flex-shrink:0;">📚</div>
         <div>
-          <h3 style="color:var(--white);margin-bottom:0.25rem;">Curriculum Development Centre</h3>
-          <p style="color:var(--text-muted);font-size:0.88rem;">CDC Nepal — Official Syllabi, Textbooks, & Guidelines</p>
-          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">moecdc.gov.np ↗</span>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1.05rem;">Curriculum Development Centre</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.35rem;">Official CDC Nepal — Syllabi, Textbooks & Guidelines</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.82rem;">moecdc.gov.np ↗</span>
         </div>
       </a>
 
-      <a href="https://learning.cehrd.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
-        <div style="font-size:3rem;">💡</div>
+      <a href="https://learning.cehrd.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.75rem;display:flex;align-items:center;gap:1.25rem;">
+        <div style="font-size:2.5rem;flex-shrink:0;">💡</div>
         <div>
-          <h3 style="color:var(--white);margin-bottom:0.25rem;">Sikai Chautari Portal</h3>
-          <p style="color:var(--text-muted);font-size:0.88rem;">CEHRD Official E-Learning Platform for Nepali Students</p>
-          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">learning.cehrd.gov.np ↗</span>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1.05rem;">Sikai Chautari Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.35rem;">CEHRD E-Learning Platform for Nepali Students</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.82rem;">learning.cehrd.gov.np ↗</span>
+        </div>
+      </a>
+
+      <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="glass-card" style="padding:1.75rem;display:flex;align-items:center;gap:1.25rem;">
+        <div style="font-size:2.5rem;flex-shrink:0;">📖</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1.05rem;">E-Pustakalaya Digital Library</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.35rem;">Free Nepali e-books, textbooks and audio-visual learning</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.82rem;">pustakalaya.org ↗</span>
+        </div>
+      </a>
+
+      <a href="https://moest.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.75rem;display:flex;align-items:center;gap:1.25rem;">
+        <div style="font-size:2.5rem;flex-shrink:0;">🏛️</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1.05rem;">Ministry of Education</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.35rem;">Government of Nepal — Ministry of Education, Science & Technology</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.82rem;">moest.gov.np ↗</span>
         </div>
       </a>
 
@@ -96,12 +105,11 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom">
-      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span> — All Rights Reserved</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=20260813"></script>
-<script src="dynamic.js?v=20260813"></script>
-</body>
-</html>
+<script src="script.js?v=4"></script>
+<script src="dynamic.js?v=4"></script>
+</body></html>

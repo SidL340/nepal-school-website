@@ -1,110 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contact Us - Shree Nepal Secondary School</title>
-  <meta name="description" content="Contact Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal. Phone, email, location map, and inquiry form." />
-  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
-  <link rel="stylesheet" href="style.css?v=20260813" />
-
-  <!-- Firebase Compat SDK -->
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Contact Us — Shree Nepal Secondary School</title>
+  <meta name="description" content="Contact Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal. Phone, email and inquiry form." />
+  <meta name="theme-color" content="#060d19" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="stylesheet" href="style.css?v=4" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
   <script src="firebase-config.js"></script>
 </head>
 <body>
-
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li>
-      <li><a href="/committee">Committee</a></li>
-      <li><a href="/notices">Notices</a></li>
-      <li><a href="/gallery">Gallery</a></li>
-      <li><a href="/links">Edu Links</a></li>
-      <li><a href="/contact" class="active">Contact</a></li>
+      <li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/academics">Academics</a></li>
+      <li><a href="/faculty">Staff</a></li><li><a href="/committee">Committee</a></li><li><a href="/notices">Notices</a></li>
+      <li><a href="/gallery">Gallery</a></li><li><a href="/links">Edu Links</a></li><li><a href="/contact" class="active">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Get In Touch</div>
-    <h1>Contact Information</h1>
+    <div class="tag">📬 Get In Touch</div>
+    <h1>Contact Us</h1>
     <p>We welcome your questions regarding admissions, academics, and school activities</p>
   </div>
 </div>
 
-<section class="section" style="background:var(--navy)">
+<section class="section">
   <div class="container">
-    <div class="grid-2" style="gap:3rem;align-items:start;">
-      
-      <!-- Contact Info Cards -->
-      <div>
-        <div class="glass-card contact-info-card" style="padding:1.75rem;margin-bottom:1.5rem;display:flex;gap:1.25rem;">
-          <div style="font-size:2.5rem;">📍</div>
+    <div class="grid-2" style="align-items:start;">
+
+      <!-- Contact Information -->
+      <div style="display:flex;flex-direction:column;gap:1.15rem;">
+        <div class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+          <div style="font-size:2.2rem;flex-shrink:0;width:50px;text-align:center;">📍</div>
           <div>
-            <h4 style="color:var(--white);font-size:1.1rem;margin-bottom:0.25rem;">Campus Location</h4>
-            <p style="color:var(--text-body);">Brindaban Municipality-02, Bishrampur, Rautahat District, Madhesh Province, Nepal</p>
+            <h4 style="color:var(--white);margin-bottom:0.2rem;">Location</h4>
+            <p style="font-size:0.88rem;color:var(--text-body);margin:0;">Brindaban Municipality-02, Bishrampur, Rautahat District, Madhesh Province, Nepal</p>
           </div>
         </div>
-
-        <div class="glass-card contact-info-card" style="padding:1.75rem;margin-bottom:1.5rem;display:flex;gap:1.25rem;">
-          <div style="font-size:2.5rem;">📞</div>
+        <div class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+          <div style="font-size:2.2rem;flex-shrink:0;width:50px;text-align:center;">📞</div>
           <div>
-            <h4 style="color:var(--white);font-size:1.1rem;margin-bottom:0.25rem;">Phone / Helpline</h4>
-            <p><a href="tel:9845000000" class="dyn-school-phone-link" style="color:var(--gold-light);font-weight:700;"><span class="dyn-school-phone">Call Helpline</span></a></p>
+            <h4 style="color:var(--white);margin-bottom:0.2rem;">Phone / Helpline</h4>
+            <a href="tel:9845000000" class="dyn-school-phone-link" style="color:var(--gold-light);font-weight:700;font-size:1rem;"><span class="dyn-school-phone">Call School Office</span></a>
           </div>
         </div>
-
-        <div class="glass-card contact-info-card" style="padding:1.75rem;margin-bottom:1.5rem;display:flex;gap:1.25rem;">
-          <div style="font-size:2.5rem;">✉️</div>
+        <div class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+          <div style="font-size:2.2rem;flex-shrink:0;width:50px;text-align:center;">✉️</div>
           <div>
-            <h4 style="color:var(--white);font-size:1.1rem;margin-bottom:0.25rem;">Email Address</h4>
-            <p><a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="dyn-school-email-link" style="color:var(--gold-light);"><span class="dyn-school-email">Email Office</span></a></p>
+            <h4 style="color:var(--white);margin-bottom:0.2rem;">Email</h4>
+            <a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="dyn-school-email-link" style="color:var(--gold-light);font-weight:600;font-size:0.9rem;word-break:break-all;"><span class="dyn-school-email">nepalsecondaryschool.bdn@gmail.com</span></a>
           </div>
         </div>
-
-        <div class="glass-card contact-info-card" style="padding:1.75rem;display:flex;gap:1.25rem;">
-          <div style="font-size:2.5rem;">🔐</div>
+        <div class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+          <div style="font-size:2.2rem;flex-shrink:0;width:50px;text-align:center;">🔐</div>
           <div>
-            <h4 style="color:var(--white);font-size:1.1rem;margin-bottom:0.25rem;">Admin Access</h4>
-            <p>Authorized administrators can sign in at <a href="/manage" style="color:var(--gold);font-weight:700;">nepalssb.edu.np/manage</a> or <a href="https://admin.nepalssb.edu.np" style="color:var(--gold);font-weight:700;">admin.nepalssb.edu.np</a>.</p>
+            <h4 style="color:var(--white);margin-bottom:0.2rem;">Admin Portal</h4>
+            <p style="font-size:0.88rem;margin:0;">Sign in at <a href="/manage" style="color:var(--gold);font-weight:700;">nepalssb.edu.np/manage</a> or <a href="https://admin.nepalssb.edu.np" style="color:var(--gold);font-weight:700;">admin.nepalssb.edu.np</a></p>
           </div>
         </div>
       </div>
 
-      <!-- Quick Message Form -->
-      <div class="glass-card contact-form" style="padding:2.5rem;">
-        <h3 style="color:var(--gold);margin-bottom:1.5rem;">Send Direct Message</h3>
-        <form onsubmit="event.preventDefault(); alert('Thank you for reaching out! Your message has been received.'); this.reset();">
-          <div class="form-group" style="margin-bottom:1.2rem;">
-            <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.88rem;">Your Full Name</label>
-            <input type="text" required placeholder="Full Name" style="width:100%;padding:0.75rem;background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:8px;color:var(--white);">
+      <!-- Message Form -->
+      <div class="glass-card" style="padding:2rem;">
+        <h3 style="color:var(--gold);margin-bottom:1.35rem;font-size:1.15rem;">💬 Send a Message</h3>
+        <form onsubmit="event.preventDefault();this.querySelector('.send-btn').textContent='✅ Message Sent!';setTimeout(()=>{this.reset();this.querySelector('.send-btn').textContent='Send Message →';},3000);">
+          <div style="margin-bottom:1rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;">Full Name</label>
+            <input type="text" required placeholder="Your Full Name" autocomplete="name">
           </div>
-          <div class="form-group" style="margin-bottom:1.2rem;">
-            <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.88rem;">Phone / Email</label>
-            <input type="text" required placeholder="Phone Number or Email" style="width:100%;padding:0.75rem;background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:8px;color:var(--white);">
+          <div style="margin-bottom:1rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;">Phone or Email</label>
+            <input type="text" required placeholder="Phone number or email address" autocomplete="tel email">
           </div>
-          <div class="form-group" style="margin-bottom:1.5rem;">
-            <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.88rem;">Your Message</label>
-            <textarea required rows="4" placeholder="How can we help you?" style="width:100%;padding:0.75rem;background:var(--navy-mid);border:1px solid var(--glass-border);border-radius:8px;color:var(--white);"></textarea>
+          <div style="margin-bottom:1rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;">Subject</label>
+            <select>
+              <option value="">Select a topic</option>
+              <option>Admission Inquiry</option>
+              <option>Academic Information</option>
+              <option>Fee Structure</option>
+              <option>General Query</option>
+            </select>
           </div>
-          <button type="submit" class="btn btn-gold" style="width:100%;">Send Message →</button>
+          <div style="margin-bottom:1.35rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;">Message</label>
+            <textarea required rows="4" placeholder="How can we help you?"></textarea>
+          </div>
+          <button type="submit" class="btn btn-gold send-btn" style="width:100%;">Send Message →</button>
         </form>
       </div>
 
@@ -115,12 +113,11 @@
 <footer class="footer">
   <div class="container">
     <div class="footer-bottom">
-      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span> — All Rights Reserved</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=20260813"></script>
-<script src="dynamic.js?v=20260813"></script>
-</body>
-</html>
+<script src="script.js?v=4"></script>
+<script src="dynamic.js?v=4"></script>
+</body></html>
