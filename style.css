@@ -46,6 +46,12 @@
 /* ── BASE RESET ─────────────────────────────────────────────────────────────── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+html, body {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden !important;
+}
+
 html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
@@ -59,7 +65,7 @@ body {
   background: var(--navy);
   color: var(--white);
   line-height: 1.7;
-  overflow-x: hidden;
+  position: relative;
 }
 
 /* Subtle ambient background */
@@ -362,6 +368,8 @@ p  { color: var(--text-body); font-size: 0.97rem; line-height: 1.75; }
   background: var(--navy-mid);
   border-bottom: 1px solid var(--glass-border);
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
   padding: 0.45rem 0;
   position: relative;
   z-index: 99;
@@ -511,6 +519,10 @@ p  { color: var(--text-body); font-size: 0.97rem; line-height: 1.75; }
   margin-bottom: 1rem;
   border-radius: var(--radius);
   border-left: 3px solid var(--gold);
+  word-break: break-word;
+  overflow-wrap: break-word;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .notice-preview-card:last-child { margin-bottom: 0; }
@@ -695,10 +707,10 @@ input::placeholder, textarea::placeholder { color: var(--text-muted); }
 @media (max-width: 1024px) {
   .nav-toggle { display: flex; }
 
-  /* Slide-out mobile drawer */
+  /* Slide-out mobile drawer (using transform + visibility to prevent viewport overflow) */
   .nav-links {
     position: fixed;
-    top: 0; right: -100%;
+    top: 0; right: 0;
     width: min(290px, 85vw);
     height: 100dvh;
     background: rgba(6,13,25,0.98);
@@ -708,13 +720,20 @@ input::placeholder, textarea::placeholder { color: var(--text-muted); }
     align-items: flex-start;
     padding: calc(var(--nav-height) + 1.5rem) 1.5rem 2rem;
     gap: 0.35rem;
-    transition: right 0.4s var(--ease);
+    transform: translateX(100%);
+    visibility: hidden;
+    pointer-events: none;
+    transition: transform 0.4s var(--ease), visibility 0.4s var(--ease);
     box-shadow: -12px 0 40px rgba(0,0,0,0.85);
     border-left: 1px solid var(--glass-border);
     overflow-y: auto;
     z-index: 999;
   }
-  .nav-links.open { right: 0; }
+  .nav-links.open {
+    transform: translateX(0);
+    visibility: visible;
+    pointer-events: auto;
+  }
 
   .nav-links li { width: 100%; }
   .nav-links a {
