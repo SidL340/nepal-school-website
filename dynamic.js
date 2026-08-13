@@ -182,11 +182,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (p.photoUrl) {
         const indexPhotoWrap = document.querySelector('.principal-photo-wrap');
-        if (indexPhotoWrap) indexPhotoWrap.innerHTML = `<img src="${optimizeImage(p.photoUrl)}" alt="${sanitizeHTML(p.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;border:3px solid var(--gold);">`;
+        if (indexPhotoWrap) {
+          indexPhotoWrap.style.cssText = 'width:85px;height:85px;min-width:85px;min-height:85px;flex-shrink:0;border-radius:50%;overflow:hidden;border:2.5px solid var(--gold);';
+          indexPhotoWrap.innerHTML = `<img src="${optimizeImage(p.photoUrl)}" alt="${sanitizeHTML(p.name)}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+        }
         
         const facultyPhotoContainer = document.querySelector('.principal-photo-container');
         if (facultyPhotoContainer) {
-          facultyPhotoContainer.innerHTML = `<img src="${optimizeImage(p.photoUrl)}" alt="${sanitizeHTML(p.name)}" class="principal-photo" style="border-radius:50%;width:150px;height:150px;object-fit:cover;border:4px solid var(--gold);margin:0 auto;box-shadow:var(--shadow-gold);">`;
+          facultyPhotoContainer.innerHTML = `<img src="${optimizeImage(p.photoUrl)}" alt="${sanitizeHTML(p.name)}" class="principal-photo" style="border-radius:50%;width:120px;height:120px;object-fit:cover;border:3px solid var(--gold);margin:0 auto;box-shadow:var(--shadow-gold);">`;
         }
       }
     }
