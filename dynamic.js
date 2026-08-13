@@ -139,6 +139,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const tw = document.getElementById('ticker-wrapper');
         if (tw) tw.style.display = 'none';
       }
+
+      // ── Stats Bar (controlled from admin portal) ────────────────
+      function updateStat(selector, value, suffix) {
+        const el = document.querySelector(selector);
+        if (!el || !value) return;
+        const num = parseInt(value, 10);
+        el.dataset.count = num;
+        el.dataset.suffix = suffix || '';
+        el.textContent = num + (suffix || '');
+      }
+      if (s.statStudents)  updateStat('.dyn-stat-students',  s.statStudents,  s.statStudentsSuffix  || '+');
+      if (s.statStaff)     updateStat('.dyn-stat-staff',     s.statStaff,     s.statStaffSuffix     || '+');
+      if (s.statPassRate)  updateStat('.dyn-stat-passrate',  s.statPassRate,  s.statPassRateSuffix  || '%');
+      if (s.statYears)     updateStat('.dyn-stat-years',     s.statYears,     s.statYearsSuffix     || '+');
+      if (s.statStudentsLabel)  { const el = document.querySelector('.dyn-stat-students-label');  if (el) el.textContent = s.statStudentsLabel; }
+      if (s.statStaffLabel)     { const el = document.querySelector('.dyn-stat-staff-label');     if (el) el.textContent = s.statStaffLabel; }
+      if (s.statPassRateLabel)  { const el = document.querySelector('.dyn-stat-passrate-label');  if (el) el.textContent = s.statPassRateLabel; }
+      if (s.statYearsLabel)     { const el = document.querySelector('.dyn-stat-years-label');     if (el) el.textContent = s.statYearsLabel; }
     }
   }, console.error);
 
