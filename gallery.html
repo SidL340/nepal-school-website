@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Photo Gallery - Shree Nepal Secondary School</title>
   <meta name="description" content="Photo gallery showcasing school events, sports, infrastructure, computer lab, smart classroom, and campus life." />
-  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
   <link rel="stylesheet" href="style.css?v=20260813" />
 
   <!-- Firebase Compat SDK -->
@@ -19,7 +19,7 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
+      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
@@ -59,14 +59,22 @@
       <button class="gfilter-btn" data-category="Sports">Sports</button>
       <button class="gfilter-btn" data-category="Classroom">Classroom</button>
       <button class="gfilter-btn" data-category="Lab">Lab</button>
-      <button class="gfilter-btn" data-category="Ground">Ground</button>
     </div>
 
-    <!-- Gallery Grid populated dynamically -->
+    <!-- Pre-populated Gallery Grid -->
     <div id="gallery-grid" class="gallery-grid">
-      <div class="glass-card skeleton-card" style="height:260px;"></div>
-      <div class="glass-card skeleton-card" style="height:260px;"></div>
-      <div class="glass-card skeleton-card" style="height:260px;"></div>
+      <div class="gallery-item reveal visible" style="border-radius:16px;overflow:hidden;position:relative;">
+        <img src="images/assembly.jpg" alt="School Morning Assembly" style="width:100%;height:260px;object-fit:cover;">
+        <div class="gallery-overlay" style="border-radius:16px;"><span>🔍 View Photo</span></div>
+      </div>
+      <div class="gallery-item reveal visible" style="border-radius:16px;overflow:hidden;position:relative;">
+        <img src="images/students.jpg" alt="Students in Classroom" style="width:100%;height:260px;object-fit:cover;">
+        <div class="gallery-overlay" style="border-radius:16px;"><span>🔍 View Photo</span></div>
+      </div>
+      <div class="gallery-item reveal visible" style="border-radius:16px;overflow:hidden;position:relative;">
+        <img src="images/staff-room.jpg" alt="Staff Room & Facilities" style="width:100%;height:260px;object-fit:cover;">
+        <div class="gallery-overlay" style="border-radius:16px;"><span>🔍 View Photo</span></div>
+      </div>
     </div>
 
   </div>

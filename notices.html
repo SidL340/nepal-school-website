@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Notice Board - Shree Nepal Secondary School</title>
   <meta name="description" content="Official notices, examination schedules, holiday circulars, and announcements from Shree Nepal Secondary School." />
-  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
   <link rel="stylesheet" href="style.css?v=20260813" />
 
   <!-- Firebase Compat SDK -->
@@ -19,7 +19,7 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
+      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
@@ -55,13 +55,39 @@
     <!-- Notice Category Filter Pills -->
     <div id="notice-filter" style="display:flex;flex-wrap:wrap;gap:0.75rem;justify-content:center;margin-bottom:3rem;">
       <button class="filter-btn active">All</button>
+      <button class="filter-btn">General</button>
+      <button class="filter-btn">Exam</button>
+      <button class="filter-btn">Admissions</button>
     </div>
 
-    <!-- Notice Grid (Populated dynamically by dynamic.js) -->
+    <!-- Pre-populated Notice Grid for Instant 0ms Load -->
     <div id="notice-grid" class="grid-3">
-      <div class="glass-card skeleton-card"></div>
-      <div class="glass-card skeleton-card"></div>
-      <div class="glass-card skeleton-card"></div>
+      <div class="notice-card glass-card reveal visible" style="padding:1.75rem;position:relative;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <span class="badge badge-gold">ADMISSION NOTICE</span>
+          <span style="font-size:0.8rem;color:var(--text-muted);">📅 2081 B.S.</span>
+        </div>
+        <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">Class 11 (+2 Management & Education) Admission Open</h3>
+        <p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">Admissions are now open for new Grade 11 students for academic session 2081. Form distribution is available from the school office.</p>
+      </div>
+
+      <div class="notice-card glass-card reveal visible" style="padding:1.75rem;position:relative;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <span class="badge badge-red">URGENT NOTICE</span>
+          <span style="font-size:0.8rem;color:var(--text-muted);">📅 2081 B.S.</span>
+        </div>
+        <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">Terminal Examination Routine & Guidelines</h3>
+        <p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">All students from Class 1 to Class 12 are requested to check the examination timetable and prepare accordingly.</p>
+      </div>
+
+      <div class="notice-card glass-card reveal visible" style="padding:1.75rem;position:relative;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+          <span class="badge badge-blue">ANNOUNCEMENT</span>
+          <span style="font-size:0.8rem;color:var(--text-muted);">📅 2081 B.S.</span>
+        </div>
+        <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">Parent-Teacher Association (PTA) Meeting</h3>
+        <p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">The upcoming PTA assembly will be held at the school auditorium to discuss student progress and infrastructure developments.</p>
+      </div>
     </div>
 
   </div>

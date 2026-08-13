@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>School Management Committee - Shree Nepal Secondary School</title>
   <meta name="description" content="School Management Committee (SMC) members of Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal." />
-  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
   <link rel="stylesheet" href="style.css?v=20260813" />
 
   <!-- Firebase Compat SDK -->
@@ -19,7 +19,7 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
+      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
@@ -59,11 +59,30 @@
       </p>
     </div>
 
-    <!-- Real-time grid populated by dynamic.js -->
+    <!-- Pre-populated Default Committee Cards for instant load -->
     <div class="grid-3" style="max-width:1100px;margin:0 auto">
-      <div class="glass-card skeleton-card"></div>
-      <div class="glass-card skeleton-card"></div>
-      <div class="glass-card skeleton-card"></div>
+      <div class="glass-card member-card reveal visible" style="position:relative; text-align:center; padding:2rem 1.5rem; grid-column: 1 / -1; max-width: 420px; margin: 0 auto 2rem; border: 2px solid var(--gold); background: rgba(244, 169, 0, 0.08);">
+        <div style="position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--gold-gradient);color:var(--navy);padding:4px 22px;border-radius:20px;font-size:0.85rem;font-weight:800;box-shadow:0 4px 15px rgba(244,169,0,0.4);z-index:2;letter-spacing:1px;text-transform:uppercase;">Chairperson</div>
+        <img src="images/adhyaksha.jpg" class="member-photo" alt="Chairperson" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 1rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.45rem;font-weight:700;color:var(--gold-light);">Chairperson, SMC</div>
+        <div class="member-role" style="display:none">Chairperson</div>
+        <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-body);">School Management Committee Lead</div>
+      </div>
+      <div class="glass-card member-card reveal visible" style="text-align:center; padding:2rem 1.5rem;">
+        <img src="images/member1.jpg" class="member-photo" alt="Committee Member" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.15rem;font-weight:700;color:var(--white);">Member Secretary</div>
+        <div class="member-role" style="color:var(--gold);font-size:0.9rem;font-weight:600;">Principal / Secretary</div>
+      </div>
+      <div class="glass-card member-card reveal visible" style="text-align:center; padding:2rem 1.5rem;">
+        <img src="images/member2.jpg" class="member-photo" alt="Parent Representative" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.15rem;font-weight:700;color:var(--white);">Parent Representative</div>
+        <div class="member-role" style="color:var(--gold);font-size:0.9rem;font-weight:600;">SMC Member</div>
+      </div>
+      <div class="glass-card member-card reveal visible" style="text-align:center; padding:2rem 1.5rem;">
+        <img src="images/member3.jpg" class="member-photo" alt="Community Representative" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 1rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.15rem;font-weight:700;color:var(--white);">Teacher Representative</div>
+        <div class="member-role" style="color:var(--gold);font-size:0.9rem;font-weight:600;">SMC Member</div>
+      </div>
     </div>
   </div>
 </section>

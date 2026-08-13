@@ -8,7 +8,7 @@
   <meta name="keywords" content="Shree Nepal Secondary School, Rautahat School, Nepal School, Brindaban Rautahat, NEB School" />
   <meta property="og:title" content="Shree Nepal Secondary School - Official Website" />
   <meta property="og:description" content="Quality education from ECD to Class 12 — Brindaban-02, Rautahat, Nepal" />
-  <link rel="icon" type="image/png" href="images/logo.png" />
+  <link rel="icon" type="image/svg+xml" href="images/logo.svg" />
   <link rel="stylesheet" href="style.css?v=20260813" />
   
   <!-- Firebase Compat SDK -->
@@ -23,7 +23,7 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
+      <img src="images/logo.svg" alt="Shree Nepal Secondary School Logo" style="width:52px;height:52px;">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
@@ -52,7 +52,7 @@
 <!-- ═══ HERO SECTION ══════════════════════════════════════════════ -->
 <section class="hero">
   <div class="hero-bg">
-    <img src="images/school-bg.jpg" alt="School Background" onerror="this.style.opacity='0'" />
+    <img src="images/assembly.jpg" alt="School Assembly" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'1200\' height=\'800\' viewBox=\'0 0 1200 800\' fill=\'%230d1b2a\'><rect width=\'1200\' height=\'800\' fill=\'%230d1b2a\'/></svg>'" />
   </div>
   <div class="hero-overlay"></div>
   <div class="hero-particles" id="hero-particles"></div>
@@ -60,15 +60,15 @@
   <div class="container" style="position:relative;z-index:2;width:100%;">
     <div class="hero-content">
       <div class="hero-badge">
-        <span>🇳🇵</span> NEB Affiliated &nbsp;&middot;&nbsp; ESTD 2007 B.S. &nbsp;&middot;&nbsp; Government School
+        <span>🇳🇵</span> NEB Affiliated &nbsp;&middot;&nbsp; ESTD 2007 B.S. &nbsp;&middot;&nbsp; Government Secondary School
       </div>
       <h1>
         <span class="dyn-school-name">Shree Nepal</span><br>
         Secondary School<br>
-        <span style="font-size:0.7em;color:var(--text-body);font-weight:600;">Bishrampur, Rautahat</span>
+        <span style="font-size:0.65em;color:var(--text-body);font-weight:600;">Bishrampur, Rautahat</span>
       </h1>
       <p class="dyn-school-about">
-        Nurturing Young Minds &nbsp;&middot;&nbsp; Empowering Students for 21st Century Excellence &nbsp;&middot;&nbsp; Quality Education from ECD to Class 12.
+        Nurturing Young Minds &nbsp;&middot;&nbsp; Empowering Students for 21st Century Excellence &nbsp;&middot;&nbsp; Quality Education from ECD to Class 12 (+2).
       </p>
       <div class="hero-actions">
         <a href="/about" class="btn btn-gold">Explore Our School →</a>
@@ -104,7 +104,7 @@
 <!-- ═══ NOTICES & PRINCIPAL MESSAGE ═══════════════════════════════ -->
 <section class="section">
   <div class="container">
-    <div class="grid-2" style="align-items:start;">
+    <div class="grid-2" style="align-items:start;gap:3rem;">
 
       <!-- Notice Board -->
       <div>
@@ -115,9 +115,26 @@
         </div>
 
         <div id="notice-preview-list">
-          <!-- Skeleton Loading Card -->
-          <div class="notice-preview-card glass-card skeleton-card" style="padding:1.5rem;margin-bottom:1rem;"></div>
-          <div class="notice-preview-card glass-card skeleton-card" style="padding:1.5rem;margin-bottom:1rem;"></div>
+          <div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;">
+            <div class="notice-icon" style="font-size:1.5rem;">📢</div>
+            <div class="notice-info" style="flex:1;">
+              <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">Admission Open for Grade 11 (+2 Management & Education)</h4>
+              <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                <span>📅 2081 B.S.</span>
+                <span class="badge badge-gold">Admissions</span>
+              </div>
+            </div>
+          </div>
+          <div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;">
+            <div class="notice-icon" style="font-size:1.5rem;">🚨</div>
+            <div class="notice-info" style="flex:1;">
+              <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">Terminal Examination Routine Published</h4>
+              <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                <span>📅 2081 B.S.</span>
+                <span class="badge badge-red">Urgent</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         <a href="/notices" class="btn btn-outline" style="margin-top:1.5rem">
@@ -175,7 +192,7 @@
 </section>
 
 <!-- ═══ FACILITIES SECTION ═════════════════════════════════════════ -->
-<section class="section" style="background: var(--navy-mid);">
+<section class="section" style="background:var(--navy-mid);">
   <div class="container">
     <div class="section-header">
       <div class="tag">Campus Infrastructure</div>
@@ -184,30 +201,30 @@
       <div class="gold-line"></div>
     </div>
     <div class="grid-3 reveal">
-      <div class="glass-card facility-card" style="padding:0;">
-        <img id="fac-computer" src="images/computer-lab.jpg" alt="Computer Lab" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🖥️ Computer Lab</text></svg>'">
-        <div class="facility-overlay">
-          <div class="facility-info">
-            <h3>🖥️ Computer Laboratory</h3>
-            <p>High-speed internet with modern desktop computers</p>
+      <div class="glass-card facility-card" style="padding:0;height:280px;position:relative;">
+        <img id="fac-computer" src="images/staff-room.jpg" alt="Computer Lab" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🖥️ Computer Lab</text></svg>'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(6,13,25,0.9), transparent 60%);display:flex;align-items:flex-end;padding:1.5rem;">
+          <div>
+            <h3 style="color:var(--white);font-size:1.15rem;">🖥️ Computer Laboratory</h3>
+            <p style="color:var(--text-muted);font-size:0.85rem;">High-speed internet with modern desktop computers</p>
           </div>
         </div>
       </div>
-      <div class="glass-card facility-card" style="padding:0;">
-        <img id="fac-smart" src="images/smart-class.jpg" alt="Smart Classroom" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🏫 Smart Classroom</text></svg>'">
-        <div class="facility-overlay">
-          <div class="facility-info">
-            <h3>🏫 Smart Classroom</h3>
-            <p>Interactive digital displays and multimedia learning</p>
+      <div class="glass-card facility-card" style="padding:0;height:280px;position:relative;">
+        <img id="fac-smart" src="images/students.jpg" alt="Smart Classroom" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🏫 Smart Classroom</text></svg>'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(6,13,25,0.9), transparent 60%);display:flex;align-items:flex-end;padding:1.5rem;">
+          <div>
+            <h3 style="color:var(--white);font-size:1.15rem;">🏫 Smart Classroom</h3>
+            <p style="color:var(--text-muted);font-size:0.85rem;">Interactive digital displays and multimedia learning</p>
           </div>
         </div>
       </div>
-      <div class="glass-card facility-card" style="padding:0;">
-        <img id="fac-ground" src="images/ground.jpg" alt="Sports Ground" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🏃 Sports Ground</text></svg>'">
-        <div class="facility-overlay">
-          <div class="facility-info">
-            <h3>🏃 Sports Field</h3>
-            <p>Outdoor playground and physical sports arena</p>
+      <div class="glass-card facility-card" style="padding:0;height:280px;position:relative;">
+        <img id="fac-ground" src="images/assembly.jpg" alt="Sports Ground" style="width:100%;height:100%;object-fit:cover;" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'400\' height=\'280\' viewBox=\'0 0 400 280\' fill=\'%230d1b2a\'><text x=\'50%\' y=\'50%\' fill=\'%23f4a900\' font-size=\'24\' text-anchor=\'middle\'>🏃 Sports Ground</text></svg>'">
+        <div style="position:absolute;inset:0;background:linear-gradient(to top, rgba(6,13,25,0.9), transparent 60%);display:flex;align-items:flex-end;padding:1.5rem;">
+          <div>
+            <h3 style="color:var(--white);font-size:1.15rem;">🏃 Sports Field</h3>
+            <p style="color:var(--text-muted);font-size:0.85rem;">Outdoor playground and physical sports arena</p>
           </div>
         </div>
       </div>
@@ -267,11 +284,14 @@
   <div class="container">
     <div class="grid-4" style="gap:2.5rem;margin-bottom:3rem;">
       <div class="footer-brand">
-        <h3 style="color:var(--gold-light);margin-bottom:0.75rem;"><span class="dyn-school-name">Shree Nepal Secondary School</span></h3>
+        <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1rem;">
+          <img src="images/logo.svg" alt="Logo" style="width:45px;height:45px;">
+          <h3 style="color:var(--gold-light);font-size:1.1rem;"><span class="dyn-school-name">Shree Nepal Secondary School</span></h3>
+        </div>
         <p>Providing quality education from ECD to Class 12 in Brindaban-02, Rautahat, Madhesh Province, Nepal.</p>
       </div>
       <div class="footer-links">
-        <h4>Navigation</h4>
+        <h4 style="color:var(--gold);margin-bottom:1rem;">Navigation</h4>
         <ul>
           <li><a href="/">Home</a></li>
           <li><a href="/about">About Us</a></li>
@@ -281,7 +301,7 @@
         </ul>
       </div>
       <div class="footer-links">
-        <h4>Portals & Resources</h4>
+        <h4 style="color:var(--gold);margin-bottom:1rem;">Portals & Resources</h4>
         <ul>
           <li><a href="/notices">Notice Board</a></li>
           <li><a href="/gallery">Photo Gallery</a></li>
@@ -291,7 +311,7 @@
         </ul>
       </div>
       <div class="footer-links">
-        <h4>Contact Us</h4>
+        <h4 style="color:var(--gold);margin-bottom:1rem;">Contact Us</h4>
         <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.5rem;">📍 Brindaban-02, Rautahat, Nepal</p>
         <p style="font-size:0.9rem;color:var(--text-muted);margin-bottom:0.5rem;">📞 <a href="tel:9845000000" class="dyn-school-phone-link" style="color:var(--gold);"><span class="dyn-school-phone">Contact Phone</span></a></p>
         <p style="font-size:0.9rem;color:var(--text-muted);">✉️ <a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="dyn-school-email-link" style="color:var(--gold);"><span class="dyn-school-email">Contact Email</span></a></p>
@@ -311,7 +331,6 @@
 
 <script src="script.js?v=20260813"></script>
 <script>
-  // Dynamic floating particles
   const particleContainer = document.getElementById('hero-particles');
   if (particleContainer) {
     for (let i = 0; i < 20; i++) {

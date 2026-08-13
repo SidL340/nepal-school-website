@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" width="200" height="200">
+  <defs>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffe066" />
+      <stop offset="50%" stop-color="#f4a900" />
+      <stop offset="100%" stop-color="#b37700" />
+    </linearGradient>
+    <linearGradient id="navyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1b263b" />
+      <stop offset="100%" stop-color="#070f1e" />
+    </linearGradient>
+    <path id="textCircle" d="M 100, 100 m -72, 0 a 72,72 0 1,1 144,0 a 72,72 0 1,1 -144,0" />
+  </defs>
+
+  <!-- Outer Ring -->
+  <circle cx="100" cy="100" r="96" fill="url(#navyGrad)" stroke="url(#goldGrad)" stroke-width="6" />
+  <circle cx="100" cy="100" r="88" fill="none" stroke="url(#goldGrad)" stroke-width="1.5" stroke-dasharray="4,2" />
+
+  <!-- Inner Circle -->
+  <circle cx="100" cy="100" r="68" fill="#0d1b2a" stroke="url(#goldGrad)" stroke-width="3" />
+
+  <!-- Emblem Icon: Open Book & Sun Rays -->
+  <g transform="translate(100, 105)">
+    <!-- Rays -->
+    <path d="M 0 -35 L 0 -45 M -20 -30 L -28 -38 M 20 -30 L 28 -38 M -32 -10 L -42 -14 M 32 -10 L 42 -14" stroke="#ffd166" stroke-width="2.5" stroke-linecap="round"/>
+    <!-- Sun -->
+    <circle cx="0" cy="-24" r="10" fill="url(#goldGrad)"/>
+    
+    <!-- Open Book Pages -->
+    <path d="M -30 10 Q -15 0 0 10 Q 15 0 30 10 L 30 25 Q 15 15 0 25 Q -15 15 -30 25 Z" fill="url(#goldGrad)" />
+    <path d="M -28 12 Q -14 3 0 12 L 0 23 Q -14 14 -28 23 Z" fill="#ffffff" opacity="0.9" />
+    <path d="M 28 12 Q 14 3 0 12 L 0 23 Q 14 14 28 23 Z" fill="#ffffff" opacity="0.9" />
+    <line x1="0" y1="12" x2="0" y2="25" stroke="#f4a900" stroke-width="2"/>
+  </g>
+
+  <!-- Circular Text -->
+  <text font-family="'Poppins', sans-serif" font-size="10.5" font-weight="bold" fill="url(#goldGrad)" letter-spacing="1.2">
+    <textPath href="#textCircle" startOffset="50%" text-anchor="middle">
+      SHREE NEPAL SECONDARY SCHOOL ★ ESTD 2007 ★
+    </textPath>
+  </text>
+</svg>
