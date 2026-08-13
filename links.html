@@ -3,57 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>School Website</title>
-  <meta name="description" content="Important educational links for students — NEB result, SEE result, CDC Nepal, EMIS, Sikai Chautari, E-Pustakalaya and more." />
+  <title>Educational Portals & Links - Shree Nepal Secondary School</title>
+  <meta name="description" content="Official Nepal educational portals — NEB Result, SEE Result, CDC Nepal, Sikai Chautari, and MoEST." />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=1783286551" />
-  <style>
-    .link-section-title {
-      display: flex; align-items: center; gap: 0.75rem;
-      margin-bottom: 1.5rem; padding-bottom: 0.75rem;
-      border-bottom: 2px solid var(--gold);
-    }
-    .link-section-title h3 { color: var(--white); font-size: 1.2rem; }
-    .link-card {
-      display: flex; align-items: center; gap: 1.25rem;
-      padding: 1.5rem; border-radius: var(--radius-lg);
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
-      transition: var(--transition); text-decoration: none;
-      margin-bottom: 1rem; position: relative; overflow: hidden;
-    }
-    .link-card::before {
-      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px;
-      border-radius: 2px 0 0 2px;
-    }
-    .link-card.result::before { background: linear-gradient(to bottom, var(--gold), var(--gold-light)); }
-    .link-card.govt::before   { background: linear-gradient(to bottom, #dc143c, #ff4d6d); }
-    .link-card.learn::before  { background: linear-gradient(to bottom, #0ea5e9, #38bdf8); }
-    .link-card.lib::before    { background: linear-gradient(to bottom, #2dd4bf, #67e8f9); }
-    .link-card:hover {
-      border-color: rgba(244,169,0,0.4);
-      transform: translateX(6px);
-      box-shadow: var(--shadow-gold);
-    }
-    .link-icon-wrap {
-      width: 60px; height: 60px; border-radius: var(--radius);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 1.8rem; flex-shrink: 0;
-    }
-    .link-icon-wrap.gold  { background: linear-gradient(135deg, var(--gold), var(--gold-light)); }
-    .link-icon-wrap.red   { background: linear-gradient(135deg, #dc143c, #ff4d6d); }
-    .link-icon-wrap.blue  { background: linear-gradient(135deg, #0ea5e9, #38bdf8); }
-    .link-icon-wrap.teal  { background: linear-gradient(135deg, #2dd4bf, #67e8f9); }
-    .link-icon-wrap.purple{ background: linear-gradient(135deg, #a855f7, #c084fc); }
-    .link-info { flex: 1; }
-    .link-info h4 { color: var(--white); font-size: 1rem; margin-bottom: 0.25rem; }
-    .link-info p  { color: var(--text-muted); font-size: 0.82rem; }
-    .link-url { color: var(--gold); font-size: 0.75rem; margin-top: 0.25rem; word-break: break-all; }
-    .link-arrow { color: var(--gold); font-size: 1.4rem; flex-shrink: 0; }
-    .link-badge {
-      position: absolute; top: 0.75rem; right: 0.75rem;
-      font-size: 0.68rem; padding: 0.2rem 0.5rem;
-    }
-  </style>
+  <link rel="stylesheet" href="style.css?v=20260813" />
 
   <!-- Firebase Compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -66,10 +19,10 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
+      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
       <div class="nav-brand-text">
-        <span class="school-name"><span class="dyn-school-name"></span></span>
-        <span class="school-sub">Bishrampur-02, Rautahat, Nepal</span>
+        <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
+        <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
@@ -83,223 +36,72 @@
       <li><a href="/links" class="active">Edu Links</a></li>
       <li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
-      </ul>
+    </ul>
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Resources</div>
-    <h1>Educational Links</h1>
-    <p>Important Nepal education portals, result checks, and learning resources</p>
-    <div class="breadcrumb"><a href="/">Home</a><span>/</span><span>Edu Links</span></div>
+    <div class="tag">National Portals</div>
+    <h1>Educational Links & Results</h1>
+    <p>Quick access to examination results, Ministry portals, and digital learning platforms</p>
   </div>
 </div>
 
 <section class="section" style="background:var(--navy)">
   <div class="container">
-    <div class="grid-2" style="gap:3rem;align-items:start">
-
-      <!-- Result Check -->
-      <div class="reveal">
-        <div class="link-section-title">
-          <span style="font-size:1.5rem">🎓</span>
-          <h3>Result Check Portals</h3>
+    <div class="grid-2" style="gap:2rem;">
+      
+      <a href="https://neb.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
+        <div style="font-size:3rem;">📋</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;">NEB +2 Result Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;">National Examination Board (Class 11 & 12 Result Check)</p>
+          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">neb.ntc.net.np ↗</span>
         </div>
+      </a>
 
-        <a href="https://neb.ntc.net.np/" target="_blank" rel="noopener" class="link-card result">
-          <span class="badge badge-red link-badge">+2 Level</span>
-          <div class="link-icon-wrap gold">📋</div>
-          <div class="link-info">
-            <h4>NEB Result — Class 11 & 12</h4>
-            <p>Check Grade 11 and Grade 12 (NEB) examination results officially</p>
-            <div class="link-url">neb.ntc.net.np</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-
-        <a href="https://see.ntc.net.np/" target="_blank" rel="noopener" class="link-card result">
-          <span class="badge badge-gold link-badge">SEE Level</span>
-          <div class="link-icon-wrap gold">🎓</div>
-          <div class="link-info">
-            <h4>SEE Result — Grade 10</h4>
-            <p>Secondary Education Examination result check portal</p>
-            <div class="link-url">see.ntc.net.np</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-      </div>
-
-      <!-- Government Portals -->
-      <div class="reveal">
-        <div class="link-section-title">
-          <span style="font-size:1.5rem">🏛️</span>
-          <h3>Government Education Portals</h3>
+      <a href="https://see.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
+        <div style="font-size:3rem;">🎓</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;">SEE Result Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;">Secondary Education Examination Grade 10 Results</p>
+          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">see.ntc.net.np ↗</span>
         </div>
+      </a>
 
-        <a href="https://moecdc.gov.np/" target="_blank" rel="noopener" class="link-card govt">
-          <div class="link-icon-wrap red">📚</div>
-          <div class="link-info">
-            <h4>CDC Nepal — Curriculum Development Centre</h4>
-            <p>Ministry of Education's Curriculum Development Centre. Textbooks, curriculum, and syllabi for all levels.</p>
-            <div class="link-url">moecdc.gov.np</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-
-        <a href="https://emis.gov.np/" target="_blank" rel="noopener" class="link-card govt">
-          <div class="link-icon-wrap red">🗂️</div>
-          <div class="link-info">
-            <h4>EMIS — Education Management Information System</h4>
-            <p>Nepal government's education data and management information system</p>
-            <div class="link-url">emis.gov.np</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-      </div>
-
-      <!-- Learning Resources -->
-      <div class="reveal">
-        <div class="link-section-title">
-          <span style="font-size:1.5rem">💡</span>
-          <h3>Online Learning Platforms</h3>
+      <a href="https://moecdc.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
+        <div style="font-size:3rem;">📚</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;">Curriculum Development Centre</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;">CDC Nepal — Official Syllabi, Textbooks, & Guidelines</p>
+          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">moecdc.gov.np ↗</span>
         </div>
+      </a>
 
-        <a href="https://learning.cehrd.gov.np/" target="_blank" rel="noopener" class="link-card learn">
-          <div class="link-icon-wrap blue">💡</div>
-          <div class="link-info">
-            <h4>Sikai Chautari</h4>
-            <p>Nepal government's free online learning platform — CEHRD. Interactive lessons and study materials.</p>
-            <div class="link-url">learning.cehrd.gov.np</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-
-        <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="link-card lib">
-          <div class="link-icon-wrap teal">📖</div>
-          <div class="link-info">
-            <h4>E-Pustakalaya — Digital Library</h4>
-            <p>Nepal's free digital library. Thousands of books, textbooks and educational resources online.</p>
-            <div class="link-url">pustakalaya.org</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-
-        <a href="/epustakalaya" class="link-card lib">
-          <div class="link-icon-wrap teal" style="background:linear-gradient(135deg,var(--gold),var(--gold-light))">📚</div>
-          <div class="link-info">
-            <h4>E-Library — Our School Page</h4>
-            <p>Visit our dedicated E-Pustakalaya page with subject-wise quick links</p>
-            <div class="link-url">nepalssb.edu.np/epustakalaya</div>
-          </div>
-          <span class="link-arrow">→</span>
-        </a>
-      </div>
-
-      <!-- National Examination -->
-      <div class="reveal">
-        <div class="link-section-title">
-          <span style="font-size:1.5rem">🏆</span>
-          <h3>Examination Boards</h3>
+      <a href="https://learning.cehrd.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:2rem;display:flex;align-items:center;gap:1.5rem;">
+        <div style="font-size:3rem;">💡</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;">Sikai Chautari Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.88rem;">CEHRD Official E-Learning Platform for Nepali Students</p>
+          <span style="color:var(--gold);font-weight:700;font-size:0.85rem;">learning.cehrd.gov.np ↗</span>
         </div>
-
-        <a href="https://neb.gov.np/" target="_blank" rel="noopener" class="link-card result">
-          <div class="link-icon-wrap purple">🏆</div>
-          <div class="link-info">
-            <h4>National Examination Board (NEB)</h4>
-            <p>Nepal's National Examination Board — official site for +2 exams, notices and regulations</p>
-            <div class="link-url">neb.gov.np</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-
-        <a href="https://www.neb.gov.np/examination/" target="_blank" rel="noopener" class="link-card result">
-          <div class="link-icon-wrap purple">📝</div>
-          <div class="link-info">
-            <h4>NEB Examination Schedule</h4>
-            <p>Exam dates, routines and important examination information from NEB</p>
-            <div class="link-url">neb.gov.np/examination</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-
-        <a href="https://www.doe.gov.np/" target="_blank" rel="noopener" class="link-card govt">
-          <div class="link-icon-wrap red">🏛️</div>
-          <div class="link-info">
-            <h4>Department of Education Nepal</h4>
-            <p>Ministry of Education — Department of Education official portal</p>
-            <div class="link-url">doe.gov.np</div>
-          </div>
-          <span class="link-arrow">↗</span>
-        </a>
-      </div>
+      </a>
 
     </div>
   </div>
 </section>
 
-<footer>
+<footer class="footer">
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
-        <h3><span class="dyn-school-name"></span></h3>
-        <p>Providing quality education from ECD to Class 12 in the heart of Rautahat, Madhesh Province, Nepal.</p>
-        <div class="footer-social">
-            <a href="https://www.facebook.com/nepal.secondary.3" target="_blank" title="Facebook" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="https://www.facebook.com/Shreenepalsecondaryschool/" target="_blank" title="Facebook Page" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="mailto:nepalsecondaryschool.bdn@gmail.com" title="Email" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.713l11.985-8.713h-23.97l11.985 8.713zm0 2.574l-12-8.727v14.44h24v-14.44l-12 8.727z"/></svg></a>
-          </div>
-      </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About School</a></li>
-          <li><a href="/academics">Academics</a></li>
-          <li><a href="/faculty">Staff</a></li>
-          <li><a href="/committee">Committee</a></li>
-          <li><a href="/notices">Notice Board</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="/epustakalaya">E-Pustakalaya</a></li>
-          <li><a href="/links">Edu Links</a></li>
-          <li><a href="https://neb.ntc.net.np/" target="_blank">NEB Result</a></li>
-          <li><a href="https://see.ntc.net.np/" target="_blank">SEE Result</a></li>
-          <li><a href="https://moecdc.gov.np/" target="_blank">CDC Nepal</a></li>
-          <li><a href="https://learning.cehrd.gov.np/" target="_blank">Sikai Chautari</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <div class="footer-contact-item">
-          <span class="icon">📍</span>
-          <span>Brindaban-02, Rautahat,<br>Madhesh Province, Nepal</span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">📞</span>
-          <span><a href="tel:0000000000"><span class="dyn-school-phone"></span></a></span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">✉️</span>
-          <span><a href="mailto:nepalsecondaryschool.bdn@gmail.com" style="color:inherit" class="dyn-school-email">admin@nepalssb.edu.np</a><br>
-          <a href="mailto:nepalsecondaryschool.bdn@gmail.com">nepalsecondaryschool.bdn@gmail.com</a></span>
-        </div>
-      </div>
-    </div>
     <div class="footer-bottom">
-      <p>© 2024–2025 <span><span class="dyn-school-name"></span> Bishrampur</span>. All Rights Reserved.<br>
-      Designed with ❤️ for quality education in Nepal &nbsp;|&nbsp; <a href="https://nepalssb.edu.np" style="color:var(--gold)">nepalssb.edu.np</a></p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=1783746747"></script>
-<script src="dynamic.js?v=1783746747"></script>
+<script src="script.js?v=20260813"></script>
+<script src="dynamic.js?v=20260813"></script>
 </body>
 </html>

@@ -3,71 +3,26 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>School Website</title>
-  <meta name="description" content="School Website"principal-name"></span> and our team of experienced educators." />
+  <title>Faculty & Staff - Shree Nepal Secondary School</title>
+  <meta name="description" content="Meet the principal and dedicated teaching faculty of Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal." />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=1783286551" />
-  <style>
-    .principal-hero {
-      background: linear-gradient(135deg, var(--navy-mid) 0%, var(--navy) 100%);
-      border-radius: var(--radius-lg); padding: 3rem;
-      border: 1px solid var(--glass-border); position: relative; overflow: hidden;
-    }
-    .principal-hero::before {
-      content: '"'; position: absolute; top: -2rem; right: 2rem;
-      font-size: 16rem; font-family: Georgia,serif;
-      color: rgba(244,169,0,0.05); line-height: 1; pointer-events: none;
-    }
-    .principal-photo {
-      width: 220px; height: 220px; object-fit: cover;
-      border-radius: 50%; border: 5px solid var(--gold);
-      box-shadow: 0 0 40px rgba(244,169,0,0.3);
-    }
-    .principal-photo-placeholder {
-      width: 220px; height: 220px; border-radius: 50%;
-      border: 5px solid var(--gold); background: var(--navy-light);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 5rem; box-shadow: 0 0 40px rgba(244,169,0,0.3);
-    }
-    .message-full {
-      background: var(--glass-bg); border: 1px solid var(--glass-border);
-      border-left: 4px solid var(--gold);
-      border-radius: 0 var(--radius) var(--radius) 0;
-      padding: 2rem; font-style: italic;
-      color: var(--text-body); line-height: 1.9; font-size: 0.95rem;
-    }
-    .staff-card {
-      padding: 2rem; text-align: center; border-radius: var(--radius-lg);
-      transition: var(--transition);
-    }
-    .staff-photo {
-      width: 90px; height: 90px; border-radius: 50%; object-fit: cover;
-      border: 3px solid var(--gold); margin: 0 auto 1rem;
-    }
-    .staff-photo-icon {
-      width: 90px; height: 90px; border-radius: 50%;
-      background: var(--navy-light); border: 3px solid var(--gold);
-      display: flex; align-items: center; justify-content: center;
-      font-size: 2.5rem; margin: 0 auto 1rem;
-    }
-    .staff-name { color: var(--white); font-weight: 700; margin-bottom: 0.25rem; }
-    .staff-role { color: var(--gold); font-size: 0.8rem; font-weight: 600; margin-bottom: 0.5rem; }
-    .staff-subject { color: var(--text-muted); font-size: 0.78rem; }
-  </style>
+  <link rel="stylesheet" href="style.css?v=20260813" />
+
   <!-- Firebase Compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
-  <script src="firebase-config.js"></script></head>
+  <script src="firebase-config.js"></script>
+</head>
 <body>
 
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
+      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
       <div class="nav-brand-text">
-        <span class="school-name"><span class="dyn-school-name"></span></span>
-        <span class="school-sub">Bishrampur-02, Rautahat, Nepal</span>
+        <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
+        <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
@@ -81,125 +36,69 @@
       <li><a href="/links">Edu Links</a></li>
       <li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
-      </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    </ul>
+    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Navigation Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Our Team</div>
-    <h1>Staff & Principal</h1>
-    <p>Dedicated educators shaping the future of our students</p>
-    <div class="breadcrumb"><a href="/">Home</a><span>/</span><span>Staff</span></div>
+    <div class="tag">Our Educational Team</div>
+    <h1>Staff & Faculty Directory</h1>
+    <p>Dedicated educators and support personnel shaping the future of our students</p>
   </div>
 </div>
 
 <!-- PRINCIPAL SECTION -->
 <section class="section" style="background:var(--navy)">
   <div class="container">
-    <div class="section-header">
-      <div class="tag">School Leadership</div>
-      <h2>Our Principal</h2>
-      <div class="gold-line"></div>
-    </div>
-    
-    <div class="glass-card reveal" style="max-width:800px; margin:0 auto; padding:2rem; display:flex; flex-wrap:wrap; gap:2rem; align-items:center; justify-content:center;">
-      <div class="principal-photo-wrap" style="flex-shrink:0;width:150px;height:150px;border-radius:50%;overflow:hidden;border:4px solid var(--gold);box-shadow:0 10px 30px rgba(0,0,0,0.5);">
-        <img src="images/principal.jpg" alt="Principal" style="width:100%;height:100%;object-fit:cover;"
-             onerror="this.outerHTML='<div style=\'width:100%;height:100%;background:var(--navy-light);display:flex;align-items:center;justify-content:center;font-size:3.5rem;\'>👨‍💼</div>'">
-      </div>
-      <div style="text-align:center; flex:1; min-width:250px;">
-        <h3 class="principal-name" style="color:var(--gold); font-size:1.6rem; margin-bottom:0.25rem;">Loading...</h3>
-        <p style="color:var(--text-muted); font-size:1rem; margin-bottom:1rem;">Principal, <span class="dyn-school-name"></span></p>
-        
-        <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap">
-          <a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="btn btn-gold dyn-school-email-link" style="font-size:0.85rem;padding:0.5rem 1.2rem">
-            ✉ Email Principal
-          </a>
-          <a href="tel:0000000000" class="btn btn-outline dyn-school-phone-link" style="font-size:0.85rem;padding:0.5rem 1.2rem">
-            📞 Call Principal
-          </a>
+    <div class="glass-card principal-hero" style="padding:3rem;">
+      <div class="grid-2" style="align-items:center;">
+        <div style="text-align:center;">
+          <div class="principal-photo-placeholder" style="margin:0 auto;width:180px;height:180px;border-radius:50%;border:4px solid var(--gold);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:4rem;">👨‍💼</div>
+        </div>
+        <div>
+          <div class="tag" style="margin-bottom:0.75rem;">School Leadership</div>
+          <h2 style="color:var(--white);margin-bottom:0.5rem;"><span class="principal-name">Principal</span></h2>
+          <p style="color:var(--gold);font-weight:700;margin-bottom:1rem;">Principal, <span class="dyn-school-name">Shree Nepal Secondary School</span></p>
+          <div class="message-full" style="background:rgba(255,255,255,0.03);padding:1.5rem;border-radius:12px;border-left:4px solid var(--gold);">
+            <p class="message-text" style="color:var(--text-body);font-style:italic;">"Education is the most powerful weapon which you can use to change the world. We welcome all students to excel in our vibrant academic community."</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- STAFF SECTION -->
+<!-- STAFF DIRECTORY SECTION -->
 <section class="section" style="background:var(--navy-mid)">
   <div class="container">
     <div class="section-header">
-      <div class="tag">Our Team</div>
-      
-      
+      <div class="tag">Faculty Members</div>
+      <h2>Teaching & Non-Teaching Staff</h2>
+      <p>Meet our dedicated team of experienced teachers and administrative personnel</p>
       <div class="gold-line"></div>
     </div>
-    <div class="grid-4"></div>
+
+    <!-- Container populated by dynamic.js real-time listener -->
+    <div class="grid-4">
+      <div class="glass-card skeleton-card"></div>
+      <div class="glass-card skeleton-card"></div>
+      <div class="glass-card skeleton-card"></div>
+      <div class="glass-card skeleton-card"></div>
+    </div>
   </div>
 </section>
 
-<footer>
+<footer class="footer">
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
-        <h3><span class="dyn-school-name"></span></h3>
-        <p>Providing quality education from ECD to Class 12 in the heart of Rautahat, Madhesh Province, Nepal.</p>
-        <div class="footer-social">
-            <a href="https://www.facebook.com/nepal.secondary.3" target="_blank" title="Facebook" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="https://www.facebook.com/Shreenepalsecondaryschool/" target="_blank" title="Facebook Page" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="mailto:nepalsecondaryschool.bdn@gmail.com" title="Email" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.713l11.985-8.713h-23.97l11.985 8.713zm0 2.574l-12-8.727v14.44h24v-14.44l-12 8.727z"/></svg></a>
-          </div>
-      </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About School</a></li>
-          <li><a href="/academics">Academics</a></li>
-          <li><a href="/faculty">Staff</a></li>
-          <li><a href="/committee">Committee</a></li>
-          <li><a href="/notices">Notice Board</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="/epustakalaya">E-Pustakalaya</a></li>
-          <li><a href="/links">Edu Links</a></li>
-          <li><a href="https://neb.ntc.net.np/" target="_blank">NEB Result</a></li>
-          <li><a href="https://see.ntc.net.np/" target="_blank">SEE Result</a></li>
-          <li><a href="https://moecdc.gov.np/" target="_blank">CDC Nepal</a></li>
-          <li><a href="https://learning.cehrd.gov.np/" target="_blank">Sikai Chautari</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <div class="footer-contact-item">
-          <span class="icon">📍</span>
-          <span>Brindaban-02, Rautahat,<br>Madhesh Province, Nepal</span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">📞</span>
-          <span><a href="tel:0000000000"><span class="dyn-school-phone"></span></a></span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">✉️</span>
-          <span><a href="mailto:nepalsecondaryschool.bdn@gmail.com" style="color:inherit" class="dyn-school-email">admin@nepalssb.edu.np</a><br>
-          <a href="mailto:nepalsecondaryschool.bdn@gmail.com">nepalsecondaryschool.bdn@gmail.com</a></span>
-        </div>
-      </div>
-    </div>
     <div class="footer-bottom">
-      <p>© 2024–2025 <span><span class="dyn-school-name"></span> Bishrampur</span>. All Rights Reserved.<br>
-      Designed with ❤️ for quality education in Nepal &nbsp;|&nbsp; <a href="https://nepalssb.edu.np" style="color:var(--gold)">nepalssb.edu.np</a></p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=1783746747"></script>
-<script src="dynamic.js?v=1783746747"></script>
+<script src="script.js?v=20260813"></script>
+<script src="dynamic.js?v=20260813"></script>
 </body>
 </html>

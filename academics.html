@@ -3,30 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>School Website</title>
-  <meta name="description" content="School Website" />
+  <title>Academics & Streams - Shree Nepal Secondary School</title>
+  <meta name="description" content="Academic programs, +2 streams (Management, Education, Humanities), and curriculum from ECD to Class 12." />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=1783286551" />
-  <style>
-    .class-timeline { position: relative; padding-left: 2rem; }
-    .class-timeline::before { content:''; position:absolute; left:0; top:0; bottom:0; width:3px; background:linear-gradient(to bottom,var(--gold),var(--navy)); border-radius:2px; }
-    .timeline-item { position:relative; margin-bottom:2.5rem; }
-    .timeline-item::before { content:''; position:absolute; left:-2.4rem; top:0.25rem; width:14px; height:14px; border-radius:50%; background:var(--gold); border:3px solid var(--navy); box-shadow:0 0 0 3px var(--gold); z-index:1; }
-    .timeline-item .tl-card { padding:1.5rem; border-radius:var(--radius); background:var(--glass-bg); border:1px solid var(--glass-border); transition:var(--transition); }
-    .timeline-item .tl-card:hover { border-color:rgba(244,169,0,0.4); transform:translateX(6px); }
-    .tl-label { font-size:0.72rem; color:var(--gold); font-weight:700; letter-spacing:1px; text-transform:uppercase; margin-bottom:0.4rem; }
-    .tl-title { font-size:1.1rem; color:var(--white); margin-bottom:0.5rem; font-family:'Poppins',sans-serif; font-weight:700; }
-    .tl-desc { color:var(--text-muted); font-size:0.85rem; }
-    .subject-chip { display:inline-block; background:rgba(244,169,0,0.12); border:1px solid rgba(244,169,0,0.25); color:var(--gold); font-size:0.72rem; padding:0.25rem 0.65rem; border-radius:50px; margin:0.25rem 0.2rem 0; }
-    .facility-feature { display:flex; gap:1.5rem; align-items:center; padding:1.75rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-lg); transition:var(--transition); margin-bottom:1.25rem; }
-    .facility-feature:hover { border-color:rgba(244,169,0,0.4); box-shadow:var(--shadow-gold); }
-    .facility-feature-img { width:100px; height:80px; object-fit:cover; border-radius:var(--radius); flex-shrink:0; border:2px solid var(--glass-border); }
-    .facility-feature-icon { width:60px; height:60px; border-radius:var(--radius); background:linear-gradient(135deg,var(--gold),var(--gold-light)); display:flex; align-items:center; justify-content:center; font-size:1.8rem; flex-shrink:0; color:var(--navy); }
-    .stream-card { padding:2.5rem; border-radius:var(--radius-lg); border-top:4px solid; }
-    .stream-card.management { border-color:#f4a900; }
-    .stream-card.humanities  { border-color:#0ea5e9; }
-    .stream-card.education   { border-color:#2dd4bf; }
-  </style>
+  <link rel="stylesheet" href="style.css?v=20260813" />
 
   <!-- Firebase Compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -39,10 +19,10 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
+      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
       <div class="nav-brand-text">
-        <span class="school-name"><span class="dyn-school-name"></span></span>
-        <span class="school-sub">Bishrampur-02, Rautahat, Nepal</span>
+        <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
+        <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
@@ -56,225 +36,75 @@
       <li><a href="/links">Edu Links</a></li>
       <li><a href="/contact">Contact</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
-      </ul>
+    </ul>
     <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
   </div>
 </nav>
 
 <div class="page-hero">
   <div class="container">
-    <div class="tag">Education</div>
-    <h1>Academic Programs</h1>
-    <p>From Early Childhood to Higher Secondary — a complete educational journey</p>
-    <div class="breadcrumb"><a href="/">Home</a><span>/</span><span>Academics</span></div>
+    <div class="tag">Curriculum & Streams</div>
+    <h1>Academic Excellence</h1>
+    <p>Comprehensive educational programs from Early Childhood to Higher Secondary Level</p>
   </div>
 </div>
 
-<!-- CLASS STRUCTURE -->
 <section class="section" style="background:var(--navy)">
   <div class="container">
-    <div class="grid-2" style="gap:4rem;align-items:start">
-      <div>
-        <div class="section-header" style="text-align:left;margin-bottom:2.5rem">
-          <div class="tag">Class Structure</div>
-          <h2>From ECD to Class 12</h2>
-          <div class="gold-line" style="margin:1rem 0 0"></div>
-        </div>
-        <div class="class-timeline">
-          <div class="timeline-item reveal">
-            <div class="tl-card">
-              <div class="tl-label">Foundation Level</div>
-              <div class="tl-title">🌱 ECD — Early Childhood Development</div>
-              <p class="tl-desc">A nurturing environment for young learners. Play-based learning, cognitive development, and social skills are the focus at this stage.</p>
-              
-            </div>
-          </div>
-          <div class="timeline-item reveal">
-            <div class="tl-card">
-              <div class="tl-label">Primary Level</div>
-              <div class="tl-title">📚 Class 1 – 5</div>
-              <p class="tl-desc">Building core foundations in Nepali, English, Mathematics, Science, Social Studies and more.</p>
-              
-            </div>
-          </div>
-          <div class="timeline-item reveal">
-            <div class="tl-card">
-              <div class="tl-label">Lower Secondary</div>
-              <div class="tl-title">📖 Class 6 – 8</div>
-              <p class="tl-desc">Deepening knowledge across subjects with introduction to computer science and additional languages.</p>
-              
-            </div>
-          </div>
-          <div class="timeline-item reveal">
-            <div class="tl-card">
-              <div class="tl-label">Secondary Level — SEE Board</div>
-              <div class="tl-title">🎓 Class 9 – 10 (SEE)</div>
-              <p class="tl-desc">Secondary Education Examination (SEE) level. Students prepare for board exams with dedicated faculty support and smart classroom resources.</p>
-              
-            </div>
-          </div>
-          <div class="timeline-item reveal">
-            <div class="tl-card">
-              <div class="tl-label">Higher Secondary — NEB Affiliated</div>
-              <div class="tl-title">🏆 Class 11 – 12 (+2 Level)</div>
-              <p class="tl-desc">Three specialized streams offered: Management, Education and Humanities. Affiliated with the National Examination Board (NEB).</p>
-              
-            </div>
-          </div>
+    <div class="grid-3" style="gap:2rem;">
+      
+      <div class="glass-card reveal" style="padding:2.5rem;border-top:4px solid var(--gold);">
+        <div style="font-size:3rem;margin-bottom:1rem;">📊</div>
+        <h3 style="color:var(--white);margin-bottom:0.75rem;">+2 Management Stream</h3>
+        <p style="color:var(--text-body);font-size:0.92rem;line-height:1.7;">
+          NEB-affiliated management education covering Accountancy, Economics, Business Studies, Marketing, and Computer Science to prepare future business leaders.
+        </p>
+        <div style="margin-top:1.5rem;">
+          <span class="badge badge-gold">Accountancy</span>
+          <span class="badge badge-gold">Economics</span>
+          <span class="badge badge-gold">Business</span>
         </div>
       </div>
 
-      <!-- Streams Detail -->
-      <div>
-        <div class="section-header" style="text-align:left;margin-bottom:2.5rem">
-          <div class="tag">+2 Programs</div>
-          <h2>Class 11–12 Streams</h2>
-          <div class="gold-line" style="margin:1rem 0 0"></div>
-        </div>
-
-        <div class="stream-card glass-card management reveal" style="margin-bottom:1.5rem">
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-            <span style="font-size:2.5rem">📊</span>
-            <div>
-              <h3 style="color:var(--gold)">Management Stream</h3>
-              <span class="badge badge-gold">Class 11–12</span>
-            </div>
-          </div>
-          <p style="margin-bottom:1rem;font-size:0.88rem">Designed for future business leaders, entrepreneurs and professionals. Students gain expertise in financial and managerial concepts.</p>
-          
-        </div>
-
-        <div class="stream-card glass-card education reveal" style="margin-bottom:1.5rem">
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-            <span style="font-size:2.5rem">🎓</span>
-            <div>
-              <h3 style="color:#2dd4bf">Education Stream</h3>
-              <span class="badge badge-green">Class 11–12</span>
-            </div>
-          </div>
-          <p style="margin-bottom:1rem;font-size:0.88rem">For students aspiring to become teachers, education administrators or researchers. Focuses on pedagogy and child development.</p>
-          
-        </div>
-
-        <div class="stream-card glass-card humanities reveal">
-          <div style="display:flex;align-items:center;gap:1rem;margin-bottom:1rem">
-            <span style="font-size:2.5rem">📜</span>
-            <div>
-              <h3 style="color:#0ea5e9">Humanities Stream</h3>
-              <span class="badge badge-green">Class 11–12</span>
-            </div>
-          </div>
-          <p style="margin-bottom:1rem;font-size:0.88rem">Cultivating critical thinkers, writers and social scientists. Covers history, geography, sociology and literature.</p>
-          
+      <div class="glass-card reveal" style="padding:2.5rem;border-top:4px solid #0ea5e9;">
+        <div style="font-size:3rem;margin-bottom:1rem;">🎓</div>
+        <h3 style="color:var(--white);margin-bottom:0.75rem;">+2 Education Stream</h3>
+        <p style="color:var(--text-body);font-size:0.92rem;line-height:1.7;">
+          Fostering pedagogical skills, educational psychology, curriculum understanding, and leadership for aspiring teachers and educational administrators.
+        </p>
+        <div style="margin-top:1.5rem;">
+          <span class="badge badge-blue">Pedagogy</span>
+          <span class="badge badge-blue">Psychology</span>
+          <span class="badge badge-blue">Curriculum</span>
         </div>
       </div>
+
+      <div class="glass-card reveal" style="padding:2.5rem;border-top:4px solid #2dd4bf;">
+        <div style="font-size:3rem;margin-bottom:1rem;">📖</div>
+        <h3 style="color:var(--white);margin-bottom:0.75rem;">+2 Humanities Stream</h3>
+        <p style="color:var(--text-body);font-size:0.92rem;line-height:1.7;">
+          Developing critical thinking, literature appreciation, Nepali & English languages, culture, and social development studies.
+        </p>
+        <div style="margin-top:1.5rem;">
+          <span class="badge badge-blue">Literature</span>
+          <span class="badge badge-blue">Sociology</span>
+          <span class="badge badge-blue">Languages</span>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
-<!-- FACILITIES -->
-<section class="section" style="background:var(--navy-mid)">
+<footer class="footer">
   <div class="container">
-    <div class="section-header">
-      <div class="tag">Infrastructure</div>
-      <h2>Our Facilities</h2>
-      <p>Modern resources to support 21st-century learning</p>
-      <div class="gold-line"></div>
-    </div>
-    <div class="grid-2 reveal">
-      <div class="facility-feature">
-        <div class="facility-feature-icon">🖥️</div>
-        <div>
-          <h3 style="color:var(--white);margin-bottom:0.5rem">Computer Laboratory</h3>
-          <p style="font-size:0.85rem">A fully equipped computer lab providing hands-on digital education. Students learn computer basics, typing, internet usage, and fundamental programming. Available for all classes.</p>
-        </div>
-      </div>
-      <div class="facility-feature">
-        <div class="facility-feature-icon">📺</div>
-        <div>
-          <h3 style="color:var(--white);margin-bottom:0.5rem">Smart Classroom</h3>
-          <p style="font-size:0.85rem">A cutting-edge smart room equipped with a large touch-screen interactive board, projector, and full audio-visual system. Makes complex concepts visual and engaging.</p>
-        </div>
-      </div>
-      <div class="facility-feature">
-        <div class="facility-feature-icon">🏃</div>
-        <div>
-          <h3 style="color:var(--white);margin-bottom:0.5rem">School Ground</h3>
-          <p style="font-size:0.85rem">A spacious school ground for sports, physical education, morning assembly and extracurricular activities. Promotes physical fitness and teamwork.</p>
-        </div>
-      </div>
-      <div class="facility-feature">
-        <div class="facility-feature-icon">🌿</div>
-        <div>
-          <h3 style="color:var(--white);margin-bottom:0.5rem">Healthy Environment</h3>
-          <p style="font-size:0.85rem">A peaceful, green campus environment that supports focused learning. Clean classrooms, good ventilation and a calm atmosphere contribute to better student outcomes.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
-        <h3><span class="dyn-school-name"></span></h3>
-        <p>Providing quality education from ECD to Class 12 in the heart of Rautahat, Madhesh Province, Nepal.</p>
-        <div class="footer-social">
-            <a href="https://www.facebook.com/nepal.secondary.3" target="_blank" title="Facebook" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="https://www.facebook.com/Shreenepalsecondaryschool/" target="_blank" title="Facebook Page" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="mailto:nepalsecondaryschool.bdn@gmail.com" title="Email" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.713l11.985-8.713h-23.97l11.985 8.713zm0 2.574l-12-8.727v14.44h24v-14.44l-12 8.727z"/></svg></a>
-          </div>
-      </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About School</a></li>
-          <li><a href="/academics">Academics</a></li>
-          <li><a href="/faculty">Staff</a></li>
-          <li><a href="/committee">Committee</a></li>
-          <li><a href="/notices">Notice Board</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="/epustakalaya">E-Pustakalaya</a></li>
-          <li><a href="/links">Edu Links</a></li>
-          <li><a href="https://neb.ntc.net.np/" target="_blank">NEB Result</a></li>
-          <li><a href="https://see.ntc.net.np/" target="_blank">SEE Result</a></li>
-          <li><a href="https://moecdc.gov.np/" target="_blank">CDC Nepal</a></li>
-          <li><a href="https://learning.cehrd.gov.np/" target="_blank">Sikai Chautari</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <div class="footer-contact-item">
-          <span class="icon">📍</span>
-          <span>Brindaban-02, Rautahat,<br>Madhesh Province, Nepal</span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">📞</span>
-          <span><a href="tel:0000000000"><span class="dyn-school-phone"></span></a></span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">✉️</span>
-          <span><a href="mailto:nepalsecondaryschool.bdn@gmail.com" style="color:inherit" class="dyn-school-email">admin@nepalssb.edu.np</a><br>
-          <a href="mailto:nepalsecondaryschool.bdn@gmail.com">nepalsecondaryschool.bdn@gmail.com</a></span>
-        </div>
-      </div>
-    </div>
     <div class="footer-bottom">
-      <p>© 2024–2025 <span><span class="dyn-school-name"></span> Bishrampur</span>. All Rights Reserved.<br>
-      Designed with ❤️ for quality education in Nepal &nbsp;|&nbsp; <a href="https://nepalssb.edu.np" style="color:var(--gold)">nepalssb.edu.np</a></p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=1783746747"></script>
-<script src="dynamic.js?v=1783746747"></script>
+<script src="script.js?v=20260813"></script>
+<script src="dynamic.js?v=20260813"></script>
 </body>
 </html>

@@ -3,40 +3,10 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>School Website</title>
-  <meta name="description" content="School Website" />
+  <title>E-Pustakalaya Digital Library - Shree Nepal Secondary School</title>
+  <meta name="description" content="Access thousands of free educational e-books, textbooks, and learning materials on E-Pustakalaya for students of Shree Nepal Secondary School." />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=1783286551" />
-  <style>
-    .elib-hero {
-      background: linear-gradient(135deg, #0a1628 0%, #0d1f3c 40%, #162744 100%);
-      border-radius: var(--radius-lg); padding: 4rem 3rem;
-      text-align: center; position: relative; overflow: hidden;
-      border: 1px solid var(--glass-border); margin-bottom: 3rem;
-    }
-    .elib-hero::before {
-      content: '📚'; position: absolute;
-      font-size: 18rem; opacity: 0.04;
-      top: -3rem; right: -2rem; line-height: 1;
-    }
-    .elib-hero .big-icon { font-size: 4rem; margin-bottom: 1rem; }
-    .subject-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:1rem; }
-    .subject-card {
-      padding: 1.5rem; text-align: center;
-      border-radius: var(--radius); transition: var(--transition);
-      text-decoration: none; display: block;
-    }
-    .subject-card:hover { transform: translateY(-4px); }
-    .subject-icon { font-size: 2.2rem; margin-bottom: 0.75rem; }
-    .subject-name { color: var(--white); font-weight: 700; font-size: 0.9rem; margin-bottom: 0.3rem; }
-    .subject-desc { color: var(--text-muted); font-size: 0.75rem; }
-    .feature-row { display:flex; gap:1.5rem; align-items:center; padding:1.5rem; background:var(--glass-bg); border:1px solid var(--glass-border); border-radius:var(--radius-lg); margin-bottom:1rem; transition:var(--transition); }
-    .feature-row:hover { border-color:rgba(244,169,0,0.4); }
-    .feature-icon { font-size:2rem; flex-shrink:0; width:56px; height:56px; background:linear-gradient(135deg,var(--gold),var(--gold-light)); border-radius:var(--radius); display:flex;align-items:center;justify-content:center; color:var(--navy); }
-    .iframe-wrap { border-radius:var(--radius-lg); overflow:hidden; border:2px solid var(--glass-border); }
-    @media(max-width:900px){ .subject-grid{grid-template-columns:repeat(2,1fr);} }
-    @media(max-width:600px){ .subject-grid{grid-template-columns:repeat(2,1fr);} }
-  </style>
+  <link rel="stylesheet" href="style.css?v=20260813" />
 
   <!-- Firebase Compat SDK -->
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
@@ -49,10 +19,10 @@
 <nav class="navbar" id="navbar">
   <div class="nav-container">
     <a href="/" class="nav-brand">
-      <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
+      <img src="images/logo.png" alt="School Logo" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'40\' height=\'40\' viewBox=\'0 0 24 24\' fill=\'%23f4a900\'><path d=\'M12 3L1 9l11 6 9-4.91V17h2V9L12 3z\'/></svg>'">
       <div class="nav-brand-text">
-        <span class="school-name"><span class="dyn-school-name"></span></span>
-        <span class="school-sub">Bishrampur-02, Rautahat, Nepal</span>
+        <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
+        <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
@@ -71,102 +41,66 @@
   </div>
 </nav>
 
-<div class="page-hero" style="background:linear-gradient(135deg,#0a1628 0%,#0d1f3c 60%,#162744 100%)">
+<div class="page-hero">
   <div class="container">
-    <div class="tag">📚 Digital Library</div>
-    <h1>E-Pustakalaya</h1>
-    <p>Your gateway to free digital books and educational resources</p>
-    <div class="breadcrumb"><a href="/">Home</a><span>/</span><span>E-Pustakalaya</span></div>
+    <div class="tag">Digital Learning Resource</div>
+    <h1>E-Pustakalaya National E-Library</h1>
+    <p>Your gateway to thousands of free educational textbooks, reference materials, and literature</p>
   </div>
 </div>
 
 <section class="section" style="background:var(--navy)">
   <div class="container">
-
-    <!-- Hero CTA -->
-    <div class="elib-hero reveal">
-      <div class="big-icon">📚</div>
-      <div class="tag" style="margin-bottom:1rem">Nepal's Digital Library</div>
-      <h2 style="margin-bottom:1rem">E-Pustakalaya — Digital Library</h2>
-      <p style="max-width:600px;margin:0 auto 2rem;color:var(--text-muted)">
-        E-Pustakalaya is Nepal's premier free digital library, providing access to thousands of 
-        educational books, school textbooks, literature and learning materials in Nepali and English. 
-        Available free for all students!
+    
+    <div class="glass-card reveal" style="padding:3.5rem 2.5rem;text-align:center;margin-bottom:3rem;">
+      <div style="font-size:4rem;margin-bottom:1.25rem;">📚</div>
+      <div class="tag" style="margin-bottom:1.25rem;">Nepal's Premier E-Library</div>
+      <h2 style="color:var(--white);margin-bottom:1rem;">Access E-Pustakalaya Portal</h2>
+      <p style="max-width:700px;margin:0 auto 2.25rem;color:var(--text-body);font-size:1.05rem;">
+        E-Pustakalaya is an open educational repository providing free access to digital textbooks, reference books, educational games, and audio-visual material developed for Nepali students and teachers.
       </p>
-      <div style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap">
-        <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="btn btn-gold" style="font-size:1rem;padding:0.9rem 2rem">
-          📖 Open E-Pustakalaya ↗
+      
+      <div style="display:flex;gap:1.25rem;justify-content:center;flex-wrap:wrap;">
+        <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="btn btn-gold" style="font-size:1rem;padding:0.9rem 2.25rem">
+          📖 Launch E-Pustakalaya Web Portal ↗
         </a>
-        <a href="https://gradewise.pustakalaya.org/grade/" target="_blank" rel="noopener" class="btn btn-outline">
-          Grade Wise Books
+        <a href="https://gradewise.pustakalaya.org/grade/" target="_blank" rel="noopener" class="btn btn-outline" style="font-size:1rem;padding:0.9rem 2.25rem">
+          🎓 Browse Grade-wise Textbooks ↗
         </a>
+      </div>
+    </div>
+
+    <!-- Features Row -->
+    <div class="grid-3" style="gap:2rem;">
+      <div class="glass-card" style="padding:2rem;text-align:center;">
+        <div style="font-size:2.8rem;margin-bottom:0.75rem;">📕</div>
+        <h3 style="color:var(--gold);margin-bottom:0.5rem;">CDC Textbooks</h3>
+        <p style="font-size:0.88rem;color:var(--text-body);">Full PDF editions of all official Curriculum Development Centre (CDC) school textbooks from Class 1 to 12.</p>
+      </div>
+      <div class="glass-card" style="padding:2rem;text-align:center;">
+        <div style="font-size:2.8rem;margin-bottom:0.75rem;">🎧</div>
+        <h3 style="color:var(--gold);margin-bottom:0.5rem;">Audio Books</h3>
+        <p style="font-size:0.88rem;color:var(--text-body);">Interactive audio stories and spoken literature recordings for early grade and language learners.</p>
+      </div>
+      <div class="glass-card" style="padding:2rem;text-align:center;">
+        <div style="font-size:2.8rem;margin-bottom:0.75rem;">💻</div>
+        <h3 style="color:var(--gold);margin-bottom:0.5rem;">Interactive Learning</h3>
+        <p style="font-size:0.88rem;color:var(--text-body);">Educational games, math exercises, and science experiment simulations for active self-learning.</p>
       </div>
     </div>
 
   </div>
 </section>
 
-<footer>
+<footer class="footer">
   <div class="container">
-    <div class="footer-grid">
-      <div class="footer-brand">
-        <img src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" alt="School Logo" onerror="this.style.display='none'">
-        <h3><span class="dyn-school-name"></span></h3>
-        <p>Providing quality education from ECD to Class 12 in the heart of Rautahat, Madhesh Province, Nepal.</p>
-        <div class="footer-social">
-            <a href="https://www.facebook.com/nepal.secondary.3" target="_blank" title="Facebook" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="https://www.facebook.com/Shreenepalsecondaryschool/" target="_blank" title="Facebook Page" rel="noopener" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z"/></svg></a>
-            <a href="mailto:nepalsecondaryschool.bdn@gmail.com" title="Email" style="display:flex;align-items:center;justify-content:center;width:40px;height:40px;background:rgba(255,255,255,0.1);border-radius:50%;color:var(--gold);transition:all 0.3s;"><svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 12.713l11.985-8.713h-23.97l11.985 8.713zm0 2.574l-12-8.727v14.44h24v-14.44l-12 8.727z"/></svg></a>
-          </div>
-      </div>
-      <div class="footer-col">
-        <h4>Quick Links</h4>
-        <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About School</a></li>
-          <li><a href="/academics">Academics</a></li>
-          <li><a href="/faculty">Staff</a></li>
-          <li><a href="/committee">Committee</a></li>
-          <li><a href="/notices">Notice Board</a></li>
-          <li><a href="/gallery">Gallery</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Resources</h4>
-        <ul>
-          <li><a href="/epustakalaya">E-Pustakalaya</a></li>
-          <li><a href="/links">Edu Links</a></li>
-          <li><a href="https://neb.ntc.net.np/" target="_blank">NEB Result</a></li>
-          <li><a href="https://see.ntc.net.np/" target="_blank">SEE Result</a></li>
-          <li><a href="https://moecdc.gov.np/" target="_blank">CDC Nepal</a></li>
-          <li><a href="https://learning.cehrd.gov.np/" target="_blank">Sikai Chautari</a></li>
-        </ul>
-      </div>
-      <div class="footer-col">
-        <h4>Contact</h4>
-        <div class="footer-contact-item">
-          <span class="icon">📍</span>
-          <span>Brindaban-02, Rautahat,<br>Madhesh Province, Nepal</span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">📞</span>
-          <span><a href="tel:0000000000"><span class="dyn-school-phone"></span></a></span>
-        </div>
-        <div class="footer-contact-item">
-          <span class="icon">✉️</span>
-          <span><a href="mailto:nepalsecondaryschool.bdn@gmail.com" style="color:inherit" class="dyn-school-email">admin@nepalssb.edu.np</a><br>
-          <a href="mailto:nepalsecondaryschool.bdn@gmail.com">nepalsecondaryschool.bdn@gmail.com</a></span>
-        </div>
-      </div>
-    </div>
     <div class="footer-bottom">
-      <p>© 2024–2025 <span><span class="dyn-school-name"></span> Bishrampur</span>. All Rights Reserved.<br>
-      Designed with ❤️ for quality education in Nepal &nbsp;|&nbsp; <a href="https://nepalssb.edu.np" style="color:var(--gold)">nepalssb.edu.np</a></p>
+      <p>© 2026–2027 <span class="dyn-school-name">Shree Nepal Secondary School</span>. All Rights Reserved.</p>
     </div>
   </div>
 </footer>
 
-<script src="script.js?v=1783746747"></script>
-<script src="dynamic.js?v=1783746747"></script>
+<script src="script.js?v=20260813"></script>
+<script src="dynamic.js?v=20260813"></script>
 </body>
 </html>
