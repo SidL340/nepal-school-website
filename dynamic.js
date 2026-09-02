@@ -264,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
           });
         }
       }, console.error);
-    }
   }
 
   // 5. Real-Time Gallery Listener
