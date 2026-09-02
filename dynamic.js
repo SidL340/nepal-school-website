@@ -196,58 +196,54 @@ document.addEventListener('DOMContentLoaded', () => {
   }, console.error);
 
   // 3. Real-Time Staff Directory
-  if (path.includes('faculty')) {
-    // Try staff-container (set in faculty.html) or fallback to any grid-4
-    const staffGrid = document.getElementById('staff-container') || document.getElementById('staff-grid') || document.querySelector('.grid-4');
-    if (staffGrid) {
-      const parentContainer = staffGrid.closest('#staff-container') || staffGrid.parentNode;
-      
-      db.collection('staff').onSnapshot(snap => {
-        if (!snap.empty) {
-          parentContainer.innerHTML = ''; // ALWAYS clear to prevent duplicated items!
-          const docs = [];
-          snap.forEach(d => docs.push(d));
-          docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99));
-          
-          const teaching = docs.filter(d => d.data().isTeachingStaff !== false);
-          const nonTeaching = docs.filter(d => d.data().isTeachingStaff === false);
-          
-          function renderSection(title, list) {
-            if (list.length === 0) return;
-            const sec = document.createElement('div');
-            sec.style.marginBottom = "4rem";
-            sec.innerHTML = `
-              <div style="text-align:center; margin-bottom: 2.5rem;">
-                <h3 style="color:var(--gold); font-size:1.8rem; margin-top:2rem;">${title}</h3>
-                <div class="gold-line" style="margin:0.5rem auto 0; width:60px; height:3px;"></div>
-              </div>
-              <div class="grid-4">
-                ${list.map(doc => {
-                  const s = doc.data();
-                  return `<div class="glass-card staff-card reveal visible" style="position:relative;text-align:center;padding:1.75rem 1.25rem;">
-                    ${s.photoUrl ? `<img src="${sanitizeHTML(optimizeImage(s.photoUrl))}" class="staff-photo" alt="${sanitizeHTML(s.name)}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon" style="width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin:0 auto 1rem;border:2px dashed var(--gold);">👤</div>`}
-                    <div class="staff-name" style="font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;">${sanitizeHTML(s.name)}</div>
-                    <div class="staff-role" style="color:var(--gold);font-size:0.88rem;font-weight:600;">${sanitizeHTML(s.role)}</div>
-                    <div class="staff-subject" style="color:var(--text-muted);font-size:0.82rem;margin-top:0.35rem;">${sanitizeHTML(s.qualification||s.subject||'')}</div>
-                    ${s.position ? `<div style="margin-top:0.75rem; background:rgba(245,158,11,0.18); border:1px solid rgba(245,158,11,0.4); color:var(--gold-light); padding:0.25rem 0.75rem; border-radius:50px; font-size:0.75rem; font-weight:700; display:inline-block;">${sanitizeHTML(s.position)}</div>` : ''}
-                  </div>`;
-                }).join('')}
-              </div>
-            `;
-            parentContainer.appendChild(sec);
-          }
-          
-          renderSection('Teaching Faculty', teaching);
-          renderSection('Administrative & Support Staff', nonTeaching);
+  const staffGrid = document.getElementById('staff-container') || document.getElementById('staff-grid');
+  if (staffGrid) {
+    const parentContainer = staffGrid.closest('#staff-container') || staffGrid.parentNode;
+    
+    db.collection('staff').onSnapshot(snap => {
+      if (!snap.empty) {
+        parentContainer.innerHTML = ''; // ALWAYS clear to prevent duplicated items!
+        const docs = [];
+        snap.forEach(d => docs.push(d));
+        docs.sort((a,b)=>(a.data().order||99)-(b.data().order||99));
+        
+        const teaching = docs.filter(d => d.data().isTeachingStaff !== false);
+        const nonTeaching = docs.filter(d => d.data().isTeachingStaff === false);
+        
+        function renderSection(title, list) {
+          if (list.length === 0) return;
+          const sec = document.createElement('div');
+          sec.style.marginBottom = "4rem";
+          sec.innerHTML = `
+            <div style="text-align:center; margin-bottom: 2.5rem;">
+              <h3 style="color:var(--gold); font-size:1.8rem; margin-top:2rem;">${title}</h3>
+              <div class="gold-line" style="margin:0.5rem auto 0; width:60px; height:3px;"></div>
+            </div>
+            <div class="grid-4">
+              ${list.map(doc => {
+                const s = doc.data();
+                return `<div class="glass-card staff-card reveal visible" style="position:relative;text-align:center;padding:1.75rem 1.25rem;">
+                  ${s.photoUrl ? `<img src="${sanitizeHTML(optimizeImage(s.photoUrl))}" class="staff-photo" alt="${sanitizeHTML(s.name)}" style="width:100px;height:100px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div class=&quot;staff-photo-icon&quot;>👤</div>'">` : `<div class="staff-photo-icon" style="width:100px;height:100px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.8rem;margin:0 auto 1rem;border:2px dashed var(--gold);">👤</div>`}
+                  <div class="staff-name" style="font-size:1.1rem;font-weight:700;color:var(--white);margin-bottom:0.25rem;">${sanitizeHTML(s.name)}</div>
+                  <div class="staff-role" style="color:var(--gold);font-size:0.88rem;font-weight:600;">${sanitizeHTML(s.role)}</div>
+                  <div class="staff-subject" style="color:var(--text-muted);font-size:0.82rem;margin-top:0.35rem;">${sanitizeHTML(s.qualification||s.subject||'')}</div>
+                  ${s.position ? `<div style="margin-top:0.75rem; background:rgba(245,158,11,0.18); border:1px solid rgba(245,158,11,0.4); color:var(--gold-light); padding:0.25rem 0.75rem; border-radius:50px; font-size:0.75rem; font-weight:700; display:inline-block;">${sanitizeHTML(s.position)}</div>` : ''}
+                </div>`;
+              }).join('')}
+            </div>
+          `;
+          parentContainer.appendChild(sec);
         }
-      }, console.error);
-    }
+        
+        renderSection('Teaching Faculty', teaching);
+        renderSection('Administrative & Support Staff', nonTeaching);
+      }
+    }, console.error);
   }
 
   // 4. Real-Time Committee Listener
-  if (path.includes('committee')) {
-    const commGrid = document.getElementById('committee-grid') || document.querySelector('.grid-3');
-    if (commGrid) {
+  const commGrid = document.getElementById('committee-grid');
+  if (commGrid) {
       db.collection('committee').onSnapshot(snap => {
         if (!snap.empty) {
           commGrid.innerHTML = ''; // ALWAYS clear to prevent duplicated items!

@@ -4,13 +4,58 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
-  // ── 0. Subdomain Routing Helper (admin.nepalssb.edu.np) ─────
+  // ── 0. Subdomain & URL Cleaner (nepalssb.edu.np) ─────────────
   const host = window.location.hostname.toLowerCase();
   const currentPath = window.location.pathname.toLowerCase();
   
   if (host === 'admin.nepalssb.edu.np' && !currentPath.includes('manage')) {
     window.location.replace('/manage.html');
     return;
+  }
+
+  // Smooth section scrolling for internal anchor links
+  document.querySelectorAll('a[href^="#"], a[href^="/#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      const rawHref = this.getAttribute('href');
+      const hashIndex = rawHref.indexOf('#');
+      if (hashIndex !== -1) {
+        const targetId = rawHref.substring(hashIndex + 1);
+        const targetEl = document.getElementById(targetId);
+        if (targetEl) {
+          e.preventDefault();
+          targetEl.scrollIntoView({ behavior: 'smooth' });
+          // Ensure URL in address bar STAYS as clean root domain (nepalssb.edu.np)
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, '', '/');
+          }
+        }
+      }
+    });
+  });
+
+  // Handle direct route entry (e.g., /academics, /about) by scrolling to section & cleaning URL
+  const routeMap = {
+    '/about': 'about',
+    '/academics': 'academics',
+    '/faculty': 'faculty',
+    '/committee': 'committee',
+    '/notices': 'notices',
+    '/gallery': 'gallery',
+    '/links': 'links',
+    '/contact': 'contact',
+    '/epustakalaya': 'epustakalaya'
+  };
+
+  if (routeMap[currentPath]) {
+    const secEl = document.getElementById(routeMap[currentPath]);
+    if (secEl) {
+      setTimeout(() => secEl.scrollIntoView({ behavior: 'smooth' }), 300);
+    }
+  }
+
+  // Always keep URL bar clean as root domain (nepalssb.edu.np) without appended subpaths
+  if (window.history && window.history.replaceState && !currentPath.includes('manage')) {
+    window.history.replaceState(null, '', '/');
   }
 
   // ── 1. Navbar scroll effect ──────────────────────────────────

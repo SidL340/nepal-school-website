@@ -7,7 +7,7 @@
   <meta name="description" content="Official Website of Shree Nepal Secondary School, Bishrampur, Brindaban-02, Rautahat, Nepal. NEB Affiliated. Quality education ECD to Class 12 (+2)." />
   <meta name="theme-color" content="#060d19" />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=9" />
+  <link rel="stylesheet" href="style.css?v=10" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
@@ -18,7 +18,7 @@
 <!-- ═══ NAVBAR ════════════════════════════════════════════════════════════ -->
 <nav class="navbar" id="navbar">
   <div class="nav-container">
-    <a href="/" class="nav-brand">
+    <a href="#hero-section" class="nav-brand">
       <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
       <div class="nav-brand-text">
         <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
@@ -26,16 +26,17 @@
       </div>
     </a>
     <ul class="nav-links" id="nav-links">
-      <li><a href="/" class="active">Home</a></li>
-      <li><a href="/about">About</a></li>
-      <li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li>
-      <li><a href="/committee">Committee</a></li>
-      <li><a href="/notices">Notices</a></li>
-      <li><a href="/gallery">Gallery</a></li>
-      <li><a href="/links">Edu Links</a></li>
-      <li><a href="/contact">Contact</a></li>
-      <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
+      <li><a href="#hero-section" class="active">Home</a></li>
+      <li><a href="#about">About</a></li>
+      <li><a href="#academics">Academics</a></li>
+      <li><a href="#faculty">Staff</a></li>
+      <li><a href="#committee">Committee</a></li>
+      <li><a href="#notices">Notices</a></li>
+      <li><a href="#gallery">Gallery</a></li>
+      <li><a href="#links">Edu Links</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a href="#epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
+      <li><a href="https://app.nepalssb.edu.np" target="_blank" rel="noopener" class="nav-login-btn">🔐 Portal Login</a></li>
     </ul>
     <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-expanded="false">
       <span></span><span></span><span></span>
@@ -56,7 +57,6 @@
 
   <div class="container">
     <div class="hero-content reveal visible">
-
       <div class="hero-badge">
         🇳🇵 NEB Affiliated &nbsp;·&nbsp; Estd. 2007 B.S. &nbsp;·&nbsp; Govt. Secondary School
       </div>
@@ -65,17 +65,17 @@
       <p class="hero-tagline dyn-school-about">Nurturing Young Minds · Empowering Students for 21st Century Excellence · Quality Education from ECD to Class 12 (+2).</p>
 
       <div class="hero-actions">
-        <a href="/about"         class="btn btn-gold">Explore Our School →</a>
-        <a href="/notices"       class="btn btn-outline">Latest Notices 📢</a>
-        <a href="/epustakalaya"  class="btn btn-white">E-Library 📚</a>
+        <a href="#about"         class="btn btn-gold">Explore Our School →</a>
+        <a href="#notices"       class="btn btn-outline">Latest Notices 📢</a>
+        <a href="#epustakalaya"  class="btn btn-white">E-Library 📚</a>
+        <a href="https://app.nepalssb.edu.np" target="_blank" rel="noopener" class="btn" style="background:#0ea5e9;color:#fff;font-weight:800;">🔐 School Portal Login ↗</a>
       </div>
-
     </div>
   </div>
 </section>
 
 <!-- ═══ STATS BAR ══════════════════════════════════════════════════════════ -->
-<div class="container">
+<div class="container" id="stats-section">
   <div class="stats-bar grid-4">
     <div class="stat-item">
       <div class="stat-number dyn-stat-students" data-count="1200" data-suffix="+">1200+</div>
@@ -96,153 +96,422 @@
   </div>
 </div>
 
-<!-- ═══ NOTICES + PRINCIPAL ═══════════════════════════════════════════════ -->
-<section class="section">
-  <div class="container">
-    <div class="grid-2" style="align-items:start;">
-
-      <!-- NOTICE BOARD -->
-      <div>
-        <div style="margin-bottom:1.75rem;">
-          <div class="tag">📢 Recent Updates</div>
-          <h2 style="margin-top:0.5rem;margin-bottom:0;">Notice Board</h2>
-          <div class="gold-line" style="margin:0.75rem 0 0;margin-left:0;"></div>
-        </div>
-
-        <div id="notice-preview-list">
-          <!-- Default notice cards shown instantly; Firebase replaces these -->
-          <div class="notice-preview-card glass-card">
-            <div style="font-size:1.4rem;flex-shrink:0;">📢</div>
-            <div>
-              <h4 style="color:var(--white);font-size:0.95rem;margin-bottom:0.3rem;font-weight:700;">Admission Open — Grade 11 (+2 Management & Education)</h4>
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;">
-                <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
-                <span class="badge badge-gold">Admissions</span>
-              </div>
-            </div>
-          </div>
-          <div class="notice-preview-card glass-card">
-            <div style="font-size:1.4rem;flex-shrink:0;">🚨</div>
-            <div>
-              <h4 style="color:var(--white);font-size:0.95rem;margin-bottom:0.3rem;font-weight:700;">Terminal Examination Routine Published</h4>
-              <div style="display:flex;flex-wrap:wrap;align-items:center;gap:0.6rem;">
-                <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
-                <span class="badge badge-red">Urgent</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <a href="/notices" class="btn btn-outline" style="margin-top:1.5rem;">View All Notices →</a>
-      </div>
-
-      <!-- PRINCIPAL MESSAGE -->
-      <div class="glass-card" style="padding:2rem;">
-        <div class="tag" style="margin-bottom:0.75rem;">Leadership Message</div>
-        <h3 style="color:var(--white);margin-bottom:1.25rem;">Principal's Message</h3>
-        <div style="display:flex;gap:1.15rem;align-items:center;margin-bottom:1.25rem;flex-wrap:wrap;">
-          <div class="principal-photo-wrap" style="width:85px;height:85px;flex-shrink:0;border-radius:50%;overflow:hidden;">
-            <div style="width:85px;height:85px;border-radius:50%;background:rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:center;font-size:2.2rem;border:2.5px solid var(--gold);">👨‍💼</div>
-          </div>
-          <div>
-            <div class="principal-name" style="font-size:1.05rem;font-weight:800;color:var(--gold);">Premlal Prasad Raut</div>
-            <div style="color:var(--text-muted);font-size:0.82rem;margin-top:0.15rem;">Principal, <span class="dyn-school-name">Shree Nepal Secondary School</span></div>
-          </div>
-        </div>
-        <p class="message-text" style="font-size:0.92rem;line-height:1.75;font-style:italic;color:var(--text-body);">
-          "Dear Students, Parents, and Well-wishers — It is my great honor to welcome you to Shree Nepal Secondary School. We are dedicated to offering holistic, future-ready education that builds knowledge, character, and leadership."
-        </p>
-        <a href="/about" class="btn btn-outline btn-sm" style="margin-top:1.25rem;">Read More ↓</a>
-      </div>
-
-    </div>
-  </div>
-</section>
-
-<!-- ═══ FACILITIES ══════════════════════════════════════════════════════════ -->
-<section class="section" style="background:var(--navy-mid);">
+<!-- ═══ ABOUT SECTION ══════════════════════════════════════════════════════ -->
+<section class="section" id="about">
   <div class="container">
     <div class="section-header">
-      <div class="tag">🏫 Campus Infrastructure</div>
-      <h2>Our Facilities</h2>
-      <p>State-of-the-art learning environments for academic excellence</p>
+      <div class="tag">🏛️ Institutional Profile</div>
+      <h2>About Our School</h2>
+      <p>Decades of educational leadership and service to Madhesh Province</p>
       <div class="gold-line"></div>
     </div>
-    <div class="grid-3">
-      <div class="facility-card glass-card reveal">
-        <img id="fac-computer" src="images/staff-room.jpg" alt="Computer Lab" onerror="this.style.display='none'">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,13,25,0.9) 0%,transparent 55%);display:flex;align-items:flex-end;padding:1.25rem;">
-          <div>
-            <h3 style="color:var(--white);font-size:1rem;margin-bottom:0.2rem;">🖥️ Computer Lab</h3>
-            <p style="color:var(--text-muted);font-size:0.8rem;margin:0;">High-speed internet &amp; modern PCs</p>
+
+    <div class="grid-2" style="align-items:center;margin-bottom:3rem;">
+      <div>
+        <h3 style="color:var(--gold);margin-bottom:0.75rem;">Quality Education Since 2007 B.S.</h3>
+        <p style="margin-bottom:1rem;">Shree Nepal Secondary School, Bishrampur is a leading government community secondary school located in Brindaban Municipality-02, Rautahat, Nepal.</p>
+        <p style="margin-bottom:1.5rem;">Affiliated with the National Examination Board (NEB), we provide comprehensive learning from Early Childhood Development (ECD) to Grade 12 Higher Secondary streams in Management, Education, and Humanities.</p>
+        <div style="display:flex;gap:1rem;flex-wrap:wrap;">
+          <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);padding:0.75rem 1.25rem;border-radius:12px;">
+            <div style="font-weight:800;color:var(--gold);font-size:1.1rem;">NEB Approved</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);">Govt. Curriculum</div>
+          </div>
+          <div style="background:rgba(245,158,11,0.1);border:1px solid rgba(245,158,11,0.3);padding:0.75rem 1.25rem;border-radius:12px;">
+            <div style="font-weight:800;color:var(--gold);font-size:1.1rem;">+2 Streams</div>
+            <div style="font-size:0.78rem;color:var(--text-muted);">Mgmt, Edu, Hum</div>
           </div>
         </div>
       </div>
-      <div class="facility-card glass-card reveal">
-        <img id="fac-smart" src="images/students.jpg" alt="Smart Classroom" onerror="this.style.display='none'">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,13,25,0.9) 0%,transparent 55%);display:flex;align-items:flex-end;padding:1.25rem;">
-          <div>
-            <h3 style="color:var(--white);font-size:1rem;margin-bottom:0.2rem;">📲 Smart Classroom</h3>
-            <p style="color:var(--text-muted);font-size:0.8rem;margin:0;">Interactive digital teaching boards</p>
-          </div>
-        </div>
+      <div class="glass-card" style="padding:2rem;">
+        <h3 style="color:var(--gold-light);margin-bottom:1rem;">💡 Vision & Mission</h3>
+        <p style="margin-bottom:1rem;font-size:0.9rem;"><strong>Vision:</strong> To nurture disciplined, knowledgeable, and socially responsible global citizens with strong moral values.</p>
+        <p style="font-size:0.9rem;"><strong>Mission:</strong> Deliver accessible, high-quality, and ICT-enabled education empowering every child in Rautahat to excel in higher studies and careers.</p>
       </div>
-      <div class="facility-card glass-card reveal">
-        <img id="fac-ground" src="images/assembly.jpg" alt="Sports Field" onerror="this.style.display='none'">
-        <div style="position:absolute;inset:0;background:linear-gradient(to top,rgba(6,13,25,0.9) 0%,transparent 55%);display:flex;align-items:flex-end;padding:1.25rem;">
-          <div>
-            <h3 style="color:var(--white);font-size:1rem;margin-bottom:0.2rem;">🏃 Sports Field</h3>
-            <p style="color:var(--text-muted);font-size:0.8rem;margin:0;">Open-air playground &amp; sports arena</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div style="text-align:center;margin-top:2.5rem;">
-      <a href="/gallery" class="btn btn-gold">View Full Gallery →</a>
     </div>
   </div>
 </section>
 
 <!-- ═══ ACADEMIC PROGRAMS ══════════════════════════════════════════════════ -->
-<section class="section">
+<section class="section" id="academics" style="background:var(--navy-mid);">
   <div class="container">
     <div class="section-header">
-      <div class="tag">🎓 Academic Streams</div>
-      <h2>Educational Programs</h2>
-      <p>From Early Childhood to Grade 12 (+2) — comprehensive NEB curriculum</p>
+      <div class="tag">🎓 Curriculum & Streams</div>
+      <h2>Academic Programs</h2>
+      <p>From Early Childhood to Grade 12 (+2) — National Examination Board (NEB) curriculum</p>
       <div class="gold-line"></div>
     </div>
     <div class="grid-3">
       <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid var(--gold);">
         <div style="font-size:3rem;margin-bottom:0.85rem;">🌱</div>
         <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.2rem;">ECD – Class 10</h3>
-        <p style="font-size:0.88rem;">Foundational early learning through SEE level with strong STEM, language and values focus.</p>
+        <p style="font-size:0.88rem;">Foundational early learning through SEE level with strong STEM, language and character fundamentals.</p>
         <div style="margin-top:1.1rem;display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;">
           <span class="badge badge-gold">ECD</span>
           <span class="badge badge-gold">Grade 1–10</span>
+          <span class="badge badge-gold">SEE Exam</span>
         </div>
       </div>
       <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid #0ea5e9;">
         <div style="font-size:3rem;margin-bottom:0.85rem;">📊</div>
         <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.2rem;">+2 Management</h3>
-        <p style="font-size:0.88rem;">NEB Management stream — Accountancy, Economics, Business Studies, and Computer Science.</p>
+        <p style="font-size:0.88rem;">NEB Management stream covering Accountancy, Economics, Business Studies, Marketing & Computer Science.</p>
         <div style="margin-top:1.1rem;display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;">
-          <span class="badge badge-blue">+2 Stream</span>
-          <span class="badge badge-blue">NEB</span>
+          <span class="badge badge-blue">Accountancy</span>
+          <span class="badge badge-blue">Economics</span>
+          <span class="badge badge-blue">Business</span>
         </div>
       </div>
       <div class="glass-card reveal" style="padding:2rem;text-align:center;border-top:4px solid #2dd4bf;">
         <div style="font-size:3rem;margin-bottom:0.85rem;">📖</div>
         <h3 style="color:var(--gold-light);margin-bottom:0.65rem;font-size:1.2rem;">+2 Education & Humanities</h3>
-        <p style="font-size:0.88rem;">Pedagogy, literature, social sciences — fostering future educators and community leaders.</p>
+        <p style="font-size:0.88rem;">Pedagogy, psychology, literature, social development — preparing future educators and community leaders.</p>
         <div style="margin-top:1.1rem;display:flex;gap:0.4rem;flex-wrap:wrap;justify-content:center;">
-          <span class="badge badge-blue">Education</span>
-          <span class="badge badge-blue">Humanities</span>
+          <span class="badge badge-blue">Pedagogy</span>
+          <span class="badge badge-blue">Literature</span>
+          <span class="badge badge-blue">Sociology</span>
         </div>
       </div>
     </div>
-    <div style="text-align:center;margin-top:2.5rem;">
-      <a href="/academics" class="btn btn-outline">View Academic Details →</a>
+  </div>
+</section>
+
+<!-- ═══ STAFF & FACULTY DIRECTORY ═══════════════════════════════════════════ -->
+<section class="section" id="faculty">
+  <div class="container">
+    <!-- Principal Executive Card (Centered Photo on Top, Details Only) -->
+    <div style="max-width:680px;margin:0 auto 3.5rem;">
+      <div class="glass-card principal-hero" style="padding:2.25rem 2rem;text-align:center;border:2px solid var(--gold);">
+        <div style="margin:0 auto 1rem;width:120px;height:120px;" class="principal-photo-container">
+          <div class="principal-photo-placeholder" style="width:120px;height:120px;border-radius:50%;border:3px solid var(--gold);background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:3.2rem;margin:0 auto;box-shadow:var(--shadow-gold);">👨‍💼</div>
+        </div>
+        <div class="tag" style="margin-bottom:0.5rem;">School Leadership</div>
+        <h2 style="color:var(--white);margin-bottom:0.25rem;font-size:1.5rem;"><span class="principal-name">Premlal Prasad Raut</span></h2>
+        <p style="color:var(--gold-light);font-weight:700;font-size:0.95rem;margin-bottom:1rem;">Principal, <span class="dyn-school-name">Shree Nepal Secondary School</span></p>
+        <div style="display:flex;justify-content:center;gap:0.6rem;flex-wrap:wrap;align-items:center;">
+          <span class="badge badge-gold">📍 Brindaban-02, Rautahat</span>
+          <span class="badge badge-blue">✉️ <a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="principal-email" style="color:inherit;">nepalsecondaryschool.bdn@gmail.com</a></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <div class="tag">👨‍🏫 Educational Team</div>
+      <h2>Teaching & Support Faculty</h2>
+      <p>Dedicated educators shaping student achievement</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- Firebase Dynamic Staff Container -->
+    <div id="staff-container">
+      <div class="grid-4">
+        <div class="glass-card staff-card reveal visible" style="text-align:center;padding:1.5rem 1rem;">
+          <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 0.85rem;border:3px solid var(--gold);">👨‍🏫</div>
+          <div style="font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:0.2rem;">Senior Secondary Faculty</div>
+          <div style="color:var(--gold);font-size:0.85rem;font-weight:600;">+2 Department Head</div>
+          <div style="color:var(--text-muted);font-size:0.8rem;margin-top:0.3rem;">Management & Humanities</div>
+        </div>
+        <div class="glass-card staff-card reveal visible" style="text-align:center;padding:1.5rem 1rem;">
+          <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 0.85rem;border:3px solid var(--gold);">👩‍🏫</div>
+          <div style="font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:0.2rem;">Secondary Level Teacher</div>
+          <div style="color:var(--gold);font-size:0.85rem;font-weight:600;">Science & Mathematics</div>
+          <div style="color:var(--text-muted);font-size:0.8rem;margin-top:0.3rem;">B.Sc., B.Ed.</div>
+        </div>
+        <div class="glass-card staff-card reveal visible" style="text-align:center;padding:1.5rem 1rem;">
+          <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 0.85rem;border:3px solid var(--gold);">💻</div>
+          <div style="font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:0.2rem;">Computer Instructor</div>
+          <div style="color:var(--gold);font-size:0.85rem;font-weight:600;">ICT & Smart Classroom</div>
+          <div style="color:var(--text-muted);font-size:0.8rem;margin-top:0.3rem;">BCA / BIT</div>
+        </div>
+        <div class="glass-card staff-card reveal visible" style="text-align:center;padding:1.5rem 1rem;">
+          <div style="width:90px;height:90px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.5rem;margin:0 auto 0.85rem;border:3px solid var(--gold);">📚</div>
+          <div style="font-size:1.05rem;font-weight:700;color:var(--white);margin-bottom:0.2rem;">Primary Level Teacher</div>
+          <div style="color:var(--gold);font-size:0.85rem;font-weight:600;">ECD & Basic Level</div>
+          <div style="color:var(--text-muted);font-size:0.8rem;margin-top:0.3rem;">Early Child Educator</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ SCHOOL MANAGEMENT COMMITTEE ════════════════════════════════════════ -->
+<section class="section" id="committee" style="background:var(--navy-mid);">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">🏛️ Governance</div>
+      <h2>School Management Committee (SMC)</h2>
+      <p>Visionary institutional leadership and oversight</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- Dynamic Committee Grid -->
+    <div class="grid-3" id="committee-grid" style="max-width:1100px;margin:0 auto;">
+      <div class="glass-card member-card reveal visible" style="position:relative; text-align:center; padding:2.25rem 1.5rem 1.75rem; grid-column: 1 / -1; max-width: 420px; margin: 0 auto 2rem; border: 2px solid var(--gold); background: rgba(245, 158, 11, 0.1); overflow: visible !important;">
+        <div style="position:absolute;top:-16px;left:50%;transform:translateX(-50%);background:#060d19;color:var(--gold-light);border:2px solid var(--gold);padding:5px 24px;border-radius:50px;font-size:0.92rem;font-weight:800;box-shadow:0 6px 25px rgba(0,0,0,0.85);z-index:10;white-space:nowrap;">अध्यक्ष (Chairperson)</div>
+        <img src="images/adhyaksha.jpg" class="member-photo" alt="Chairperson" style="width:120px;height:120px;border-radius:50%;object-fit:cover;margin:0 auto 1rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:3rem;margin:0 auto 1rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.45rem;font-weight:700;color:var(--gold-light);">Mr. Amindra Patel</div>
+        <div class="member-role" style="display:none">अध्यक्ष</div>
+        <div style="margin-top:0.75rem;font-size:0.85rem;color:var(--text-body);">School Management Committee Lead (अध्यक्ष)</div>
+      </div>
+      <div class="glass-card member-card reveal visible" style="text-align:center; padding:1.75rem 1.25rem;">
+        <img src="images/member1.jpg" class="member-photo" alt="Member Secretary" style="width:95px;height:95px;border-radius:50%;object-fit:cover;margin:0 auto 0.85rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:95px;height:95px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 0.85rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.1rem;font-weight:700;color:var(--white);">Member Secretary</div>
+        <div class="member-role" style="color:var(--gold);font-size:0.88rem;font-weight:600;">Principal / Secretary</div>
+      </div>
+      <div class="glass-card member-card reveal visible" style="text-align:center; padding:1.75rem 1.25rem;">
+        <img src="images/member2.jpg" class="member-photo" alt="Parent Representative" style="width:95px;height:95px;border-radius:50%;object-fit:cover;margin:0 auto 0.85rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:95px;height:95px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 0.85rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.1rem;font-weight:700;color:var(--white);">Parent Representative</div>
+        <div class="member-role" style="color:var(--gold);font-size:0.88rem;font-weight:600;">SMC Member</div>
+      </div>
+      <div class="glass-card member-card reveal visible" style="text-align:center; padding:1.75rem 1.25rem;">
+        <img src="images/member3.jpg" class="member-photo" alt="Teacher Representative" style="width:95px;height:95px;border-radius:50%;object-fit:cover;margin:0 auto 0.85rem;border:3px solid var(--gold);" onerror="this.outerHTML='<div style=\'width:95px;height:95px;border-radius:50%;background:rgba(255,255,255,0.08);display:flex;align-items:center;justify-content:center;font-size:2.4rem;margin:0 auto 0.85rem;border:2px dashed var(--gold);\'>👤</div>'">
+        <div class="member-name" style="font-size:1.1rem;font-weight:700;color:var(--white);">Teacher Representative</div>
+        <div class="member-role" style="color:var(--gold);font-size:0.88rem;font-weight:600;">SMC Member</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ NOTICES SECTION ════════════════════════════════════════════════════ -->
+<section class="section" id="notices">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">📋 Official Bulletins</div>
+      <h2>Notice Board & Circulars</h2>
+      <p>Examination routines, holiday announcements & official updates</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <!-- Category Filter -->
+    <div id="notice-filter" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2.25rem;">
+      <button class="filter-btn active" data-filter="All">All</button>
+      <button class="filter-btn" data-filter="General">General</button>
+      <button class="filter-btn" data-filter="Exam">Exam</button>
+      <button class="filter-btn" data-filter="Admissions">Admissions</button>
+    </div>
+
+    <!-- Notice Grid -->
+    <div id="notice-grid" class="grid-3">
+      <div class="glass-card reveal visible notice-grid-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+          <span class="badge badge-gold">ADMISSIONS</span>
+          <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
+        </div>
+        <h3 style="font-size:1rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">Class 11 Admission Open — Management & Education</h3>
+        <p style="color:var(--text-body);font-size:0.88rem;line-height:1.65;">Admissions open for Grade 11. Form distribution available at school office during working hours.</p>
+      </div>
+      <div class="glass-card reveal visible notice-grid-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+          <span class="badge badge-red">URGENT</span>
+          <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
+        </div>
+        <h3 style="font-size:1rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">Terminal Examination Routine Published</h3>
+        <p style="color:var(--text-body);font-size:0.88rem;line-height:1.65;">All Grade 1–12 students must check the exam timetable posted on the main board.</p>
+      </div>
+      <div class="glass-card reveal visible notice-grid-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.85rem;flex-wrap:wrap;gap:0.5rem;">
+          <span class="badge badge-blue">GENERAL</span>
+          <span style="font-size:0.78rem;color:var(--text-muted);">📅 2081 B.S.</span>
+        </div>
+        <h3 style="font-size:1rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">Parent-Teacher Association Assembly</h3>
+        <p style="color:var(--text-body);font-size:0.88rem;line-height:1.65;">Parents are requested to attend the PTA meeting to collect student progress reports.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ PHOTO GALLERY ═══════════════════════════════════════════════════════ -->
+<section class="section" id="gallery" style="background:var(--navy-mid);">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">🖼️ Campus Life</div>
+      <h2>Photo Gallery</h2>
+      <p>Highlights, events, laboratory & campus activities</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="gallery-filter" style="display:flex;flex-wrap:wrap;gap:0.5rem;justify-content:center;margin-bottom:2.25rem;">
+      <button class="gfilter-btn active" data-category="All">All Photos</button>
+      <button class="gfilter-btn" data-category="Events">Events</button>
+      <button class="gfilter-btn" data-category="Sports">Sports</button>
+      <button class="gfilter-btn" data-category="Classroom">Classroom</button>
+      <button class="gfilter-btn" data-category="Lab">Lab & Tech</button>
+    </div>
+
+    <div id="gallery-grid" class="gallery-grid">
+      <div class="gallery-item reveal visible" data-lightbox="images/assembly.jpg">
+        <img src="images/assembly.jpg" alt="Assembly" loading="lazy">
+        <div class="gallery-overlay">🔍 View Photo</div>
+      </div>
+      <div class="gallery-item reveal visible" data-lightbox="images/students.jpg">
+        <img src="images/students.jpg" alt="Students" loading="lazy">
+        <div class="gallery-overlay">🔍 View Photo</div>
+      </div>
+      <div class="gallery-item reveal visible" data-lightbox="images/staff-room.jpg">
+        <img src="images/staff-room.jpg" alt="Staff Room" loading="lazy">
+        <div class="gallery-overlay">🔍 View Photo</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ EDUCATIONAL LINKS & RESULTS ═════════════════════════════════════════ -->
+<section class="section" id="links">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">🔗 National Portals</div>
+      <h2>Educational Links & Exam Results</h2>
+      <p>Official Nepal Ministry, Examination Board & Learning Portals</p>
+      <div class="gold-line"></div>
+    </div>
+    <div class="grid-2">
+      <a href="https://neb.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+        <div style="font-size:2.2rem;flex-shrink:0;">📋</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1rem;">NEB +2 Result Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.25rem;">National Examination Board — Class 11 & 12 Results</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.8rem;">neb.ntc.net.np ↗</span>
+        </div>
+      </a>
+      <a href="https://see.ntc.net.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+        <div style="font-size:2.2rem;flex-shrink:0;">🎓</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1rem;">SEE Result Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.25rem;">Secondary Education Examination — Grade 10 Results</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.8rem;">see.ntc.net.np ↗</span>
+        </div>
+      </a>
+      <a href="https://moecdc.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+        <div style="font-size:2.2rem;flex-shrink:0;">📚</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1rem;">Curriculum Development Centre</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.25rem;">CDC Nepal — Textbooks, Syllabi & Guidelines</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.8rem;">moecdc.gov.np ↗</span>
+        </div>
+      </a>
+      <a href="https://learning.cehrd.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+        <div style="font-size:2.2rem;flex-shrink:0;">💡</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1rem;">Sikai Chautari Portal</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.25rem;">CEHRD E-Learning Platform for Nepali Students</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.8rem;">learning.cehrd.gov.np ↗</span>
+        </div>
+      </a>
+      <a href="https://app.nepalssb.edu.np" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;border:1px solid rgba(14,165,233,0.45);grid-column:1 / -1;">
+        <div style="font-size:2.5rem;flex-shrink:0;">🔐</div>
+        <div>
+          <h3 style="color:#38bdf8;margin-bottom:0.25rem;font-size:1.15rem;">School Management & Learning Portal</h3>
+          <p style="color:var(--text-body);font-size:0.88rem;margin-bottom:0.25rem;">Official Portal Login for Students, Teachers & School Administration</p>
+          <span style="color:#0ea5e9;font-weight:800;font-size:0.85rem;">app.nepalssb.edu.np ↗</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ E-PUSTAKALAYA DIGITAL LIBRARY ════════════════════════════════════════ -->
+<section class="section" id="epustakalaya" style="background:var(--navy-mid);">
+  <div class="container">
+    <div class="glass-card reveal" style="padding:2.25rem 1.75rem;text-align:center;border:1px solid rgba(245,158,11,0.35);">
+      <div style="font-size:3.5rem;margin-bottom:0.85rem;">📚</div>
+      <div class="tag" style="margin-bottom:0.75rem;">Nepal's Digital Library</div>
+      <h2 style="color:var(--white);margin-bottom:0.6rem;">E-Pustakalaya Open Learning Repository</h2>
+      <p style="max-width:620px;margin:0 auto 1.5rem;font-size:0.9rem;">Access thousands of free CDC digital textbooks, reference books, audio books, and educational games for Nepali students of all grades.</p>
+      <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+        <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="btn btn-gold">📖 Launch E-Pustakalaya ↗</a>
+        <a href="https://gradewise.pustakalaya.org/grade/" target="_blank" rel="noopener" class="btn btn-outline">🎓 Browse by Grade ↗</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ CONTACT US SECTION ═══════════════════════════════════════════════════ -->
+<section class="section" id="contact">
+  <div class="container">
+    <div class="section-header">
+      <div class="tag">📞 Get in Touch</div>
+      <h2>Contact Us</h2>
+      <p>We welcome your questions regarding admissions, academics, and school activities</p>
+      <div class="gold-line"></div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Contact Cards + Google Map Embed -->
+      <div style="display:flex;flex-direction:column;gap:1rem;">
+        <div class="glass-card" style="padding:1.35rem;display:flex;align-items:center;gap:1.1rem;">
+          <div style="font-size:2rem;flex-shrink:0;width:45px;text-align:center;">📍</div>
+          <div>
+            <h4 style="color:var(--white);margin-bottom:0.2rem;">Location</h4>
+            <p style="font-size:0.85rem;color:var(--text-body);margin:0;">Brindaban Municipality-02, Bishrampur, Rautahat, Nepal</p>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding:1.35rem;display:flex;align-items:center;gap:1.1rem;">
+          <div style="font-size:2rem;flex-shrink:0;width:45px;text-align:center;">📞</div>
+          <div>
+            <h4 style="color:var(--white);margin-bottom:0.2rem;">Phone / Helpline</h4>
+            <a href="tel:9845000000" class="dyn-school-phone-link" style="color:var(--gold-light);font-weight:700;font-size:0.95rem;"><span class="dyn-school-phone">Call School Office</span></a>
+          </div>
+        </div>
+
+        <div class="glass-card" style="padding:1.35rem;display:flex;align-items:center;gap:1.1rem;">
+          <div style="font-size:2rem;flex-shrink:0;width:45px;text-align:center;">✉️</div>
+          <div>
+            <h4 style="color:var(--white);margin-bottom:0.2rem;">Email</h4>
+            <a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="dyn-school-email-link" style="color:var(--gold-light);font-weight:600;font-size:0.88rem;word-break:break-all;"><span class="dyn-school-email">nepalsecondaryschool.bdn@gmail.com</span></a>
+          </div>
+        </div>
+
+        <!-- GOOGLE MAP EMBED CARD -->
+        <div class="glass-card" style="padding:1.35rem;overflow:hidden;">
+          <h4 style="color:var(--gold);margin-bottom:0.65rem;font-size:1rem;">🗺️ School Location Map</h4>
+          <div style="width:100%;height:240px;border-radius:10px;overflow:hidden;border:1px solid var(--glass-border);">
+            <iframe
+              src="https://maps.google.com/maps?q=Brindaban,Rautahat,Nepal&t=&z=14&ie=UTF8&iwloc=&output=embed"
+              width="100%"
+              height="100%"
+              style="border:0;"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+              title="Shree Nepal Secondary School Map Location">
+            </iframe>
+          </div>
+          <div style="margin-top:0.65rem;text-align:center;">
+            <a href="https://maps.google.com/maps?q=Brindaban,Rautahat,Nepal" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Open in Google Maps ↗</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Message Form -->
+      <div class="glass-card" style="padding:1.75rem;">
+        <h3 style="color:var(--gold);margin-bottom:1.1rem;font-size:1.1rem;">💬 Send a Message</h3>
+        <form onsubmit="event.preventDefault();this.querySelector('.send-btn').textContent='✅ Message Sent!';setTimeout(()=>{this.reset();this.querySelector('.send-btn').textContent='Send Message →';},3000);">
+          <div style="margin-bottom:0.85rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.35rem;font-size:0.82rem;font-weight:600;">Full Name</label>
+            <input type="text" required placeholder="Your Full Name" autocomplete="name">
+          </div>
+          <div style="margin-bottom:0.85rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.35rem;font-size:0.82rem;font-weight:600;">Phone or Email</label>
+            <input type="text" required placeholder="Phone number or email address" autocomplete="tel email">
+          </div>
+          <div style="margin-bottom:0.85rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.35rem;font-size:0.82rem;font-weight:600;">Subject</label>
+            <select>
+              <option value="">Select a topic</option>
+              <option>Admission Inquiry</option>
+              <option>Academic Information</option>
+              <option>Fee Structure</option>
+              <option>General Query</option>
+            </select>
+          </div>
+          <div style="margin-bottom:1.1rem;">
+            <label style="display:block;color:var(--white);margin-bottom:0.35rem;font-size:0.82rem;font-weight:600;">Message</label>
+            <textarea required rows="4" placeholder="How can we help you?"></textarea>
+          </div>
+          <button type="submit" class="btn btn-gold send-btn" style="width:100%;">Send Message →</button>
+        </form>
+      </div>
+
     </div>
   </div>
 </section>
@@ -250,40 +519,39 @@
 <!-- ═══ FOOTER ═══════════════════════════════════════════════════════════════ -->
 <footer class="footer">
   <div class="container">
-    <div class="grid-4" style="gap:2rem;margin-bottom:2rem;">
+    <div class="grid-4" style="gap:1.75rem;margin-bottom:1.75rem;">
       <div>
-        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.85rem;">
-          <img src="images/logo.png" alt="Logo" style="width:38px;height:38px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);" onerror="this.style.display='none'">
-          <h4 style="color:var(--gold-light);font-size:0.95rem;"><span class="dyn-school-name">Shree Nepal Secondary School</span></h4>
+        <div style="display:flex;align-items:center;gap:0.6rem;margin-bottom:0.75rem;">
+          <img src="images/logo.png" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:50%;border:2px solid var(--gold);" onerror="this.style.display='none'">
+          <h4 style="color:var(--gold-light);font-size:0.92rem;"><span class="dyn-school-name">Shree Nepal Secondary School</span></h4>
         </div>
-        <p style="font-size:0.85rem;color:var(--text-muted);">Quality education from ECD to Class 12 in Brindaban-02, Rautahat, Madhesh Province, Nepal.</p>
+        <p style="font-size:0.82rem;color:var(--text-muted);">Quality education from ECD to Class 12 in Brindaban-02, Rautahat, Madhesh Province, Nepal.</p>
       </div>
       <div class="footer-links">
         <h4>Navigation</h4>
         <ul>
-          <li><a href="/">🏠 Home</a></li>
-          <li><a href="/about">ℹ️ About Us</a></li>
-          <li><a href="/academics">📚 Academics</a></li>
-          <li><a href="/faculty">👨‍🏫 Staff</a></li>
-          <li><a href="/committee">🏛️ Committee</a></li>
+          <li><a href="#hero-section">🏠 Home</a></li>
+          <li><a href="#about">ℹ️ About Us</a></li>
+          <li><a href="#academics">📚 Academics</a></li>
+          <li><a href="#faculty">👨‍🏫 Staff</a></li>
+          <li><a href="#committee">🏛️ Committee</a></li>
         </ul>
       </div>
       <div class="footer-links">
         <h4>Quick Links</h4>
         <ul>
-          <li><a href="/notices">📋 Notice Board</a></li>
-          <li><a href="/gallery">🖼️ Gallery</a></li>
-          <li><a href="/epustakalaya">📖 E-Library</a></li>
-          <li><a href="/links">🔗 Edu Links</a></li>
+          <li><a href="#notices">📋 Notice Board</a></li>
+          <li><a href="#gallery">🖼️ Gallery</a></li>
+          <li><a href="#epustakalaya">📖 E-Library</a></li>
+          <li><a href="#links">🔗 Edu Links</a></li>
         </ul>
       </div>
       <div class="footer-links">
         <h4>Contact</h4>
         <ul>
-          <li><a href="#">📍 Brindaban-02, Rautahat</a></li>
+          <li><a href="#contact">📍 Brindaban-02, Rautahat</a></li>
           <li><a href="tel:9845000000" class="dyn-school-phone-link">📞 <span class="dyn-school-phone">Call School</span></a></li>
           <li><a href="mailto:nepalsecondaryschool.bdn@gmail.com" class="dyn-school-email-link">✉️ <span class="dyn-school-email">Email Office</span></a></li>
-          <li><a href="https://nepalssb.edu.np">🌐 nepalssb.edu.np</a></li>
         </ul>
       </div>
     </div>
@@ -299,7 +567,7 @@
   <img id="lightbox-img" src="" alt="Enlarged view">
 </div>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=9"></script>
 <script>
   // Floating particles
   (() => {
@@ -315,6 +583,6 @@
     }
   })();
 </script>
-<script src="dynamic.js?v=4"></script>
+<script src="dynamic.js?v=9"></script>
 </body>
 </html>

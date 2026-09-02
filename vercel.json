@@ -1,6 +1,17 @@
 {
   "cleanUrls": true,
   "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.nepalssb.edu.np"
+        }
+      ],
+      "destination": "https://nepalssb.edu.np/$1",
+      "permanent": true
+    },
     { "source": "/hajiri", "destination": "https://hajirinepal.vercel.app", "permanent": false }
   ],
   "rewrites": [
@@ -16,6 +27,15 @@
     },
     { "source": "/admin", "destination": "/manage.html" },
     { "source": "/manage", "destination": "/manage.html" },
+    { "source": "/academics", "destination": "/index.html" },
+    { "source": "/about", "destination": "/index.html" },
+    { "source": "/faculty", "destination": "/index.html" },
+    { "source": "/committee", "destination": "/index.html" },
+    { "source": "/notices", "destination": "/index.html" },
+    { "source": "/gallery", "destination": "/index.html" },
+    { "source": "/links", "destination": "/index.html" },
+    { "source": "/contact", "destination": "/index.html" },
+    { "source": "/epustakalaya", "destination": "/index.html" },
     { "source": "/home", "destination": "/index.html" }
   ],
   "headers": [
