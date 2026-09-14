@@ -431,21 +431,25 @@
         <div class="form-group"><label>About the School (About page)</label><textarea id="school-about" rows="5" placeholder="Write about the school history and vision..."></textarea></div>
 
         <h3 style="margin-top:1.5rem;color:var(--gold,#f59e0b);font-size:1rem;">📊 Homepage Stats (shown in stats bar)</h3>
-        <div class="form-row">
-          <div class="form-group"><label>Students Count</label><input type="number" id="school-stat-students" placeholder="1200"></div>
-          <div class="form-group"><label>Students Label</label><input type="text" id="school-stat-students-label" placeholder="Students"></div>
+        <div class="form-row-3">
+          <div class="form-group"><label>Students Count</label><input type="text" id="school-stat-students" placeholder="1200"></div>
+          <div class="form-group"><label>Suffix</label><input type="text" id="school-stat-students-suffix" placeholder="+"></div>
+          <div class="form-group"><label>Label</label><input type="text" id="school-stat-students-label" placeholder="Students"></div>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Staff Count</label><input type="number" id="school-stat-staff" placeholder="35"></div>
-          <div class="form-group"><label>Staff Label</label><input type="text" id="school-stat-staff-label" placeholder="Staff"></div>
+        <div class="form-row-3">
+          <div class="form-group"><label>Staff Count</label><input type="text" id="school-stat-staff" placeholder="35"></div>
+          <div class="form-group"><label>Suffix</label><input type="text" id="school-stat-staff-suffix" placeholder="+"></div>
+          <div class="form-group"><label>Label</label><input type="text" id="school-stat-staff-label" placeholder="Staff"></div>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Pass Rate (%)</label><input type="number" id="school-stat-passrate" placeholder="100"></div>
-          <div class="form-group"><label>Pass Rate Label</label><input type="text" id="school-stat-passrate-label" placeholder="NEB Pass Rate"></div>
+        <div class="form-row-3">
+          <div class="form-group"><label>Pass Rate</label><input type="text" id="school-stat-passrate" placeholder="100"></div>
+          <div class="form-group"><label>Suffix</label><input type="text" id="school-stat-passrate-suffix" placeholder="%"></div>
+          <div class="form-group"><label>Label</label><input type="text" id="school-stat-passrate-label" placeholder="NEB Pass Rate"></div>
         </div>
-        <div class="form-row">
-          <div class="form-group"><label>Years (number)</label><input type="number" id="school-stat-years" placeholder="18"></div>
-          <div class="form-group"><label>Years Label</label><input type="text" id="school-stat-years-label" placeholder="Years Strong"></div>
+        <div class="form-row-3">
+          <div class="form-group"><label>Years Strong</label><input type="text" id="school-stat-years" placeholder="18"></div>
+          <div class="form-group"><label>Suffix</label><input type="text" id="school-stat-years-suffix" placeholder="+"></div>
+          <div class="form-group"><label>Label</label><input type="text" id="school-stat-years-label" placeholder="Years Strong"></div>
         </div>
 
         <button class="btn btn-gold" id="school-save-btn" onclick="saveSchoolInfo()" style="margin-top:.5rem">💾 Save Changes</button>
@@ -948,14 +952,18 @@ async function loadSchoolInfo() {
     fields.forEach(f => { const el = document.getElementById('school-'+f); if (el && d[f] !== undefined) el.value = d[f]; });
     // Load stats into form inputs
     const statMap = {
-      'school-stat-students':       d.statStudents,
-      'school-stat-students-label': d.statStudentsLabel,
-      'school-stat-staff':          d.statStaff,
-      'school-stat-staff-label':    d.statStaffLabel,
-      'school-stat-passrate':       d.statPassRate,
-      'school-stat-passrate-label': d.statPassRateLabel,
-      'school-stat-years':          d.statYears,
-      'school-stat-years-label':    d.statYearsLabel,
+      'school-stat-students':          d.statStudents,
+      'school-stat-students-suffix':   d.statStudentsSuffix || '+',
+      'school-stat-students-label':    d.statStudentsLabel || 'Students',
+      'school-stat-staff':             d.statStaff,
+      'school-stat-staff-suffix':      d.statStaffSuffix || '+',
+      'school-stat-staff-label':       d.statStaffLabel || 'Staff',
+      'school-stat-passrate':          d.statPassRate,
+      'school-stat-passrate-suffix':   d.statPassRateSuffix || '%',
+      'school-stat-passrate-label':    d.statPassRateLabel || 'NEB Pass Rate',
+      'school-stat-years':             d.statYears,
+      'school-stat-years-suffix':      d.statYearsSuffix || '+',
+      'school-stat-years-label':       d.statYearsLabel || 'Years Strong',
     };
     Object.entries(statMap).forEach(([id, val]) => {
       const el = document.getElementById(id);
@@ -976,22 +984,24 @@ async function saveSchoolInfo() {
   const fields = ['name','tagline','ticker','ticker2','address','province','phone','estd','email1','email2','facebook1','facebook2','about'];
   const data = {};
   fields.forEach(f => { const el = document.getElementById('school-'+f); if (el) data[f] = el.value; });
+
   // Stats bar fields
-  const statFields = ['stat-students','stat-students-label','stat-staff','stat-staff-label','stat-passrate','stat-passrate-label','stat-years','stat-years-label'];
-  statFields.forEach(f => {
-    const el = document.getElementById('school-'+f);
-    if (el && el.value) {
-      const key = f.replace(/-([a-z])/g, (_, c) => c.toUpperCase()); // camelCase
-      data[key.replace('Stat','stat')] = el.value;
-    }
-  });
-  // fix key names to match dynamic.js expectations
-  if (data['statStudentsLabel'] === undefined && document.getElementById('school-stat-students-label')?.value)
-    data.statStudentsLabel = document.getElementById('school-stat-students-label').value;
-  if (data['statStaffLabel'] === undefined && document.getElementById('school-stat-staff-label')?.value)
-    data.statStaffLabel = document.getElementById('school-stat-staff-label').value;
-  if (data['statPassrateLabel'] !== undefined) { data.statPassRateLabel = data.statPassrateLabel; delete data.statPassrateLabel; }
-  if (data['statPassrate'] !== undefined) { data.statPassRate = data.statPassrate; delete data.statPassrate; }
+  data.statStudents       = document.getElementById('school-stat-students')?.value || '';
+  data.statStudentsSuffix = document.getElementById('school-stat-students-suffix')?.value || '+';
+  data.statStudentsLabel  = document.getElementById('school-stat-students-label')?.value || 'Students';
+
+  data.statStaff          = document.getElementById('school-stat-staff')?.value || '';
+  data.statStaffSuffix    = document.getElementById('school-stat-staff-suffix')?.value || '+';
+  data.statStaffLabel     = document.getElementById('school-stat-staff-label')?.value || 'Staff';
+
+  data.statPassRate       = document.getElementById('school-stat-passrate')?.value || '';
+  data.statPassRateSuffix = document.getElementById('school-stat-passrate-suffix')?.value || '%';
+  data.statPassRateLabel  = document.getElementById('school-stat-passrate-label')?.value || 'NEB Pass Rate';
+
+  data.statYears          = document.getElementById('school-stat-years')?.value || '';
+  data.statYearsSuffix    = document.getElementById('school-stat-years-suffix')?.value || '+';
+  data.statYearsLabel     = document.getElementById('school-stat-years-label')?.value || 'Years Strong';
+
   const file = document.getElementById('school-logo')?.files[0];
   const btn = document.getElementById('school-save-btn');
   btn.disabled = true; btn.textContent = 'Saving...';

@@ -141,18 +141,27 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // ── Stats Bar (controlled from admin portal) ────────────────
-      function updateStat(selector, value, suffix) {
+      function updateStat(selector, value, suffix, fallbackVal, fallbackSuffix) {
         const el = document.querySelector(selector);
-        if (!el || !value) return;
-        const num = parseInt(value, 10);
-        el.dataset.count = num;
-        el.dataset.suffix = suffix || '';
-        el.textContent = num + (suffix || '');
+        if (!el) return;
+        const valToUse = (value !== undefined && value !== null && value !== '') ? value : fallbackVal;
+        const sufToUse = (suffix !== undefined && suffix !== null && suffix !== '') ? suffix : (fallbackSuffix || '');
+        if (valToUse === undefined || valToUse === null || valToUse === '') return;
+
+        const num = parseInt(valToUse, 10);
+        if (!isNaN(num)) {
+          el.dataset.count = num;
+          el.dataset.suffix = sufToUse;
+          el.textContent = num + sufToUse;
+        } else {
+          el.textContent = valToUse;
+        }
       }
-      if (s.statStudents)  updateStat('.dyn-stat-students',  s.statStudents,  s.statStudentsSuffix  || '+');
-      if (s.statStaff)     updateStat('.dyn-stat-staff',     s.statStaff,     s.statStaffSuffix     || '+');
-      if (s.statPassRate)  updateStat('.dyn-stat-passrate',  s.statPassRate,  s.statPassRateSuffix  || '%');
-      if (s.statYears)     updateStat('.dyn-stat-years',     s.statYears,     s.statYearsSuffix     || '+');
+      updateStat('.dyn-stat-students', s.statStudents, s.statStudentsSuffix, '1200', '+');
+      updateStat('.dyn-stat-staff',    s.statStaff,    s.statStaffSuffix,    '35',   '+');
+      updateStat('.dyn-stat-passrate', s.statPassRate, s.statPassRateSuffix, '100',  '%');
+      updateStat('.dyn-stat-years',    s.statYears,    s.statYearsSuffix,    '18',   '+');
+
       if (s.statStudentsLabel)  { const el = document.querySelector('.dyn-stat-students-label');  if (el) el.textContent = s.statStudentsLabel; }
       if (s.statStaffLabel)     { const el = document.querySelector('.dyn-stat-staff-label');     if (el) el.textContent = s.statStaffLabel; }
       if (s.statPassRateLabel)  { const el = document.querySelector('.dyn-stat-passrate-label');  if (el) el.textContent = s.statPassRateLabel; }
