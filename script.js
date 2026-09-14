@@ -174,15 +174,21 @@ document.addEventListener('DOMContentLoaded', () => {
       entries.forEach(e => {
         if (e.isIntersecting) {
           const el = e.target;
-          const target = parseInt(el.dataset.count, 10);
+          const targetAttr = el.dataset.count || el.textContent;
+          const target = parseInt(targetAttr, 10);
           const suffix = el.dataset.suffix || '';
+          if (isNaN(target)) return; // Guard against NaN
+
           let start = 0;
           const duration = 1600;
           const step = (timestamp) => {
             if (!start) start = timestamp;
             const progress = Math.min((timestamp - start) / duration, 1);
             const easeProgress = 1 - Math.pow(1 - progress, 3);
-            el.textContent = Math.floor(easeProgress * target) + suffix;
+            const currentVal = Math.floor(easeProgress * target);
+            if (!isNaN(currentVal)) {
+              el.textContent = currentVal + suffix;
+            }
             if (progress < 1) requestAnimationFrame(step);
             else el.textContent = target + suffix;
           };
