@@ -986,21 +986,23 @@ async function saveSchoolInfo() {
   fields.forEach(f => { const el = document.getElementById('school-'+f); if (el) data[f] = el.value; });
 
   // Stats bar fields
-  data.statStudents       = document.getElementById('school-stat-students')?.value || '';
-  data.statStudentsSuffix = document.getElementById('school-stat-students-suffix')?.value || '+';
-  data.statStudentsLabel  = document.getElementById('school-stat-students-label')?.value || 'Students';
+  const getVal = (id) => { const el = document.getElementById(id); return el ? el.value.trim() : ''; };
 
-  data.statStaff          = document.getElementById('school-stat-staff')?.value || '';
-  data.statStaffSuffix    = document.getElementById('school-stat-staff-suffix')?.value || '+';
-  data.statStaffLabel     = document.getElementById('school-stat-staff-label')?.value || 'Staff';
+  const stNum = getVal('school-stat-students'); if (stNum) data.statStudents = stNum;
+  const stSuf = getVal('school-stat-students-suffix'); if (stSuf) data.statStudentsSuffix = stSuf;
+  const stLbl = getVal('school-stat-students-label'); if (stLbl) data.statStudentsLabel = stLbl;
 
-  data.statPassRate       = document.getElementById('school-stat-passrate')?.value || '';
-  data.statPassRateSuffix = document.getElementById('school-stat-passrate-suffix')?.value || '%';
-  data.statPassRateLabel  = document.getElementById('school-stat-passrate-label')?.value || 'NEB Pass Rate';
+  const sfNum = getVal('school-stat-staff'); if (sfNum) data.statStaff = sfNum;
+  const sfSuf = getVal('school-stat-staff-suffix'); if (sfSuf) data.statStaffSuffix = sfSuf;
+  const sfLbl = getVal('school-stat-staff-label'); if (sfLbl) data.statStaffLabel = sfLbl;
 
-  data.statYears          = document.getElementById('school-stat-years')?.value || '';
-  data.statYearsSuffix    = document.getElementById('school-stat-years-suffix')?.value || '+';
-  data.statYearsLabel     = document.getElementById('school-stat-years-label')?.value || 'Years Strong';
+  const prNum = getVal('school-stat-passrate'); if (prNum) data.statPassRate = prNum;
+  const prSuf = getVal('school-stat-passrate-suffix'); if (prSuf) data.statPassRateSuffix = prSuf;
+  const prLbl = getVal('school-stat-passrate-label'); if (prLbl) data.statPassRateLabel = prLbl;
+
+  const yrNum = getVal('school-stat-years'); if (yrNum) data.statYears = yrNum;
+  const yrSuf = getVal('school-stat-years-suffix'); if (yrSuf) data.statYearsSuffix = yrSuf;
+  const yrLbl = getVal('school-stat-years-label'); if (yrLbl) data.statYearsLabel = yrLbl;
 
   const file = document.getElementById('school-logo')?.files[0];
   const btn = document.getElementById('school-save-btn');
