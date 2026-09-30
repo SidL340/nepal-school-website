@@ -110,31 +110,38 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       }
 
-      // Restored Announcement Sliding Ticker Bar
+      // ── Restored Dual Constant Moving Ribbon Tickers ─────────────────────
       const isHomePage = path === '/' || path.includes('index') || document.querySelector('.hero-content') !== null;
-      if ((s.ticker || s.ticker2) && isHomePage) {
+      if (isHomePage) {
+        const text1 = s.ticker || "Welcome to Shree Nepal Secondary School, Brindaban-02, Rautahat! Quality Education from ECD to Class 12 (+2).";
+        const text2 = s.ticker2 || "Notice: Admissions open for Grade 11 (+2 Management, Education & Humanities). Visit office or portal for details.";
+
         let tw = document.getElementById('ticker-wrapper');
         if (!tw) {
           tw = document.createElement('div');
           tw.id = 'ticker-wrapper';
-          tw.className = 'ticker-bar';
+          tw.className = 'ticker-ribbon-container';
           const nav = document.getElementById('navbar');
           if (nav && nav.parentNode) { nav.parentNode.insertBefore(tw, nav.nextSibling); }
           else { document.body.insertBefore(tw, document.body.firstChild); }
         }
-        tw.innerHTML = '';
         tw.style.display = 'block';
         
-        const slider = document.createElement('div');
-        slider.id = 'ticker-slider';
-        slider.className = 'ticker-content';
-        
-        const items = [];
-        if (s.ticker) items.push(s.ticker);
-        if (s.ticker2) items.push(s.ticker2);
-        
-        slider.innerHTML = items.map(t => `<div class="ticker-item"><span class="ticker-badge">ANNOUNCEMENT</span> ${sanitizeHTML(t)}</div>`).join('');
-        tw.appendChild(slider);
+        const item1Html = `<div class="ticker-item"><span class="ticker-badge">📢 ANNOUNCEMENT</span> <span>${sanitizeHTML(text1)}</span></div>`;
+        const item2Html = `<div class="ticker-item"><span class="ticker-badge badge-cyan">📌 NOTICE</span> <span>${sanitizeHTML(text2)}</span></div>`;
+
+        tw.innerHTML = `
+          <div class="ticker-ribbon ribbon-top">
+            <div class="ticker-track track-left">
+              ${item1Html}${item1Html}${item1Html}${item1Html}
+            </div>
+          </div>
+          <div class="ticker-ribbon ribbon-bottom">
+            <div class="ticker-track track-right">
+              ${item2Html}${item2Html}${item2Html}${item2Html}
+            </div>
+          </div>
+        `;
       } else {
         const tw = document.getElementById('ticker-wrapper');
         if (tw) tw.style.display = 'none';
@@ -332,9 +339,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // ── Splash Notice Popup Handler ──────────────────────
       const splashNotice = allNotices.find(n => n.isSplash === true);
+      const forceSplash = window.location.search.includes('splash=1');
       const isClosedInSession = sessionStorage.getItem('splashNoticeClosed') === 'true';
       
-      if (splashNotice && !isClosedInSession) {
+      if (splashNotice && (!isClosedInSession || forceSplash)) {
         let splashModal = document.getElementById('splash-modal');
         if (!splashModal) {
           splashModal = document.createElement('div');
@@ -359,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const imgHtml = splashNotice.imageUrl 
           ? `<img src="${optimizeImage(splashNotice.imageUrl)}" alt="${sanitizeHTML(splashNotice.title)}" onclick="openAttachmentModal('${splashNotice.imageUrl}')">`
-          : `<div style="font-size:4rem;margin:1.5rem 0;">📋</div>`;
+          : `<div style="font-size:3.5rem;margin:1rem 0;">📋</div>`;
 
         splashModal.innerHTML = `
           <div class="splash-modal-card">
@@ -372,14 +380,14 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
             <div class="splash-modal-body">
               ${imgHtml}
-              <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">${sanitizeHTML(splashNotice.title)}</h3>
-              ${splashNotice.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1rem;">${sanitizeHTML(splashNotice.description)}</p>` : ''}
+              <h3 style="font-size:1.25rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">${sanitizeHTML(splashNotice.title)}</h3>
+              ${splashNotice.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1rem;line-height:1.6;">${sanitizeHTML(splashNotice.description)}</p>` : ''}
               ${splashNotice.imageUrl ? `<button onclick="openAttachmentModal('${splashNotice.imageUrl}')" class="btn btn-gold btn-sm" style="margin-bottom:0.5rem;">🔍 View Full Document</button>` : ''}
             </div>
           </div>
         `;
 
-        setTimeout(() => splashModal.classList.add('active'), 300);
+        setTimeout(() => splashModal.classList.add('active'), 250);
       }
 
       if (noticeList) {
