@@ -42,6 +42,66 @@ window.closeAttachmentModal = function() {
   }
 };
 
+// Global Interactive Notice Detail Modal Handler
+window.openNoticeDetailModal = function(title, category, date, description, url) {
+  let modal = document.getElementById('notice-detail-modal');
+  if (!modal) {
+    modal = document.createElement('div');
+    modal.id = 'notice-detail-modal';
+    modal.className = 'splash-modal-overlay';
+    document.body.appendChild(modal);
+
+    window.closeNoticeDetailModal = function() {
+      if (modal) {
+        modal.classList.remove('active');
+        setTimeout(() => modal.style.display = 'none', 300);
+      }
+    };
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeNoticeDetailModal();
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('active')) closeNoticeDetailModal();
+    });
+  }
+
+  const safeTitle = sanitizeHTML(title || 'Official Notice Announcement');
+  const safeCat   = sanitizeHTML(category || 'General Notice');
+  const safeDate  = sanitizeHTML(date || 'Recent');
+  const safeDesc  = sanitizeHTML(description || 'No detailed description provided. Please contact the school administrative office during office hours for further details.');
+  const safeUrl   = url ? sanitizeHTML(url) : '';
+
+  const imgHtml = safeUrl 
+    ? `<img src="${optimizeImage(safeUrl)}" alt="${safeTitle}" onclick="openAttachmentModal('${safeUrl}')" style="width:100%;max-height:55vh;object-fit:contain;border-radius:12px;margin-bottom:1rem;border:1px solid var(--glass-border);cursor:pointer;" title="Click to view full screen">`
+    : `<div style="font-size:3.5rem;margin:1rem 0;text-align:center;">📋</div>`;
+
+  const btnHtml = safeUrl 
+    ? `<button onclick="openAttachmentModal('${safeUrl}')" class="btn btn-gold btn-sm" style="width:100%;justify-content:center;margin-top:1rem;">📄 Open Official Document / Image</button>`
+    : '';
+
+  modal.innerHTML = `
+    <div class="splash-modal-card" style="max-width:600px;width:95%;">
+      <button class="splash-close-btn" onclick="closeNoticeDetailModal()" aria-label="Close Notice">&times;</button>
+      <div class="splash-modal-header">
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+          <span class="badge badge-gold">📢 ${safeCat}</span>
+          <span style="font-size:0.8rem;color:var(--text-muted);">📅 ${safeDate}</span>
+        </div>
+      </div>
+      <div class="splash-modal-body" style="text-align:left;padding:1.5rem;">
+        ${imgHtml}
+        <h3 style="font-size:1.3rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">${safeTitle}</h3>
+        <p style="color:var(--text-body);font-size:0.95rem;line-height:1.75;white-space:pre-line;">${safeDesc}</p>
+        ${btnHtml}
+      </div>
+    </div>
+  `;
+
+  modal.style.display = 'flex';
+  setTimeout(() => modal.classList.add('active'), 10);
+};
+
 function optimizeImage(url) {
   if (!url || typeof url !== 'string') return url;
   if (url.includes('/image/upload/') && !url.includes('c_limit') && !url.toLowerCase().includes('.pdf')) {
@@ -332,119 +392,158 @@ document.addEventListener('DOMContentLoaded', () => {
   const noticeGrid = document.getElementById('notice-grid');
   const noticeFilter = document.getElementById('notice-filter');
   
-  db.collection('notices').orderBy('createdAt','desc').onSnapshot(snap => {
+  db.collection('notices').onSnapshot(snap => {
+    const allNotices = [];
     if (!snap.empty) {
-      const allNotices = [];
-      snap.forEach(doc => allNotices.push(doc.data()));
+      snap.forEach(doc => {
+        const d = doc.data();
+        d.id = doc.id;
+        allNotices.push(d);
+      });
+      // Sort descending by createdAt or date
+      allNotices.sort((a,b) => {
+        const tA = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+        const tB = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+        return tB - tA;
+      });
+    }
 
-      // ── Splash Notice Popup Handler ──────────────────────
-      const splashNotice = allNotices.find(n => n.isSplash === true);
-      const forceSplash = window.location.search.includes('splash=1');
-      const isClosedInSession = sessionStorage.getItem('splashNoticeClosed') === 'true';
-      
-      if (splashNotice && (!isClosedInSession || forceSplash)) {
-        let splashModal = document.getElementById('splash-modal');
-        if (!splashModal) {
-          splashModal = document.createElement('div');
-          splashModal.id = 'splash-modal';
-          splashModal.className = 'splash-modal-overlay';
-          document.body.appendChild(splashModal);
-
-          window.closeSplashModal = function() {
-            if (splashModal) {
-              splashModal.classList.remove('active');
-              sessionStorage.setItem('splashNoticeClosed', 'true');
-            }
-          };
-
-          splashModal.addEventListener('click', (e) => {
-            if (e.target === splashModal) closeSplashModal();
-          });
-          document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && splashModal.classList.contains('active')) closeSplashModal();
-          });
+    // Attach click handlers to any hardcoded HTML default cards if Firestore has no custom notices yet
+    if (allNotices.length === 0) {
+      document.querySelectorAll('.notice-grid-card').forEach(card => {
+        card.style.cursor = 'pointer';
+        if (!card.onclick) {
+          const title = card.querySelector('h3')?.textContent || 'School Notice';
+          const cat   = card.querySelector('.badge')?.textContent || 'General';
+          const date  = card.querySelector('span[style*="font-size:0.78rem"]')?.textContent || '2081 B.S.';
+          const desc  = card.querySelector('p')?.textContent || '';
+          card.onclick = () => openNoticeDetailModal(title, cat, date, desc, '');
         }
+      });
+    }
 
-        const imgHtml = splashNotice.imageUrl 
-          ? `<img src="${optimizeImage(splashNotice.imageUrl)}" alt="${sanitizeHTML(splashNotice.title)}" onclick="openAttachmentModal('${splashNotice.imageUrl}')">`
-          : `<div style="font-size:3.5rem;margin:1rem 0;">📋</div>`;
+    // ── Splash Notice Popup Handler ──────────────────────
+    const splashNotice = allNotices.find(n => n.isSplash === true);
+    const forceSplash = window.location.search.includes('splash=1');
+    const isClosedInSession = sessionStorage.getItem('splashNoticeClosed') === 'true';
+    
+    if (splashNotice && (!isClosedInSession || forceSplash)) {
+      let splashModal = document.getElementById('splash-modal');
+      if (!splashModal) {
+        splashModal = document.createElement('div');
+        splashModal.id = 'splash-modal';
+        splashModal.className = 'splash-modal-overlay';
+        document.body.appendChild(splashModal);
 
-        splashModal.innerHTML = `
-          <div class="splash-modal-card">
-            <button class="splash-close-btn" onclick="closeSplashModal()" aria-label="Close Notice">&times;</button>
-            <div class="splash-modal-header">
-              <div style="display:flex;align-items:center;gap:0.5rem;">
-                <span class="badge ${splashNotice.important ? 'badge-red' : 'badge-gold'}">📢 ${sanitizeHTML(splashNotice.category || 'NOTICE')}</span>
-                <span style="font-size:0.8rem;color:var(--text-muted);">📅 ${sanitizeHTML(splashNotice.date || '')}</span>
-              </div>
-            </div>
-            <div class="splash-modal-body">
-              ${imgHtml}
-              <h3 style="font-size:1.25rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">${sanitizeHTML(splashNotice.title)}</h3>
-              ${splashNotice.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1rem;line-height:1.6;">${sanitizeHTML(splashNotice.description)}</p>` : ''}
-              ${splashNotice.imageUrl ? `<button onclick="openAttachmentModal('${splashNotice.imageUrl}')" class="btn btn-gold btn-sm" style="margin-bottom:0.5rem;">🔍 View Full Document</button>` : ''}
-            </div>
-          </div>
-        `;
+        window.closeSplashModal = function() {
+          if (splashModal) {
+            splashModal.classList.remove('active');
+            sessionStorage.setItem('splashNoticeClosed', 'true');
+          }
+        };
 
-        setTimeout(() => splashModal.classList.add('active'), 250);
-      }
-
-      if (noticeList) {
-        noticeList.innerHTML = ''; // ALWAYS clear first!
-        allNotices.slice(0, 4).forEach(n => {
-          noticeList.innerHTML += `<div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;">
-            <div class="notice-icon" style="font-size:1.5rem;">${n.important ? '🚨' : '📢'}</div>
-            <div class="notice-info" style="flex:1;">
-              <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">${sanitizeHTML(n.title)}</h4>
-              <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                <span>📅 ${sanitizeHTML(n.date || 'Recent')}</span>
-                <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${sanitizeHTML(n.category || 'General')}</span>
-              </div>
-            </div>
-            ${n.imageUrl ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline btn-sm" style="flex-shrink:0;">View File</button>` : ''}
-          </div>`;
+        splashModal.addEventListener('click', (e) => {
+          if (e.target === splashModal) closeSplashModal();
+        });
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && splashModal.classList.contains('active')) closeSplashModal();
         });
       }
 
-        if (noticeGrid) {
-          const renderGrid = (filterCat) => {
-            noticeGrid.innerHTML = ''; // ALWAYS clear first!
-            allNotices.forEach(n => {
-              if (filterCat !== 'All' && n.category !== filterCat) return;
-              noticeGrid.innerHTML += `<div class="notice-card glass-card reveal visible" data-category="${n.category}" style="padding:1.75rem;position:relative;">
-                <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-                  <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.important ? 'URGENT NOTICE' : sanitizeHTML(n.category || 'NOTICE')}</span>
-                  <span style="font-size:0.8rem;color:var(--text-muted);">📅 ${sanitizeHTML(n.date || '')}</span>
-                </div>
-                <h3 style="font-size:1.15rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">${sanitizeHTML(n.title)}</h3>
-                ${n.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">${sanitizeHTML(n.description)}</p>` : ''}
-                ${n.imageUrl ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-gold btn-sm" style="cursor:pointer;width:100%;justify-content:center;">📄 View Official Document</button>` : ''}
-              </div>`;
-            });
+      const imgHtml = splashNotice.imageUrl 
+        ? `<img src="${optimizeImage(splashNotice.imageUrl)}" alt="${sanitizeHTML(splashNotice.title)}" onclick="openAttachmentModal('${splashNotice.imageUrl}')">`
+        : `<div style="font-size:3.5rem;margin:1rem 0;">📋</div>`;
+
+      splashModal.innerHTML = `
+        <div class="splash-modal-card">
+          <button class="splash-close-btn" onclick="closeSplashModal()" aria-label="Close Notice">&times;</button>
+          <div class="splash-modal-header">
+            <div style="display:flex;align-items:center;gap:0.5rem;">
+              <span class="badge ${splashNotice.important ? 'badge-red' : 'badge-gold'}">📢 ${sanitizeHTML(splashNotice.category || 'NOTICE')}</span>
+              <span style="font-size:0.8rem;color:var(--text-muted);">📅 ${sanitizeHTML(splashNotice.date || '')}</span>
+            </div>
+          </div>
+          <div class="splash-modal-body">
+            ${imgHtml}
+            <h3 style="font-size:1.25rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">${sanitizeHTML(splashNotice.title)}</h3>
+            ${splashNotice.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1rem;line-height:1.6;">${sanitizeHTML(splashNotice.description)}</p>` : ''}
+            ${splashNotice.imageUrl ? `<button onclick="openAttachmentModal('${splashNotice.imageUrl}')" class="btn btn-gold btn-sm" style="margin-bottom:0.5rem;">🔍 View Full Document</button>` : ''}
+          </div>
+        </div>
+      `;
+
+      setTimeout(() => splashModal.classList.add('active'), 250);
+    }
+
+    if (noticeList && allNotices.length > 0) {
+      noticeList.innerHTML = ''; // Clear fallback
+      allNotices.slice(0, 4).forEach(n => {
+        const sTitle = (n.title || '').replace(/'/g, "\\'");
+        const sCat   = (n.category || '').replace(/'/g, "\\'");
+        const sDate  = (n.date || '').replace(/'/g, "\\'");
+        const sDesc  = (n.description || '').replace(/'/g, "\\'");
+        const sUrl   = (n.imageUrl || '').replace(/'/g, "\\'");
+
+        noticeList.innerHTML += `<div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;cursor:pointer;" onclick="openNoticeDetailModal('${sTitle}', '${sCat}', '${sDate}', '${sDesc}', '${sUrl}')">
+          <div class="notice-icon" style="font-size:1.5rem;">${n.important ? '🚨' : '📢'}</div>
+          <div class="notice-info" style="flex:1;">
+            <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">${sanitizeHTML(n.title)}</h4>
+            <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+              <span>📅 ${sanitizeHTML(n.date || 'Recent')}</span>
+              <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${sanitizeHTML(n.category || 'General')}</span>
+            </div>
+          </div>
+          ${n.imageUrl ? `<button onclick="event.stopPropagation();openAttachmentModal('${n.imageUrl}')" class="btn btn-outline btn-sm" style="flex-shrink:0;">View File</button>` : ''}
+        </div>`;
+      });
+    }
+
+    if (noticeGrid && allNotices.length > 0) {
+      const renderGrid = (filterCat) => {
+        noticeGrid.innerHTML = ''; // Clear fallback
+        allNotices.forEach(n => {
+          if (filterCat !== 'All' && n.category !== filterCat) return;
+          const sTitle = (n.title || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
+          const sCat   = (n.category || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
+          const sDate  = (n.date || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
+          const sDesc  = (n.description || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
+          const sUrl   = (n.imageUrl || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
+
+          noticeGrid.innerHTML += `<div class="notice-card glass-card reveal visible" data-category="${n.category}" style="padding:1.75rem;position:relative;cursor:pointer;display:flex;flex-direction:column;" onclick="openNoticeDetailModal('${sTitle}', '${sCat}', '${sDate}', '${sDesc}', '${sUrl}')">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+              <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${n.important ? 'URGENT NOTICE' : sanitizeHTML(n.category || 'NOTICE')}</span>
+              <span style="font-size:0.8rem;color:var(--text-muted);">📅 ${sanitizeHTML(n.date || '')}</span>
+            </div>
+            <h3 style="font-size:1.15rem;color:var(--white);margin-bottom:0.75rem;line-height:1.4;">${sanitizeHTML(n.title)}</h3>
+            ${n.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1.25rem;line-height:1.6;">${sanitizeHTML(n.description)}</p>` : ''}
+            <div style="margin-top:auto;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.1);display:flex;align-items:center;justify-content:space-between;gap:0.5rem;">
+              <span style="color:var(--gold-light);font-size:0.83rem;font-weight:700;">🔍 Read Details ➔</span>
+              ${n.imageUrl ? `<button onclick="event.stopPropagation();openAttachmentModal('${n.imageUrl}')" class="btn btn-gold btn-sm" style="cursor:pointer;">📄 Attachment</button>` : ''}
+            </div>
+          </div>`;
+        });
+      };
+
+      renderGrid('All');
+
+      if (noticeFilter) {
+        const categories = ['All', ...new Set(allNotices.map(n => n.category || 'General'))];
+        noticeFilter.innerHTML = '';
+        categories.forEach(cat => {
+          const btn = document.createElement('button');
+          btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
+          btn.textContent = cat;
+          btn.dataset.filter = cat;
+          btn.onclick = () => {
+            noticeFilter.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderGrid(cat);
           };
-
-          renderGrid('All');
-
-          if (noticeFilter) {
-            const categories = ['All', ...new Set(allNotices.map(n => n.category || 'General'))];
-            noticeFilter.innerHTML = '';
-            categories.forEach(cat => {
-              const btn = document.createElement('button');
-              btn.className = 'filter-btn' + (cat === 'All' ? ' active' : '');
-              btn.textContent = cat;
-              btn.dataset.filter = cat;
-              btn.onclick = () => {
-                noticeFilter.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                renderGrid(cat);
-              };
-              noticeFilter.appendChild(btn);
-            });
-          }
-        }
+          noticeFilter.appendChild(btn);
+        });
       }
-    }, console.error);
+    }
+  }, console.error);
   }
 
   // 7. Facilities Photos on Home Page
