@@ -295,9 +295,15 @@
             </div>
           </div>
         </div>
-        <div class="toggle-group" style="margin-bottom:1rem">
-          <label class="toggle"><input type="checkbox" id="notice-important"><span class="slider"></span></label>
-          <span>Mark as Important (shows red badge)</span>
+        <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+          <div class="toggle-group">
+            <label class="toggle"><input type="checkbox" id="notice-important"><span class="slider"></span></label>
+            <span>Mark as Important (shows red badge)</span>
+          </div>
+          <div class="toggle-group">
+            <label class="toggle"><input type="checkbox" id="notice-splash"><span class="slider"></span></label>
+            <span>Show as Splash Popup on Website Load 📢</span>
+          </div>
         </div>
         <div class="progress-wrap" style="margin-bottom:.75rem"><div class="progress-bar"><div class="progress-fill" id="notice-progress"></div></div></div>
         <button class="btn btn-gold" id="notice-add-btn" onclick="addNotice()">+ Add Notice</button>
@@ -655,17 +661,22 @@ function loadNotices() {
     const grid = document.createElement('div'); grid.className = 'notice-grid';
     snap.forEach(doc => {
       const n = doc.data(); const id = doc.id;
+      const isSplash = n.isSplash === true;
+      const splashBadge = isSplash ? '<span class="badge badge-gold" style="margin-left:0.3rem;">📢 Active Splash Popup</span>' : '';
+      const splashBtnStyle = isSplash ? 'background:var(--gold);color:var(--navy);font-weight:700;' : 'color:var(--text-muted);border-color:var(--glass-border);';
       const card = document.createElement('div'); card.className = 'notice-card';
       card.innerHTML = `
         ${n.imageUrl ? `<img src="${n.imageUrl}" alt="${sanitizeHTML(n.title)}">` : `<div class="notice-card-placeholder">📋</div>`}
-        <div class="notice-card-bo📷>
-                    <div class="notice-meta">
-            <span class="badge ${n.important ? 'badge-red' : 'badge-blue'}"></span>
-            <span class="notice-date">📅 ${n.date}</span>
+        <div class="notice-card-body">
+          <div class="notice-meta">
+            <span class="badge ${n.important ? 'badge-red' : 'badge-blue'}">${sanitizeHTML(n.category || 'General')}</span>
+            ${splashBadge}
+            <span class="notice-date">📅 ${n.date || ''}</span>
           </div>
           <h4>${sanitizeHTML(n.title)}</h4>
-          <div style="margin-top:0.75rem; display:flex; gap:0.5rem;">
-            <button class="btn btn-outline btn-sm" onclick="editNotice('${id}', '${sanitizeHTML(n.title).replace(/'/g, "\\'")}', '${n.date}', '${n.category}', ${n.important}, '${n.imageUrl||''}')" style="color:var(--gold);border-color:var(--gold);">✏ Edit</button>
+          <div style="margin-top:0.75rem; display:flex; gap:0.4rem; flex-wrap:wrap;">
+            <button class="btn btn-sm" onclick="toggleNoticeSplash('${id}', ${isSplash})" style="${splashBtnStyle}">${isSplash ? '📢 Splash Active' : '📢 Set Splash'}</button>
+            <button class="btn btn-outline btn-sm" onclick="editNotice('${id}', '${sanitizeHTML(n.title).replace(/'/g, "\\'")}', '${n.date||''}', '${n.category||'General'}', ${n.important||false}, ${isSplash}, '${n.imageUrl||''}')" style="color:var(--gold);border-color:var(--gold);">✏ Edit</button>
             <button class="btn btn-danger btn-sm" onclick="deleteNotice('${id}','${n.imageUrl||''}')">🗑 Delete</button>
           </div>
         </div>`;
@@ -675,14 +686,29 @@ function loadNotices() {
   }, err => { el.innerHTML = '<div class="empty">Error loading notices: ' + err.message + '</div>'; });
 }
 
-function editNotice(id, title, date, cat, imp, img) {
+function editNotice(id, title, date, cat, imp, splash, img) {
   editingNoticeId = id;
   document.getElementById('notice-title').value = title;
   document.getElementById('notice-date').value = date;
   document.getElementById('notice-category').value = cat;
   document.getElementById('notice-important').checked = imp;
+  document.getElementById('notice-splash').checked = splash || false;
   document.getElementById('notice-add-btn').textContent = 'Update Notice';
   window.scrollTo({top:0, behavior:'smooth'});
+}
+
+async function toggleNoticeSplash(id, currentStatus) {
+  try {
+    const newStatus = !currentStatus;
+    if (newStatus) {
+      const snap = await db.collection('notices').where('isSplash', '==', true).get();
+      const batch = db.batch();
+      snap.forEach(d => { batch.update(d.ref, { isSplash: false }); });
+      await batch.commit();
+    }
+    await db.collection('notices').doc(id).update({ isSplash: newStatus });
+    toast(newStatus ? 'Notice set as active Splash Popup on website! 📢' : 'Notice splash popup disabled.');
+  } catch(e) { toast('Error: ' + e.message, 'error'); }
 }
 
 async function addNotice() {
@@ -690,24 +716,33 @@ async function addNotice() {
   const date     = document.getElementById('notice-date').value;
   const category = document.getElementById('notice-category').value;
   const important= document.getElementById('notice-important').checked;
+  const isSplash = document.getElementById('notice-splash').checked;
   const file     = document.getElementById('notice-image').files[0];
   if (!title) { toast('Title is required', 'error'); return; }
   const btn = document.getElementById('notice-add-btn');
   btn.disabled = true; btn.textContent = 'Saving...';
   try {
+    if (isSplash) {
+      const snap = await db.collection('notices').where('isSplash', '==', true).get();
+      const batch = db.batch();
+      snap.forEach(d => { batch.update(d.ref, { isSplash: false }); });
+      await batch.commit();
+    }
     let imageUrl = '';
     if (file) imageUrl = await uploadImage(file, 'notices', 'notice-progress');
-        if (editingNoticeId) {
-      const updates = { title, date, category, important };
+    if (editingNoticeId) {
+      const updates = { title, date, category, important, isSplash };
       if (file) updates.imageUrl = imageUrl;
       await db.collection('notices').doc(editingNoticeId).update(updates);
       editingNoticeId = null;
     } else {
-      await db.collection('notices').add({ title, date, category, important, imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+      await db.collection('notices').add({ title, date, category, important, isSplash, imageUrl, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
     }
     document.getElementById('notice-title').value = '';
     document.getElementById('notice-date').value  = '';
     document.getElementById('notice-image').value = '';
+    document.getElementById('notice-important').checked = false;
+    document.getElementById('notice-splash').checked = false;
     document.getElementById('notice-progress').style.width = '0';
     toast('Notice added! 🎉');
     loadOverviewStats();

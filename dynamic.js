@@ -320,32 +320,84 @@ document.addEventListener('DOMContentLoaded', () => {
     }, console.error);
   }
 
-  // 6. Real-Time Notices Listener
+  // 6. Real-Time Notices & Splash Popup Listener
   const noticeList = document.getElementById('notice-preview-list');
   const noticeGrid = document.getElementById('notice-grid');
   const noticeFilter = document.getElementById('notice-filter');
-  if (noticeList || noticeGrid) {
-    db.collection('notices').orderBy('createdAt','desc').onSnapshot(snap => {
-      if (!snap.empty) {
-        const allNotices = [];
-        snap.forEach(doc => allNotices.push(doc.data()));
+  
+  db.collection('notices').orderBy('createdAt','desc').onSnapshot(snap => {
+    if (!snap.empty) {
+      const allNotices = [];
+      snap.forEach(doc => allNotices.push(doc.data()));
 
-        if (noticeList) {
-          noticeList.innerHTML = ''; // ALWAYS clear first!
-          allNotices.slice(0, 4).forEach(n => {
-            noticeList.innerHTML += `<div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;">
-              <div class="notice-icon" style="font-size:1.5rem;">${n.important ? '🚨' : '📢'}</div>
-              <div class="notice-info" style="flex:1;">
-                <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">${sanitizeHTML(n.title)}</h4>
-                <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
-                  <span>📅 ${sanitizeHTML(n.date || 'Recent')}</span>
-                  <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${sanitizeHTML(n.category || 'General')}</span>
-                </div>
-              </div>
-              ${n.imageUrl ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline btn-sm" style="flex-shrink:0;">View File</button>` : ''}
-            </div>`;
+      // ── Splash Notice Popup Handler ──────────────────────
+      const splashNotice = allNotices.find(n => n.isSplash === true);
+      const isClosedInSession = sessionStorage.getItem('splashNoticeClosed') === 'true';
+      
+      if (splashNotice && !isClosedInSession) {
+        let splashModal = document.getElementById('splash-modal');
+        if (!splashModal) {
+          splashModal = document.createElement('div');
+          splashModal.id = 'splash-modal';
+          splashModal.className = 'splash-modal-overlay';
+          document.body.appendChild(splashModal);
+
+          window.closeSplashModal = function() {
+            if (splashModal) {
+              splashModal.classList.remove('active');
+              sessionStorage.setItem('splashNoticeClosed', 'true');
+            }
+          };
+
+          splashModal.addEventListener('click', (e) => {
+            if (e.target === splashModal) closeSplashModal();
+          });
+          document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && splashModal.classList.contains('active')) closeSplashModal();
           });
         }
+
+        const imgHtml = splashNotice.imageUrl 
+          ? `<img src="${optimizeImage(splashNotice.imageUrl)}" alt="${sanitizeHTML(splashNotice.title)}" onclick="openAttachmentModal('${splashNotice.imageUrl}')">`
+          : `<div style="font-size:4rem;margin:1.5rem 0;">📋</div>`;
+
+        splashModal.innerHTML = `
+          <div class="splash-modal-card">
+            <button class="splash-close-btn" onclick="closeSplashModal()" aria-label="Close Notice">&times;</button>
+            <div class="splash-modal-header">
+              <div style="display:flex;align-items:center;gap:0.5rem;">
+                <span class="badge ${splashNotice.important ? 'badge-red' : 'badge-gold'}">📢 ${sanitizeHTML(splashNotice.category || 'NOTICE')}</span>
+                <span style="font-size:0.8rem;color:var(--text-muted);">📅 ${sanitizeHTML(splashNotice.date || '')}</span>
+              </div>
+            </div>
+            <div class="splash-modal-body">
+              ${imgHtml}
+              <h3 style="font-size:1.2rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">${sanitizeHTML(splashNotice.title)}</h3>
+              ${splashNotice.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1rem;">${sanitizeHTML(splashNotice.description)}</p>` : ''}
+              ${splashNotice.imageUrl ? `<button onclick="openAttachmentModal('${splashNotice.imageUrl}')" class="btn btn-gold btn-sm" style="margin-bottom:0.5rem;">🔍 View Full Document</button>` : ''}
+            </div>
+          </div>
+        `;
+
+        setTimeout(() => splashModal.classList.add('active'), 300);
+      }
+
+      if (noticeList) {
+        noticeList.innerHTML = ''; // ALWAYS clear first!
+        allNotices.slice(0, 4).forEach(n => {
+          noticeList.innerHTML += `<div class="notice-preview-card glass-card" style="padding:1.2rem;margin-bottom:1rem;display:flex;align-items:flex-start;gap:1rem;">
+            <div class="notice-icon" style="font-size:1.5rem;">${n.important ? '🚨' : '📢'}</div>
+            <div class="notice-info" style="flex:1;">
+              <h4 style="font-size:1rem;color:var(--white);margin-bottom:0.25rem;">${sanitizeHTML(n.title)}</h4>
+              <div style="font-size:0.8rem;color:var(--text-muted);display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+                <span>📅 ${sanitizeHTML(n.date || 'Recent')}</span>
+                <span class="badge ${n.important ? 'badge-red' : 'badge-gold'}">${sanitizeHTML(n.category || 'General')}</span>
+              </div>
+            </div>
+            ${n.imageUrl ? `<button onclick="openAttachmentModal('${n.imageUrl}')" class="btn btn-outline btn-sm" style="flex-shrink:0;">View File</button>` : ''}
+          </div>`;
+        });
+      }
 
         if (noticeGrid) {
           const renderGrid = (filterCat) => {
