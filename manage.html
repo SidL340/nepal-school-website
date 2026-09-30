@@ -295,14 +295,15 @@
             </div>
           </div>
         </div>
-        <div style="display:flex; gap:1.5rem; flex-wrap:wrap; margin-bottom:1rem;">
-          <div class="toggle-group">
+        <div style="display:flex; gap:1.25rem; flex-wrap:wrap; align-items:center; margin-bottom:1.25rem; background:rgba(244,169,0,0.08); padding:0.85rem 1.1rem; border-radius:10px; border:1px solid rgba(244,169,0,0.3);">
+          <div class="toggle-group" style="padding:0;">
             <label class="toggle"><input type="checkbox" id="notice-important"><span class="slider"></span></label>
-            <span>Mark as Important (shows red badge)</span>
+            <span style="font-weight:600; font-size:0.85rem;">Mark as Important (red badge)</span>
           </div>
-          <div class="toggle-group">
+          <div style="width:1px; background:rgba(255,255,255,0.15); height:24px; display:inline-block;"></div>
+          <div class="toggle-group" style="padding:0;">
             <label class="toggle"><input type="checkbox" id="notice-splash"><span class="slider"></span></label>
-            <span>Show as Splash Popup on Website Load 📢</span>
+            <span style="color:var(--gold); font-weight:700; font-size:0.85rem;">Show as Splash Popup on Website Load 📢</span>
           </div>
         </div>
         <div class="progress-wrap" style="margin-bottom:.75rem"><div class="progress-bar"><div class="progress-fill" id="notice-progress"></div></div></div>
