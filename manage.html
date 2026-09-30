@@ -282,7 +282,7 @@
           <div class="form-group">
             <label>Category</label>
             <select id="notice-category">
-              <option>Exam</option><option>Result</option><option>Admission</option>
+              <option>Admissions</option><option>Exam</option><option>Result</option>
               <option>Holiday</option><option>Meeting</option><option>General</option>
             </select>
           </div>
@@ -656,12 +656,20 @@ function loadNotices() {
   if (noticesUnsub) { noticesUnsub(); noticesUnsub = null; }
   const el = document.getElementById('notices-list');
   el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>Loading...</div>';
-  noticesUnsub = db.collection('notices').orderBy('createdAt','desc').onSnapshot(snap => {
+  noticesUnsub = db.collection('notices').onSnapshot(snap => {
     if (snap.empty) { el.innerHTML = '<div class="empty"><div class="empty-icon">📋</div>No notices yet. Add one above.</div>'; return; }
     el.innerHTML = '';
+    const docs = [];
+    snap.forEach(d => docs.push({ id: d.id, ...d.data() }));
+    docs.sort((a,b) => {
+      const tA = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+      const tB = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+      return tB - tA;
+    });
+
     const grid = document.createElement('div'); grid.className = 'notice-grid';
-    snap.forEach(doc => {
-      const n = doc.data(); const id = doc.id;
+    docs.forEach(n => {
+      const id = n.id;
       const isSplash = n.isSplash === true;
       const splashBadge = isSplash ? '<span class="badge badge-gold" style="margin-left:0.3rem;">📢 Active Splash Popup</span>' : '';
       const splashBtnStyle = isSplash ? 'background:var(--gold);color:var(--navy);font-weight:700;' : 'color:var(--text-muted);border-color:var(--glass-border);';

@@ -502,7 +502,8 @@ document.addEventListener('DOMContentLoaded', () => {
       const renderGrid = (filterCat) => {
         noticeGrid.innerHTML = ''; // Clear fallback
         allNotices.forEach(n => {
-          if (filterCat !== 'All' && n.category !== filterCat) return;
+          const nCat = (n.category || 'General').trim();
+          if (filterCat !== 'All' && nCat !== filterCat && !(filterCat === 'Admissions' && nCat === 'Admission') && !(filterCat === 'Admission' && nCat === 'Admissions')) return;
           const sTitle = (n.title || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
           const sCat   = (n.category || '').replace(/'/g, "\\'").replace(/\n/g, ' ');
           const sDate  = (n.date || '').replace(/'/g, "\\'").replace(/\n/g, ' ');

@@ -19,16 +19,8 @@ if (!firebase.apps.length) {
 }
 
 const db = firebase.firestore();
-// Enable offline persistence so data loads instantly from cache without lag
-if (db.enablePersistence) {
-  db.enablePersistence({ synchronizeTabs: true }).catch((err) => {
-    if (err.code === 'failed-precondition') {
-      console.warn('Firestore persistence disabled: Multiple tabs open');
-    } else if (err.code === 'unimplemented') {
-      console.warn('Firestore persistence not supported by current browser');
-    }
-  });
-}
+// Ensure real-time live data load from server on every visit
+
 
 const storage = firebase.storage ? firebase.storage() : null;
 const auth    = firebase.auth ? firebase.auth() : null;
