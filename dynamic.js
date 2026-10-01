@@ -367,10 +367,17 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     }
 
-    db.collection('gallery').orderBy('createdAt','desc').onSnapshot(snap => {
+    db.collection('gallery').onSnapshot(snap => {
       allPhotos = [];
       if (!snap.empty) {
         snap.forEach(doc => allPhotos.push(doc.data()));
+        // Sort newest first client-side (avoids Firestore index requirement)
+        allPhotos.sort((a, b) => {
+          const tA = a.createdAt && a.createdAt.toMillis ? a.createdAt.toMillis() : 0;
+          const tB = b.createdAt && b.createdAt.toMillis ? b.createdAt.toMillis() : 0;
+          return tB - tA;
+        });
+
         const activeBtn = document.querySelector('.gfilter-btn.active');
         renderGallery(activeBtn ? (activeBtn.dataset.category || activeBtn.textContent.trim()) : 'All');
         
@@ -545,7 +552,6 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }, console.error);
-  }
 
   // 7. Facilities Photos on Home Page
   if (path === '/' || path.includes('index')) {
@@ -554,7 +560,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const facGround = document.getElementById('fac-ground');
     
     if (facComp || facSmart || facGround) {
-      db.collection('gallery').orderBy('createdAt', 'desc').onSnapshot(snap => {
+      db.collection('gallery').onSnapshot(snap => {
         if (snap.empty) return;
         let compFound = false, smartFound = false, groundFound = false;
         snap.forEach(doc => {
