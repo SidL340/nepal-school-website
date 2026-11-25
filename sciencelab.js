@@ -438,20 +438,42 @@
   faucet.position.set(4.8, 1.25, 0.6);
   roomGroup.add(faucet);
 
-  // Reagent Rack behind bench with bottles
-  const shelfGeo = new THREE.BoxGeometry(8.0, 0.08, 0.4);
-  const shelfMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.5 });
+  // Wall Mounted Reagent Rack on Back Wall (realistic amber bottles with labels)
+  const shelfGeo = new THREE.BoxGeometry(8.5, 0.1, 0.45);
+  const shelfMat = new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.6, roughness: 0.3 });
   const shelf = new THREE.Mesh(shelfGeo, shelfMat);
-  shelf.position.set(0, 1.3, -1.8);
+  shelf.position.set(0, 2.2, -5.5); // Placed securely against back wall!
   roomGroup.add(shelf);
 
-  const bottleColors = [0xef4444, 0x3b82f6, 0x10b981, 0xf59e0b, 0x8b5cf6, 0x06b6d4];
-  for (let i = 0; i < 6; i++) {
-    const bGeo = new THREE.CylinderGeometry(0.08, 0.08, 0.35, 12);
-    const bMat = new THREE.MeshStandardMaterial({ color: bottleColors[i], roughness: 0.2, transparent: true, opacity: 0.85 });
-    const bMesh = new THREE.Mesh(bGeo, bMat);
-    bMesh.position.set(-2.5 + i * 1.0, 1.5, -1.8);
-    roomGroup.add(bMesh);
+  const bottleTints = [0x78350f, 0x92400e, 0x1e3a8a, 0x065f46, 0x78350f, 0x1e293b, 0x92400e];
+  for (let i = 0; i < 7; i++) {
+    const bGroup = new THREE.Group();
+    bGroup.position.set(-3.2 + i * 1.05, 2.5, -5.5);
+
+    // Amber reagent bottle
+    const bMesh = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.12, 0.12, 0.45, 16),
+      new THREE.MeshStandardMaterial({ color: bottleTints[i], roughness: 0.25, metalness: 0.2 })
+    );
+    bGroup.add(bMesh);
+
+    // Black screw cap
+    const cap = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.08, 0.08, 0.12, 14),
+      new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.5 })
+    );
+    cap.position.y = 0.28;
+    bGroup.add(cap);
+
+    // White paper label on front
+    const label = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.14, 0.2),
+      new THREE.MeshBasicMaterial({ color: 0xf8fafc })
+    );
+    label.position.set(0, 0, 0.125);
+    bGroup.add(label);
+
+    roomGroup.add(bGroup);
   }
 
   // 3D Avatar Assistant "Dr. Vigyan / विज्ञान साथी" at corner of bench
@@ -539,15 +561,75 @@
   }
   animate();
 
-  // Glass Material Helper
+  // ── Authentic Laboratory Borosilicate Glass Material (Solid, Shiny, Never Ghostly!) ──
+  function createGlassMarkings() {
+    const c = document.createElement('canvas');
+    c.width = 256; c.height = 256;
+    const ctx = c.getContext('2d');
+    ctx.clearRect(0, 0, 256, 256);
+
+    // White graduation lines and measurement ticks
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+    ctx.lineWidth = 3;
+    for (let y = 60; y <= 210; y += 30) {
+      ctx.beginPath();
+      ctx.moveTo(85, y);
+      ctx.lineTo(135, y);
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+      ctx.font = 'bold 12px monospace';
+      ctx.fillText(`${(230 - y) * 2}mL`, 140, y + 4);
+    }
+    // Pyrex / Borosilicate 3.3 logo
+    ctx.fillStyle = 'rgba(56, 189, 248, 0.9)';
+    ctx.font = 'bold 12px sans-serif';
+    ctx.fillText('PYREX 250mL', 80, 42);
+
+    const tex = new THREE.CanvasTexture(c);
+    return tex;
+  }
+
+  // Primary Glass: Substantial, glossy, reflective borosilicate glass
   const glassMaterial = new THREE.MeshPhysicalMaterial({
-    color: 0xffffff,
+    color: 0xdbeafe,            // Crisp light-blue tint of genuine borosilicate glass
     transparent: true,
-    opacity: 0.42,
+    opacity: 0.74,              // Solid tangible presence (never faint ghost!)
+    roughness: 0.06,            // Ultra-smooth polished glass
+    metalness: 0.12,            // Distinct specular highlights
+    clearcoat: 1.0,             // Glossy outer surface
+    clearcoatRoughness: 0.06,
+    reflectivity: 0.92,
+    depthWrite: true,           // Renders solid depth buffer
+    side: THREE.DoubleSide
+  });
+
+  const markedGlassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xdbeafe,
+    map: createGlassMarkings(),
+    transparent: true,
+    opacity: 0.78,
+    roughness: 0.06,
+    metalness: 0.12,
+    clearcoat: 1.0,
+    clearcoatRoughness: 0.06,
+    depthWrite: true,
+    side: THREE.DoubleSide
+  });
+
+  // Solid glass rim / lip material for top edges of beakers and necks
+  const glassRimMaterial = new THREE.MeshStandardMaterial({
+    color: 0xf1f5f9,
     roughness: 0.1,
-    metalness: 0.1,
-    transmission: 0.85,
-    ior: 1.5
+    metalness: 0.25,
+    transparent: true,
+    opacity: 0.92
+  });
+
+  // Rubber stopper material for joints and necks
+  const rubberStopperMaterial = new THREE.MeshStandardMaterial({
+    color: 0x334155,
+    roughness: 0.7,
+    metalness: 0.1
   });
 
   // ── 3. DOM References & Common UI Helpers ──────────────────────────────────
@@ -646,22 +728,45 @@
     ghostRing.position.set(-1.0, 0.01, 0);
     g.add(ghostRing);
 
-    // 1. Woulfe's Bottle
+    // 1. Real 3D Woulfe's Bottle (Solid Borosilicate Glass, Thick Base, Rims & Stoppers)
     const bottleGroup = new THREE.Group();
     bottleGroup.position.set(-1.0, 0, 0);
     bottleGroup.visible = false;
 
-    const bottleBody = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.8, 1.5, 24), glassMaterial);
-    bottleBody.position.y = 0.75;
+    // Heavy thickened glass base disk
+    const baseDisk = new THREE.Mesh(new THREE.CylinderGeometry(0.82, 0.82, 0.1, 24), glassRimMaterial);
+    baseDisk.position.y = 0.05;
+    bottleGroup.add(baseDisk);
+
+    // Bottle body with graduation markings
+    const bottleBody = new THREE.Mesh(new THREE.CylinderGeometry(0.72, 0.82, 1.45, 24), markedGlassMaterial);
+    bottleBody.position.y = 0.8;
     bottleGroup.add(bottleBody);
 
-    const neck1 = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.4, 16), glassMaterial);
-    neck1.position.set(-0.35, 1.6, 0);
-    bottleGroup.add(neck1);
+    // Curved shoulder
+    const shoulder = new THREE.Mesh(new THREE.ConeGeometry(0.74, 0.35, 24, 1, true), glassMaterial);
+    shoulder.rotation.x = Math.PI;
+    shoulder.position.y = 1.65;
+    bottleGroup.add(shoulder);
 
-    const neck2 = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.4, 16), glassMaterial);
-    neck2.position.set(0.35, 1.6, 0);
-    bottleGroup.add(neck2);
+    // Two Ground-Glass Necks with Rims & Perforated Stoppers
+    [-0.35, 0.35].forEach((nx, idx) => {
+      // Glass neck
+      const neck = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.17, 0.45, 18), glassMaterial);
+      neck.position.set(nx, 1.9, 0);
+      bottleGroup.add(neck);
+
+      // Rolled glass lip rim on top
+      const lip = new THREE.Mesh(new THREE.TorusGeometry(0.18, 0.035, 12, 24), glassRimMaterial);
+      lip.rotation.x = Math.PI / 2;
+      lip.position.set(nx, 2.12, 0);
+      bottleGroup.add(lip);
+
+      // Dark rubber stopper with central tubing hole
+      const stopper = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.14, 0.22, 16), rubberStopperMaterial);
+      stopper.position.set(nx, 2.0, 0);
+      bottleGroup.add(stopper);
+    });
 
     // Marble chips (CaCO3) inside bottle
     const chipsGroup = new THREE.Group();
@@ -715,13 +820,26 @@
     co2DeliveryTube.visible = false;
     g.add(co2DeliveryTube);
 
-    // 4. Upright Gas Jar
+    // 4. Heavy Upright Gas Jar (Solid Base & Ground Mouth Rim)
     const jarGroup = new THREE.Group();
     jarGroup.position.set(1.3, 0, 0);
     jarGroup.visible = false;
-    const jar = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.9, 24), glassMaterial);
-    jar.position.y = 0.95;
+
+    // Heavy hexagonal / circular glass base foot
+    const jarFoot = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 0.1, 24), glassRimMaterial);
+    jarFoot.position.y = 0.05;
+    jarGroup.add(jarFoot);
+
+    // Cylinder body
+    const jar = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 1.85, 24), glassMaterial);
+    jar.position.y = 1.0;
     jarGroup.add(jar);
+
+    // Ground glass mouth rim
+    const jarRim = new THREE.Mesh(new THREE.TorusGeometry(0.52, 0.04, 12, 24), glassRimMaterial);
+    jarRim.rotation.x = Math.PI / 2;
+    jarRim.position.y = 1.93;
+    jarGroup.add(jarRim);
 
     const gasCloudMat = new THREE.MeshStandardMaterial({ color: 0x94a3b8, transparent: true, opacity: 0 });
     const gasCloud = new THREE.Mesh(new THREE.CylinderGeometry(0.46, 0.46, 1.8, 16), gasCloudMat);
@@ -954,6 +1072,14 @@
     tubeGroup.visible = false;
     const tube = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.8, 20), glassMaterial);
     tubeGroup.add(tube);
+    const tubeRim = new THREE.Mesh(new THREE.TorusGeometry(0.19, 0.03, 12, 20), glassRimMaterial);
+    tubeRim.rotation.x = Math.PI / 2;
+    tubeRim.position.y = 0.9;
+    tubeGroup.add(tubeRim);
+
+    const tubeStopper = new THREE.Mesh(new THREE.CylinderGeometry(0.17, 0.15, 0.25, 16), rubberStopperMaterial);
+    tubeStopper.position.y = 0.85;
+    tubeGroup.add(tubeStopper);
     const mix = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.8, 16), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.9 }));
     mix.position.y = -0.4;
     mix.visible = false;
