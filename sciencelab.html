@@ -2496,106 +2496,240 @@
     }
 
     // ─── 4F. Experiment 6: Compound Microscope Cell Explorer ──────────────────
+    // ─── 4F. Experiment 6: Plant & Animal Cell Explorer (100x, 400x, 1000x) ──
     function setupMicroscopeExperiment() {
       labGroup.clear();
       const g = new THREE.Group();
 
-      // Compound Microscope Body
+      // Compound Microscope on left side of bench
+      const microGroup = new THREE.Group();
+      microGroup.position.set(-1.8, 0, 0);
+
       const base = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.15, 1.0), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8 }));
       base.position.y = 0.075;
-      g.add(base);
+      microGroup.add(base);
 
       const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.8), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
       pillar.position.set(0, 0.95, -0.3);
-      g.add(pillar);
+      microGroup.add(pillar);
 
-      // Stage
       const stage = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.05, 0.8), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
       stage.position.set(0, 0.9, 0.1);
-      g.add(stage);
+      microGroup.add(stage);
 
-      // Glass Slide
       const slide = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.015, 0.2), glassMaterial);
       slide.position.set(0, 0.93, 0.1);
-      g.add(slide);
+      microGroup.add(slide);
 
-      // Body Tube & Ocular Eyepiece
       const bodyTube = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.09, 1.1), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.6 }));
       bodyTube.position.set(0, 1.7, 0.1);
-      g.add(bodyTube);
+      microGroup.add(bodyTube);
 
       const eyepiece = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.3), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9 }));
       eyepiece.position.set(0, 2.3, 0.1);
-      g.add(eyepiece);
+      microGroup.add(eyepiece);
+      g.add(microGroup);
 
-      // Mirror / Lamp
-      const mirror = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.03), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95 }));
-      mirror.rotation.x = Math.PI / 4;
-      mirror.position.set(0, 0.45, 0.1);
-      g.add(mirror);
+      // 3D Cellular Microscopic Projection Screen on Right
+      const cellScreen = new THREE.Group();
+      cellScreen.position.set(1.4, 1.2, 0);
 
+      // Microscopic Eyepiece circular viewing field
+      const fieldGeo = new THREE.CircleGeometry(1.6, 32);
+      const fieldMat = new THREE.MeshBasicMaterial({ color: 0x042f2e }); // Dark microscopic field
+      const fieldMesh = new THREE.Mesh(fieldGeo, fieldMat);
+      cellScreen.add(fieldMesh);
+
+      // Ring border around ocular field
+      const ringGeo = new THREE.RingGeometry(1.58, 1.7, 32);
+      const ringMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+      const ringMesh = new THREE.Mesh(ringGeo, ringMat);
+      cellScreen.add(ringMesh);
+
+      // Dynamic Organelles Container
+      const organellesGroup = new THREE.Group();
+      cellScreen.add(organellesGroup);
+
+      g.add(cellScreen);
       labGroup.add(g);
 
-      let magnification = 100; // 10x eyepiece * 10x objective
+      // Cell Mode & Zoom State
+      let cellType = 'plant'; // 'plant', 'animal', 'stomata'
+      let zoomScale = '400x';  // '100x', '400x', '1000x'
 
-      slidersWrap.innerHTML = `
-        <div class="calc-slider-group">
-          <div class="slider-label-row">
-            <span>Objective Lens Magnification:</span>
-            <span class="val" id="mag-val">10x (Total 100x)</span>
+      function buildCellModel() {
+        organellesGroup.clear();
+
+        if (cellType === 'plant') {
+          // Plant Cell: Rigid Cell Wall (Hexagonal / Rectangular)
+          const wallGeo = new THREE.RingGeometry(1.15, 1.28, 6);
+          const wallMat = new THREE.MeshBasicMaterial({ color: 0x22c55e }); // Bright Green Cellulose Wall
+          const wall = new THREE.Mesh(wallGeo, wallMat);
+          organellesGroup.add(wall);
+
+          // Inner Cell Membrane
+          const memGeo = new THREE.RingGeometry(1.08, 1.14, 6);
+          const memMat = new THREE.MeshBasicMaterial({ color: 0x86efac });
+          organellesGroup.add(new THREE.Mesh(memGeo, memMat));
+
+          // Large Central Vacuole
+          const vacGeo = new THREE.CircleGeometry(0.65, 20);
+          const vacMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.45 });
+          const vac = new THREE.Mesh(vacGeo, vacMat);
+          vac.position.set(-0.15, 0.1, 0.01);
+          organellesGroup.add(vac);
+
+          // Nucleus with Nucleolus (Pushed to periphery)
+          const nucGeo = new THREE.CircleGeometry(0.28, 20);
+          const nucMat = new THREE.MeshBasicMaterial({ color: 0x818cf8 });
+          const nuc = new THREE.Mesh(nucGeo, nucMat);
+          nuc.position.set(0.65, -0.35, 0.02);
+          organellesGroup.add(nuc);
+
+          const dot = new THREE.Mesh(new THREE.CircleGeometry(0.08, 12), new THREE.MeshBasicMaterial({ color: 0x312e81 }));
+          dot.position.set(0.65, -0.35, 0.03);
+          organellesGroup.add(dot);
+
+          // Chloroplasts (Emerald green ovals)
+          for (let i = 0; i < 7; i++) {
+            const angle = (i / 7) * Math.PI * 2;
+            const ch = new THREE.Mesh(new THREE.CircleGeometry(0.12, 12), new THREE.MeshBasicMaterial({ color: 0x15803d }));
+            ch.position.set(Math.cos(angle) * 0.85, Math.sin(angle) * 0.85, 0.02);
+            organellesGroup.add(ch);
+          }
+
+          // Mitochondria (Orange oval capsules)
+          for (let i = 0; i < 4; i++) {
+            const mito = new THREE.Mesh(new THREE.CircleGeometry(0.09, 12), new THREE.MeshBasicMaterial({ color: 0xf97316 }));
+            mito.position.set((Math.random() - 0.5) * 1.2, (Math.random() - 0.5) * 1.2, 0.02);
+            organellesGroup.add(mito);
+          }
+        } else if (cellType === 'animal') {
+          // Animal Cell: Round, Flexible Plasma Membrane (NO Cell Wall!)
+          const memGeo = new THREE.RingGeometry(1.2, 1.28, 32);
+          const memMat = new THREE.MeshBasicMaterial({ color: 0xf472b6 }); // Pink Plasma Membrane
+          organellesGroup.add(new THREE.Mesh(memGeo, memMat));
+
+          // Large Central Nucleus
+          const nuc = new THREE.Mesh(new THREE.CircleGeometry(0.42, 24), new THREE.MeshBasicMaterial({ color: 0x818cf8 }));
+          nuc.position.set(0, 0, 0.01);
+          organellesGroup.add(nuc);
+
+          const nucleolus = new THREE.Mesh(new THREE.CircleGeometry(0.14, 16), new THREE.MeshBasicMaterial({ color: 0x312e81 }));
+          nucleolus.position.set(0, 0, 0.02);
+          organellesGroup.add(nucleolus);
+
+          // Centrosome / Centrioles (Unique to animal cells, for mitosis)
+          const centro = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.08, 0.02), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
+          centro.position.set(0.55, 0.45, 0.02);
+          organellesGroup.add(centro);
+
+          // Small Scattered Vacuoles
+          for (let i = 0; i < 5; i++) {
+            const sv = new THREE.Mesh(new THREE.CircleGeometry(0.1, 12), new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.5 }));
+            sv.position.set((Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.6, 0.02);
+            organellesGroup.add(sv);
+          }
+
+          // Mitochondria
+          for (let i = 0; i < 6; i++) {
+            const mito = new THREE.Mesh(new THREE.CircleGeometry(0.1, 12), new THREE.MeshBasicMaterial({ color: 0xf97316 }));
+            mito.position.set((Math.random() - 0.5) * 1.6, (Math.random() - 0.5) * 1.6, 0.02);
+            organellesGroup.add(mito);
+          }
+        } else {
+          // Stomata & Guard Cells
+          const g1 = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.22, 12, 24, Math.PI), new THREE.MeshBasicMaterial({ color: 0x22c55e }));
+          g1.position.set(-0.25, 0, 0.01);
+          g1.rotation.z = -Math.PI / 2;
+          organellesGroup.add(g1);
+
+          const g2 = new THREE.Mesh(new THREE.TorusGeometry(0.6, 0.22, 12, 24, Math.PI), new THREE.MeshBasicMaterial({ color: 0x22c55e }));
+          g2.position.set(0.25, 0, 0.01);
+          g2.rotation.z = Math.PI / 2;
+          organellesGroup.add(g2);
+
+          // Stomatal Pore in center
+          const pore = new THREE.Mesh(new THREE.CircleGeometry(0.2, 16), new THREE.MeshBasicMaterial({ color: 0x0f172a }));
+          pore.scale.set(0.5, 1.2, 1);
+          pore.position.z = 0.02;
+          organellesGroup.add(pore);
+        }
+
+        // Apply Zoom Scaling
+        const scaleVal = zoomScale === '100x' ? 0.6 : zoomScale === '400x' ? 1.0 : 1.45;
+        organellesGroup.scale.set(scaleVal, scaleVal, 1);
+      }
+      buildCellModel();
+
+      function updateMicroscopeCalc() {
+        slidersWrap.innerHTML = `
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Specimen Type:</span>
+              <span class="val" id="spec-val">${cellType === 'plant' ? 'Plant Cell (Onion)' : cellType === 'animal' ? 'Animal Cell (Cheek)' : 'Leaf Stomata'}</span>
+            </div>
+            <div style="display:flex;gap:0.4rem;margin-top:0.35rem;">
+              <button class="filter-pill ${cellType==='plant'?'active':''}" id="pill-plant">🌱 Plant Cell</button>
+              <button class="filter-pill ${cellType==='animal'?'active':''}" id="pill-animal">🧫 Animal Cell</button>
+              <button class="filter-pill ${cellType==='stomata'?'active':''}" id="pill-stomata">🍃 Stomata</button>
+            </div>
           </div>
-          <input type="range" class="custom-range" id="mag-range" min="10" max="40" step="30" value="10" />
-        </div>
-      `;
+          <div class="calc-slider-group" style="margin-top:0.85rem;">
+            <div class="slider-label-row">
+              <span>Magnification Scale:</span>
+              <span class="val" id="zoom-val">${zoomScale}</span>
+            </div>
+            <input type="range" class="custom-range" id="zoom-slider" min="1" max="3" step="1" value="${zoomScale==='100x'?1:zoomScale==='400x'?2:3}" />
+          </div>
+        `;
 
-      formulaBox.innerHTML = `
-        <div class="formula-title">Microscopy Optics · सूक्ष्मदर्शक सूत्र</div>
-        <div class="formula-math">Total Magnification M = M_ocular × M_objective</div>
-        <div class="formula-math">M = 10x × 10x = 100x  (High power: 10x × 40x = 400x)</div>
-        <div class="formula-result">
-          <span>Cell Organelles Visible:</span>
-          <span>Cell Wall, Nucleus, Cytoplasm, Vacuole</span>
-        </div>
-      `;
+        formulaBox.innerHTML = `
+          <div class="formula-title">Optical Magnification · आवर्धन क्षमता</div>
+          <div class="formula-math">Total M = 10x Eyepiece × ${zoomScale==='100x'?'10x':zoomScale==='400x'?'40x':'100x'} Objective = ${zoomScale}</div>
+          <div class="formula-result">
+            <span>Identified Organelles:</span>
+            <span>${cellType==='plant'?'Cell Wall, Vacuole, Chloroplast, Nucleus':'Cell Membrane, Nucleus, Centrosome, Mitochondria'}</span>
+          </div>
+        `;
 
-      
-      // Equipment Rack Items for Microscope
+        // Event listeners for pills & zoom
+        document.getElementById('pill-plant').onclick = () => { cellType = 'plant'; buildCellModel(); updateMicroscopeCalc(); playClink(); };
+        document.getElementById('pill-animal').onclick = () => { cellType = 'animal'; buildCellModel(); updateMicroscopeCalc(); playClink(); };
+        document.getElementById('pill-stomata').onclick = () => { cellType = 'stomata'; buildCellModel(); updateMicroscopeCalc(); playClink(); };
+        document.getElementById('zoom-slider').oninput = (e) => {
+          const v = parseInt(e.target.value);
+          zoomScale = v === 1 ? '100x' : v === 2 ? '400x' : '1000x';
+          buildCellModel();
+          updateMicroscopeCalc();
+        };
+      }
+      updateMicroscopeCalc();
+
+      // Organelle Equipment Rack Items
       const eqItems = [
-        { icon: '🔬', en: 'Compound Light Microscope', ne: 'संयुक्त सूक्ष्मदर्शक यन्त्र', onBench: true },
-        { icon: '🪟', en: 'Glass Slides & Coverslips', ne: 'काँचको स्लाइड र कभरस्लिप', onBench: true },
-        { icon: '🧅', en: 'Onion Peel Specimen Slide', ne: 'प्याजको झिल्लीको नमुना', onBench: true },
-        { icon: '🩸', en: 'Safranin / Iodine Stain', ne: 'रंग्याउने घोल (स्टेन)', onBench: true },
-        { icon: '🔍', en: 'High Power 40x Objective', ne: '४०x अब्जेक्टिभ लेन्स', onBench: true }
+        { id: 'wall', icon: '🟩', en: 'Cell Wall (कोष भित्ता)', ne: 'वनस्पति कोषको सुरक्षात्मक बाहिरी भित्ता', onBench: true },
+        { id: 'nucleus', icon: '🟣', en: 'Nucleus (न्युक्लियस)', ne: 'कोषको केन्द्र - डिएनए र वंशाणु नियन्त्रण', onBench: true },
+        { id: 'chloroplast', icon: '🟢', en: 'Chloroplast (हरितकण)', ne: 'प्रकाश संश्लेषण गरी खाना बनाउने अंग', onBench: true },
+        { id: 'vacuole', icon: '💧', en: 'Central Vacuole (रसधानी)', ne: 'पानी र खनिज सञ्चित गर्ने ठूलो थैली', onBench: true },
+        { id: 'mitochondria', icon: '🟠', en: 'Mitochondria (माइटोकोन्ड्रिया)', ne: 'कोषको शक्तिगृह (Powerhouse - ATP उत्पादन)', onBench: true },
+        { id: 'centrosome', icon: '🟡', en: 'Centrosome (तारक पिण्ड)', ne: 'जनावर कोषमा कोष विभाजनमा मद्दत गर्ने', onBench: true }
       ];
 
-      function renderRack(query = '') {
-        const q = query.toLowerCase().trim();
-        const filtered = eqItems.filter(i => i.en.toLowerCase().includes(q) || i.ne.toLowerCase().includes(q));
-        rackCountTag.textContent = `${filtered.length} items`;
-        rackList.innerHTML = filtered.map(item => `
-          <div class="eq-card ${item.onBench ? 'on-bench' : ''}">
-            <div class="eq-card-left">
-              <span class="eq-icon">${item.icon}</span>
-              <div class="eq-names">
-                <h5>${item.en}</h5>
-                <p>${item.ne}</p>
-              </div>
-            </div>
-            <span class="eq-badge">${item.onBench ? 'On Bench (बेन्चमा)' : 'Ready (तयार)'}</span>
-          </div>
-        `).join('');
-      }
-      renderRack();
-      const searchInput = document.getElementById('rack-search-input');
-      if (searchInput) {
-        searchInput.value = '';
-        searchInput.oninput = (e) => renderRack(e.target.value);
-      }
+      setEquipmentRack(eqItems, (item) => {
+        playTone(600, 'sine', 0.15, 0.2);
+        setObservation(`Organelle: ${item.en}`, item.ne);
+        speakText(`Organelle: ${item.en}. Function: ${item.ne}`, `${item.en}। ${item.ne}।`);
+      });
 
       actionsGrid.innerHTML = `
         <button class="lab-action-btn active-step" id="btn-focus">
-          <span>1. Turn Coarse & Fine Focus</span>
+          <span>1. Focus Objective Lens</span>
           <span class="sub">फोकस मिलाउनुहोस्</span>
+        </button>
+        <button class="lab-action-btn" id="btn-switch-type">
+          <span>2. Toggle Plant vs Animal</span>
+          <span class="sub">वनस्पति / जनावर कोष बदल्नुहोस्</span>
         </button>
         <button class="lab-action-btn btn-reset" id="btn-reset">
           <span>🔄 Reset</span>
@@ -2603,26 +2737,29 @@
         </button>
       `;
 
-      setStep('1', 'Turn coarse adjustment knob to bring onion peel plant cells into sharp focus.', 'प्याजको झिल्लीको कोष स्पष्ट देखिने गरी फोकस मिलाउनुहोस्।');
-      setObservation('Slide on stage. Adjusting focal length...', 'स्लाइड स्टेजमा छ। फोकस मिलाउँदै...');
+      setStep('1', 'Examining Onion Peel Plant Cell under 400x magnification. Rigid cell wall and central vacuole visible.', '४०० गुणा ठूलो आकारमा प्याजको कोष अवलोकन गर्दै। कोष भित्ता र रसधानी स्पष्ट देखिन्छ।');
+      setObservation('Plant Cell (Onion Peel) with Cellulose Wall & Peripheral Nucleus.', 'वनस्पति कोषको बनोट - कोष भित्ता, रसधानी र न्युक्लियस।');
 
-      const btnFocus = document.getElementById('btn-focus');
-      btnReset = document.getElementById('btn-reset');
-
-      btnFocus.addEventListener('click', () => {
+      document.getElementById('btn-focus').onclick = () => {
         playSuccess();
-        bodyTube.position.y = 1.62; // Moved to perfect focus
-        setStep('2', 'Sharp cellular structure visible! Plant cell wall, distinct nucleus, and large central vacuole identified.', 'स्पष्ट कोषको बनोट देखियो! कोष भित्ता, न्युक्लियस र साइटोप्लाज्म प्रष्ट पहिचान भयो।');
-        setObservation('Cell Wall + Nucleus + Vacuole clearly resolved at 100x magnification.', '१०० गुणा ठूलो आकारमा कोषको भित्री संरचना अवलोकन भयो।');
-        btnFocus.disabled = true;
-      });
+        bodyTube.position.y = 1.62;
+        setStep('2', 'Perfect focus achieved! Tap any organelle in the equipment rack to inspect its biological function.', 'स्पष्ट फोकस भयो! र्‍याकमा भएको कुनै पनि कोषीय अंगमा छोएर विवरण हेर्नुहोस्।');
+        setObservation('High-resolution cellular resolution. Organelles identified.', 'कोषका अंगहरू स्पष्ट रूपमा पहिचान भए।');
+      };
 
-      btnReset.addEventListener('click', () => {
+      document.getElementById('btn-switch-type').onclick = () => {
+        cellType = cellType === 'plant' ? 'animal' : cellType === 'animal' ? 'stomata' : 'plant';
+        buildCellModel();
+        updateMicroscopeCalc();
+        playTone(500, 'sine', 0.1, 0.2);
+        setObservation(`Switched to: ${cellType === 'plant' ? 'Plant Cell' : cellType === 'animal' ? 'Animal Cell' : 'Stomata'}`, 'कोषको नमुना परिवर्तन भयो।');
+      };
+
+      document.getElementById('btn-reset').onclick = () => {
         setupMicroscopeExperiment();
-      });
+      };
     }
 
-    // ─── 4G. Experiment 7: Acid-Base Titration (HCl + NaOH) ────────────────────
     function setupTitrationExperiment() {
       labGroup.clear();
       const g = new THREE.Group();
@@ -2832,6 +2969,41 @@
           { q: "What are the key differences between plant and animal cells?", a: "Plant cells possess a rigid cellulose cell wall, large central vacuole, and plastids/chloroplasts, which animal cells lack." }
         ]
       },
+      
+      human_heart: {
+        title: "3D Human Heart & Double Circulation",
+        neTitle: "मानव मुटु र दोहोरो रक्तसञ्चार प्रणाली",
+        principle: "The human heart is a 4-chambered muscular organ that maintains double circulation: pulmonary circulation (to lungs) and systemic circulation (to rest of body).",
+        equation: "Cardiac Output (Q) = Heart Rate (HR) × Stroke Volume (SV)",
+        safety: "The left ventricle wall is 3 times thicker than the right ventricle because it must pump blood against high systemic vascular resistance.",
+        viva: [
+          { q: "Why is human circulation called double circulation?", a: "Because blood passes through the heart twice during one complete cycle through the body (Pulmonary + Systemic)." },
+          { q: "Which blood vessel carries pure oxygenated blood from the lungs?", a: "The Pulmonary Vein (the only vein carrying oxygenated blood)." },
+          { q: "What is the function of heart valves?", a: "To prevent the backflow of blood, ensuring strict unidirectional blood flow." }
+        ]
+      },
+      digestive_system: {
+        title: "Human Digestive System & Enzyme Action",
+        neTitle: "मानव पाचन प्रणाली र इन्जाइमको भूमिका",
+        principle: "Digestion is the catabolic breakdown of complex insoluble food macromolecules (carbohydrates, proteins, fats) into simple diffusible molecules through chemical and mechanical processes.",
+        equation: "Starch ➔ Glucose  |  Proteins ➔ Amino Acids  |  Lipids ➔ Fatty Acids & Glycerol",
+        safety: "Hydrochloric acid in the stomach provides pH 1.5 - 2.0 required for pepsinogen activation and kills ingested pathogens.",
+        viva: [
+          { q: "Where does complete digestion and absorption take place?", a: "In the Small Intestine (specifically the ileum via millions of microvilli)." },
+          { q: "What is the function of Bile?", a: "Bile emulsifies large fat droplets into tiny micelles, increasing surface area for lipase action, and neutralizes stomach acid." }
+        ]
+      },
+      blood_testing: {
+        title: "ABO & Rh Blood Grouping System",
+        neTitle: "ए.बि.ओ र आर.एच. रक्त समूह परीक्षण",
+        principle: "Based on antigen-antibody agglutination reaction (hemagglutination). Red blood cells possessing Antigen A clump with Anti-A antibody; cells with Antigen B clump with Anti-B; cells with Rh antigen clump with Anti-D.",
+        equation: "AgA + Ab-A ➔ Clumping (Group A)  |  Rh+ Antigen + Anti-D ➔ Clumping (Positive)",
+        safety: "Always use separate sterile mixing sticks for each well to prevent cross-contamination false positives.",
+        viva: [
+          { q: "Why is O- negative considered the Universal Donor?", a: "Because O- red blood cells lack Antigen A, Antigen B, and Rh antigen, so recipient antibodies will not attack them." },
+          { q: "Why is AB+ positive considered the Universal Recipient?", a: "Because their blood plasma has neither Anti-A nor Anti-B antibodies and possesses Rh antigen." }
+        ]
+      },
       titration: {
         title: "Acid-Base Neutralization Titration",
         neTitle: "अम्ल-क्षार तटस्थीकरण टाइट्रेसन",
@@ -2882,6 +3054,587 @@
       }
     }
 
+    
+    // ─── 4H. Experiment 8: 3D Beating Human Heart & Circulation ──────────────
+    function setupHeartExperiment() {
+      labGroup.clear();
+      const g = new THREE.Group();
+      g.position.set(0, 0.4, 0);
+
+      // Heart Muscle Group
+      const heartGroup = new THREE.Group();
+
+      // Ventricles (Cone base with reddish-brown myocardium)
+      const ventGeo = new THREE.ConeGeometry(0.9, 1.6, 24);
+      const muscleMat = new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.35, metalness: 0.2 });
+      const ventricles = new THREE.Mesh(ventGeo, muscleMat);
+      ventricles.rotation.x = Math.PI; // pointing downwards
+      ventricles.position.y = 0.8;
+      heartGroup.add(ventricles);
+
+      // Left & Right Atria (Top chambers)
+      const atriumMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.4 });
+      const rightAtrium = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20), atriumMat);
+      rightAtrium.position.set(-0.55, 1.7, 0.1);
+      heartGroup.add(rightAtrium);
+
+      const leftAtrium = new THREE.Mesh(new THREE.SphereGeometry(0.52, 20, 20), atriumMat);
+      leftAtrium.position.set(0.55, 1.7, -0.1);
+      heartGroup.add(leftAtrium);
+
+      // Aorta (Great arch artery - Oxygenated blood, bright red)
+      const aortaCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(0.1, 1.6, 0),
+        new THREE.Vector3(0.1, 2.4, 0),
+        new THREE.Vector3(-0.3, 2.7, 0),
+        new THREE.Vector3(-0.8, 2.4, -0.2),
+        new THREE.Vector3(-0.8, 1.2, -0.3)
+      ]);
+      const aortaMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.3, metalness: 0.3 });
+      const aorta = new THREE.Mesh(new THREE.TubeGeometry(aortaCurve, 32, 0.18, 16, false), aortaMat);
+      heartGroup.add(aorta);
+
+      // 3 Aortic arch branches (Brachiocephalic, Carotid, Subclavian)
+      for (let i = 0; i < 3; i++) {
+        const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.5), aortaMat);
+        branch.position.set(-0.15 - i * 0.18, 2.8, 0);
+        heartGroup.add(branch);
+      }
+
+      // Superior Vena Cava (Deoxygenated blood, deep blue)
+      const svcMat = new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.3, metalness: 0.3 });
+      const svc = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 1.2), svcMat);
+      svc.position.set(-0.7, 2.3, 0.2);
+      heartGroup.add(svc);
+
+      // Pulmonary Artery (Carrying blue deoxygenated blood to lungs)
+      const paCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-0.1, 1.6, 0.3),
+        new THREE.Vector3(0.2, 2.1, 0.3),
+        new THREE.Vector3(0.8, 2.2, 0)
+      ]);
+      const pa = new THREE.Mesh(new THREE.TubeGeometry(paCurve, 20, 0.15, 16, false), svcMat);
+      heartGroup.add(pa);
+
+      // Coronary Arteries on heart surface
+      const coronaryMat = new THREE.MeshBasicMaterial({ color: 0xfca5a5 });
+      const coronary = new THREE.Mesh(new THREE.TorusGeometry(0.7, 0.02, 8, 24, Math.PI), coronaryMat);
+      coronary.rotation.x = Math.PI / 2;
+      coronary.position.y = 1.1;
+      heartGroup.add(coronary);
+
+      g.add(heartGroup);
+
+      // Circulating Blood Particles (Red = Oxygenated, Blue = Deoxygenated)
+      const bloodParticles = [];
+      const pGeo = new THREE.SphereGeometry(0.035, 8, 8);
+      const redMat = new THREE.MeshBasicMaterial({ color: 0xef4444 });
+      const blueMat = new THREE.MeshBasicMaterial({ color: 0x3b82f6 });
+
+      for (let i = 0; i < 30; i++) {
+        const isRed = i % 2 === 0;
+        const p = new THREE.Mesh(pGeo, isRed ? redMat : blueMat);
+        p.position.set((Math.random() - 0.5) * 1.2, 0.5 + Math.random() * 2.0, (Math.random() - 0.5) * 0.8);
+        p.userData = { isRed, speed: 0.015 + Math.random() * 0.015 };
+        g.add(p);
+        bloodParticles.push(p);
+      }
+
+      labGroup.add(g);
+
+      // Cardiac Parameters
+      let heartRate = 72; // BPM
+      let strokeVolume = 70; // mL
+      let isBeating = true;
+      let lastBeatTime = 0;
+
+      function updateHeartCalc() {
+        // Cardiac Output = HR * SV
+        const cardiacOutputLPM = ((heartRate * strokeVolume) / 1000).toFixed(2);
+        const beatInterval = 60 / heartRate; // seconds per beat
+
+        slidersWrap.innerHTML = `
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Heart Rate (हृदय गति):</span>
+              <span class="val" id="hr-val">${heartRate} BPM</span>
+            </div>
+            <input type="range" class="custom-range" id="hr-range" min="50" max="150" value="${heartRate}" />
+          </div>
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Stroke Volume (प्रति धड्कन रक्त प्रवाह):</span>
+              <span class="val">${strokeVolume} mL</span>
+            </div>
+            <input type="range" class="custom-range" id="sv-range" min="50" max="100" value="${strokeVolume}" />
+          </div>
+        `;
+
+        formulaBox.innerHTML = `
+          <div class="formula-title">Cardiac Hemodynamics · रक्तसञ्चार गणना</div>
+          <div class="formula-math">Cardiac Output Q = Heart Rate (HR) × Stroke Volume (SV)</div>
+          <div class="formula-math">Q = ${heartRate} BPM × ${strokeVolume} mL = ${(heartRate * strokeVolume)} mL/min</div>
+          <div class="formula-result">
+            <span>Total Blood Pumped per Minute:</span>
+            <span>${cardiacOutputLPM} Liters / min</span>
+          </div>
+        `;
+
+        document.getElementById('hr-range').addEventListener('input', (e) => {
+          heartRate = parseInt(e.target.value);
+          document.getElementById('hr-val').textContent = `${heartRate} BPM`;
+          updateHeartCalc();
+        });
+        document.getElementById('sv-range').addEventListener('input', (e) => {
+          strokeVolume = parseInt(e.target.value);
+          updateHeartCalc();
+        });
+      }
+      updateHeartCalc();
+
+      // Equipment Rack Items for Heart
+      const eqItems = [
+        { id: 'left_ventricle', icon: '❤️', en: 'Left Ventricle (बायोँ भेन्ट्रिकल)', ne: 'बायाँ निलय (अक्सिजनयुक्त रगत पम्प)', onBench: true },
+        { id: 'right_ventricle', icon: '💙', en: 'Right Ventricle (दायाँ भेन्ट्रिकल)', ne: 'दायाँ निलय (फोक्सोमा रगत पठाउने)', onBench: true },
+        { id: 'aorta', icon: '🔴', en: 'Aorta (महाधमनी)', ne: 'महाधमनी (शरीरमा शुद्ध रगत वितरण)', onBench: true },
+        { id: 'vena_cava', icon: '🔵', en: 'Vena Cava (महाशिरा)', ne: 'महाशिरा (शरीरबाट अशुद्ध रगत ल्याउने)', onBench: true },
+        { id: 'valves', icon: '🚪', en: 'Tricuspid & Bicuspid Valves', ne: 'भल्भहरू (रगतको एकोहोरो प्रवाह)', onBench: true }
+      ];
+
+      setEquipmentRack(eqItems, (item) => {
+        playClink();
+        setObservation(`Selected Chamber: ${item.en} (${item.ne})`, item.ne);
+        speakText(`Examining ${item.en}`, `${item.ne} अवलोकन गर्दै।`);
+      });
+
+      // Beating Render Loop
+      currentAnimTick = () => {
+        if (isBeating) {
+          const now = Date.now() * 0.001;
+          const beatPeriod = 60 / heartRate;
+          const phase = (now % beatPeriod) / beatPeriod;
+
+          // Systole (contraction) & Diastole (relaxation)
+          const scale = 1 + Math.sin(phase * Math.PI * 2) * 0.07;
+          heartGroup.scale.set(scale, 1 / Math.sqrt(scale), scale);
+
+          // Audio heartbeat sound at peak of contraction
+          if (now - lastBeatTime >= beatPeriod) {
+            playHeartbeatSound();
+            lastBeatTime = now;
+          }
+
+          // Circulating blood flow particles
+          bloodParticles.forEach(p => {
+            p.position.y += p.userData.speed;
+            if (p.position.y > 2.8) {
+              p.position.y = 0.4;
+              p.position.x = (Math.random() - 0.5) * 1.0;
+            }
+          });
+        }
+      };
+
+      actionsGrid.innerHTML = `
+        <button class="lab-action-btn active-step" id="btn-oxygen">
+          <span>1. Oxygenated Flow (Red)</span>
+          <span class="sub">शुद्ध रगत प्रवाह (बायाँ भाग)</span>
+        </button>
+        <button class="lab-action-btn" id="btn-deoxygen">
+          <span>2. Deoxygenated Flow (Blue)</span>
+          <span class="sub">अशुद्ध रगत प्रवाह (दायाँ भाग)</span>
+        </button>
+        <button class="lab-action-btn" id="btn-exercise">
+          <span>3. Simulate Exercise (120 BPM)</span>
+          <span class="sub">व्यायाम अवस्था (तीव्र धड्कन)</span>
+        </button>
+        <button class="lab-action-btn btn-reset" id="btn-reset">
+          <span>🔄 Reset</span>
+          <span class="sub">पुनः सुरु</span>
+        </button>
+      `;
+
+      setStep('1', '3D Beating Human Heart: Left side pumps oxygenated blood via Aorta; Right side pumps deoxygenated blood to lungs.', 'मानव मुटु: बायाँ भागले शुद्ध रगत शरीरभर पम्प गर्छ र दायाँ भागले अशुद्ध रगत फोक्सोमा पठाउँछ।');
+      setObservation(`Heart Rate: ${heartRate} BPM. Pumping ${((heartRate*strokeVolume)/1000).toFixed(2)} L/min.`, `मुटु प्रति मिनेट ${heartRate} पटक धड्किरहेको छ।`);
+
+      document.getElementById('btn-oxygen').addEventListener('click', () => {
+        playTone(550, 'sine', 0.2, 0.2);
+        setStep('2', 'Oxygenated blood from pulmonary veins enters Left Atrium ➔ Bicuspid valve ➔ Left Ventricle ➔ Aorta to whole body.', 'शुद्ध रगत: फोक्सोबाट बायाँ अलिन्द ➔ बायाँ निलय ➔ महाधमनी हुँदै सम्पूर्ण शरीरमा पुग्छ।');
+        setObservation('Oxygenated blood (High O₂, Low CO₂) flows through systemic circulation.', 'शुद्ध रगतको प्रवाह अवलोकन भयो।');
+      });
+
+      document.getElementById('btn-deoxygen').addEventListener('click', () => {
+        playTone(400, 'sine', 0.2, 0.2);
+        setStep('3', 'Deoxygenated blood from body enters Vena Cava ➔ Right Atrium ➔ Tricuspid valve ➔ Right Ventricle ➔ Pulmonary Artery to lungs.', 'अशुद्ध रगत: शरीरबाट महाशिरा ➔ दायाँ अलिन्द ➔ दायाँ निलय ➔ फुक्सफुसीय धमनी हुँदै फोक्सोमा शुद्धीकरणका लागि जान्छ।');
+        setObservation('Deoxygenated blood (High CO₂) pumped to lungs for gas exchange.', 'अशुद्ध रगत फोक्सोतर्फ पम्प हुँदैछ।');
+      });
+
+      document.getElementById('btn-exercise').addEventListener('click', () => {
+        heartRate = 120;
+        document.getElementById('hr-range').value = 120;
+        document.getElementById('hr-val').textContent = '120 BPM';
+        updateHeartCalc();
+        playSuccess();
+        setStep('4', 'Exercise mode activated! Heart rate increased to 120 BPM to deliver more oxygen to working skeletal muscles.', 'व्यायाम अवस्था: मांसपेशीहरूलाई बढी अक्सिजन पुर्याउन मुटुको धड्कन बढेर १२० पुग्यो।');
+        setObservation(`Cardiac Output increased to ${((120*strokeVolume)/1000).toFixed(2)} Liters per minute!`, `कार्डियाक आउटपुट बढेर ${((120*strokeVolume)/1000).toFixed(2)} लि/मि पुग्यो!`);
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        setupHeartExperiment();
+      });
+    }
+
+    // ─── 4I. Experiment 9: 3D Human Digestive System & Food Path ─────────────
+    function setupDigestiveExperiment() {
+      labGroup.clear();
+      const g = new THREE.Group();
+      g.position.set(0, 0.2, 0);
+
+      // 3D Digestive Anatomy
+      const digestiveGroup = new THREE.Group();
+
+      // Mouth & Pharynx
+      const mouth = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), new THREE.MeshStandardMaterial({ color: 0xfca5a5 }));
+      mouth.position.set(0, 3.2, 0);
+      digestiveGroup.add(mouth);
+
+      // Esophagus (Gullet tube)
+      const eso = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.3), new THREE.MeshStandardMaterial({ color: 0xf43f5e }));
+      eso.position.set(0, 2.3, 0);
+      digestiveGroup.add(eso);
+
+      // J-shaped Stomach
+      const stomachGeo = new THREE.SphereGeometry(0.55, 20, 20);
+      const stomachMat = new THREE.MeshStandardMaterial({ color: 0xbe123c, roughness: 0.4 });
+      const stomach = new THREE.Mesh(stomachGeo, stomachMat);
+      stomach.scale.set(1.2, 0.8, 0.9);
+      stomach.position.set(-0.35, 1.4, 0);
+      stomach.rotation.z = -0.3;
+      digestiveGroup.add(stomach);
+
+      // Large Liver (Reddish-brown, right hypochondrium)
+      const liverGeo = new THREE.ConeGeometry(0.8, 1.1, 16);
+      const liverMat = new THREE.MeshStandardMaterial({ color: 0x7f1d1d, roughness: 0.5 });
+      const liver = new THREE.Mesh(liverGeo, liverMat);
+      liver.rotation.z = 1.3;
+      liver.position.set(0.65, 1.55, 0.1);
+      digestiveGroup.add(liver);
+
+      // Gallbladder (Green bile sac under liver)
+      const gb = new THREE.Mesh(new THREE.SphereGeometry(0.16, 12, 12), new THREE.MeshStandardMaterial({ color: 0x15803d }));
+      gb.position.set(0.45, 1.15, 0.25);
+      digestiveGroup.add(gb);
+
+      // Small Intestine (Coiled center)
+      const siGroup = new THREE.Group();
+      siGroup.position.set(0, 0.5, 0);
+      const siMat = new THREE.MeshStandardMaterial({ color: 0xfb923c, roughness: 0.6 });
+      for (let i = 0; i < 4; i++) {
+        const coil = new THREE.Mesh(new THREE.TorusGeometry(0.4 - i * 0.08, 0.08, 8, 20), siMat);
+        coil.rotation.x = Math.PI / 2 + i * 0.2;
+        coil.position.y = i * 0.12;
+        siGroup.add(coil);
+      }
+      digestiveGroup.add(siGroup);
+
+      // Large Intestine (Surrounding Colon)
+      const colonMat = new THREE.MeshStandardMaterial({ color: 0x9a3412, roughness: 0.5 });
+      const colonGeo = new THREE.CylinderGeometry(0.12, 0.12, 1.2);
+
+      const ascColon = new THREE.Mesh(colonGeo, colonMat);
+      ascColon.position.set(0.75, 0.6, 0);
+      digestiveGroup.add(ascColon);
+
+      const transColon = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.5), colonMat);
+      transColon.rotation.z = Math.PI / 2;
+      transColon.position.set(0, 1.15, 0);
+      digestiveGroup.add(transColon);
+
+      const descColon = new THREE.Mesh(colonGeo, colonMat);
+      descColon.position.set(-0.75, 0.6, 0);
+      digestiveGroup.add(descColon);
+
+      g.add(digestiveGroup);
+
+      // Glowing Food Bolus
+      const bolus = new THREE.Mesh(new THREE.SphereGeometry(0.1, 16, 16), new THREE.MeshBasicMaterial({ color: 0xfacc15 }));
+      bolus.position.set(0, 3.2, 0.2);
+      g.add(bolus);
+
+      labGroup.add(g);
+
+      // Digestive Calculations
+      slidersWrap.innerHTML = `
+        <div class="calc-slider-group">
+          <div class="slider-label-row">
+            <span>Food Transit Stage:</span>
+            <span class="val" id="stage-val">Mouth (मुख)</span>
+          </div>
+        </div>
+      `;
+
+      formulaBox.innerHTML = `
+        <div class="formula-title">Digestive Biochemistry · पाचन प्रक्रिया</div>
+        <div class="formula-math">Starch + Salivary Amylase ➔ Maltose (pH 6.8)</div>
+        <div class="formula-math">Proteins + Pepsin (HCl) ➔ Peptones (pH 1.5 - 2.0)</div>
+        <div class="formula-result">
+          <span>Active Organ: Mouth (मुख)</span>
+          <span>Mastication & Carbohydrate Digestion</span>
+        </div>
+      `;
+
+      // Equipment Rack Items
+      const eqItems = [
+        { id: 'mouth', icon: '👄', en: 'Mouth & Salivary Glands', ne: 'मुख र र्‍याल ग्रन्थी (एमाइलेज)', onBench: true },
+        { id: 'stomach', icon: '🥣', en: 'Stomach (आमाशय)', ne: 'आमाशय (पेप्सिन र हाइड्रोक्लोरिक अम्ल)', onBench: true },
+        { id: 'liver', icon: '🟤', en: 'Liver & Bile (कलेजो र पित्त)', ne: 'कलेजो (बोसोको इमल्सिफिकेसन)', onBench: true },
+        { id: 'pancreas', icon: '🟡', en: 'Pancreas (अग्न्याशय)', ne: 'अग्न्याशय (ट्रिप्सिन र लाइपेज)', onBench: true },
+        { id: 'small_intestine', icon: '🌀', en: 'Small Intestine (सानो आन्द्रा)', ne: 'सानो आन्द्रा (भिल्लाईद्वारा शोषण)', onBench: true },
+        { id: 'large_intestine', icon: '⭕', en: 'Large Intestine (ठूलो आन्द्रा)', ne: 'ठूलो आन्द्रा (पानी शोषण र निष्कासन)', onBench: true }
+      ];
+
+      setEquipmentRack(eqItems, (item) => {
+        playClink();
+        setObservation(`Organ: ${item.en} (${item.ne})`, item.ne);
+        speakText(`Selected ${item.en}`, `${item.ne} अवलोकन गर्दै।`);
+      });
+
+      actionsGrid.innerHTML = `
+        <button class="lab-action-btn active-step" id="btn-mouth">
+          <span>1. Ingest Food (Mouth)</span>
+          <span class="sub">खाना खानुहोस् (मुख)</span>
+        </button>
+        <button class="lab-action-btn" id="btn-stomach" disabled>
+          <span>2. Stomach Digestion</span>
+          <span class="sub">आमाशयमा पाचन (HCl + पेप्सिन)</span>
+        </button>
+        <button class="lab-action-btn" id="btn-intestine" disabled>
+          <span>3. Small Intestine (Absorption)</span>
+          <span class="sub">सानो आन्द्रामा शोषण (भिल्लाई)</span>
+        </button>
+        <button class="lab-action-btn btn-reset" id="btn-reset">
+          <span>🔄 Reset</span>
+          <span class="sub">पुनः सुरु</span>
+        </button>
+      `;
+
+      setStep('1', 'Ingest food: Teeth chew and saliva (salivary amylase) breaks down carbohydrates into maltose.', 'खाना खानुहोस्: दाँतले चबाउँछ र र्‍यालको एमाइलेजले कार्बोहाइड्रेटलाई माल्टोजमा परिणत गर्छ।');
+      setObservation('Food bolus formed in oral cavity. Ready for swallowing.', 'खानाको डल्लो (बोलस) तयार भयो।');
+
+      const btnMouth = document.getElementById('btn-mouth');
+      const btnStomach = document.getElementById('btn-stomach');
+      const btnIntestine = document.getElementById('btn-intestine');
+
+      btnMouth.addEventListener('click', () => {
+        playPourSound();
+        bolus.position.set(0, 2.3, 0.2); // Moves down esophagus
+        btnMouth.disabled = true;
+        btnMouth.classList.remove('active-step');
+        btnStomach.disabled = false;
+        btnStomach.classList.add('active-step');
+        setStep('2', 'Peristalsis wave carries food bolus down esophagus to stomach. Hydrochloric acid (HCl) and Pepsin begin protein breakdown.', 'पेरिस्टाल्सिस चालले खाना आमाशयमा पुर्याउँछ। HCl ले कीटाणु मार्छ र पेप्सिनले प्रोटिन पचाउँछ।');
+        setObservation('Stomach churning (pH 1.5 - 2.0). Chyme created.', 'आमाशयमा प्रोटिनको पाचन भइरहेको छ।');
+      });
+
+      btnStomach.addEventListener('click', () => {
+        playBubbleSound();
+        bolus.position.set(-0.35, 1.4, 0.2); // Inside stomach
+        setTimeout(() => {
+          bolus.position.set(0, 0.7, 0.2); // Moves to small intestine
+        }, 600);
+        btnStomach.disabled = true;
+        btnStomach.classList.remove('active-step');
+        btnIntestine.disabled = false;
+        btnIntestine.classList.add('active-step');
+        setStep('3', 'Chyme enters duodenum. Bile from liver emulsifies fats; pancreatic enzymes and intestinal villi complete nutrient absorption.', 'खाना सानो आन्द्रामा पुग्यो। पित्तले बोसो टुक्र्याउँछ र भिल्लाईले पोषक तत्व रगतमा सोस्छ।');
+        setObservation('Villi absorb glucose, amino acids, and fatty acids into blood capillaries.', 'पोषक तत्वहरू रगतमा सोसिए।');
+      });
+
+      btnIntestine.addEventListener('click', () => {
+        playSuccess();
+        bolus.position.set(0.75, 0.2, 0.2); // Colon
+        setStep('4', 'Large intestine reabsorbs water and minerals. Undigested waste is formed into feces and eliminated through rectum.', 'ठूलो आन्द्राले पानी र खनिज सोस्छ र बाँकी फोहोर दिसाको रूपमा बाहिर निष्कासन गर्छ।');
+        setObservation('Digestion and absorption 100% complete!', 'पाचन तथा शोषण प्रक्रिया पूर्णरूपमा सफल भयो!');
+        btnIntestine.disabled = true;
+        btnIntestine.classList.remove('active-step');
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        setupDigestiveExperiment();
+      });
+    }
+
+    // ─── 4J. Experiment 10: ABO & Rh Blood Group Testing Lab ─────────────────
+    function setupBloodTestExperiment() {
+      labGroup.clear();
+      const g = new THREE.Group();
+
+      // White Porcelain 3-Well Cavity Plate
+      const plate = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.15, 1.4), new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.1, metalness: 0.1 }));
+      plate.position.set(0, 0.075, 0);
+      g.add(plate);
+
+      // Wells (Cavities A, B, D/Rh)
+      const wellGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.08, 24);
+      const wellAMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.4 }); // Well A
+      const wellBMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.4 }); // Well B
+      const wellDMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.4 }); // Well D
+
+      const wellA = new THREE.Mesh(wellGeo, wellAMat);
+      wellA.position.set(-1.0, 0.12, 0);
+      g.add(wellA);
+
+      const wellB = new THREE.Mesh(wellGeo, wellBMat);
+      wellB.position.set(0, 0.12, 0);
+      g.add(wellB);
+
+      const wellD = new THREE.Mesh(wellGeo, wellDMat);
+      wellD.position.set(1.0, 0.12, 0);
+      g.add(wellD);
+
+      // Reagent Bottles (Anti-A Blue, Anti-B Yellow, Anti-D Clear)
+      const bottleGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.55, 16);
+
+      const bAntiA = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0x2563eb })); // Blue Anti-A
+      bAntiA.position.set(-1.0, 0.28, -1.0);
+      g.add(bAntiA);
+
+      const bAntiB = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0xeab308 })); // Yellow Anti-B
+      bAntiB.position.set(0, 0.28, -1.0);
+      g.add(bAntiB);
+
+      const bAntiD = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0xe2e8f0 })); // Clear Anti-D
+      bAntiD.position.set(1.0, 0.28, -1.0);
+      g.add(bAntiD);
+
+      labGroup.add(g);
+
+      // Patient Blood Group Types
+      let patientBlood = 'B+'; // Default test subject
+
+      function updateBloodCalc() {
+        slidersWrap.innerHTML = `
+          <div class="calc-slider-group">
+            <div class="slider-label-row">
+              <span>Patient Test Subject Blood Type:</span>
+              <span class="val" id="patient-val">${patientBlood}</span>
+            </div>
+            <select class="custom-range" id="patient-select" style="background:#0b1329;color:#fff;padding:0.4rem;border-radius:6px;border:1px solid #38bdf8;">
+              <option value="A+">Blood Group A+ (Anti-A & Anti-D Clumping)</option>
+              <option value="A-">Blood Group A- (Anti-A Clumping Only)</option>
+              <option value="B+" selected>Blood Group B+ (Anti-B & Anti-D Clumping)</option>
+              <option value="B-">Blood Group B- (Anti-B Clumping Only)</option>
+              <option value="AB+">Blood Group AB+ (All 3 Wells Clump - Universal Recipient)</option>
+              <option value="AB-">Blood Group AB- (Anti-A & Anti-B Clumping)</option>
+              <option value="O+">Blood Group O+ (Anti-D Clumping Only)</option>
+              <option value="O-">Blood Group O- (No Clumping - Universal Donor)</option>
+            </select>
+          </div>
+        `;
+
+        formulaBox.innerHTML = `
+          <div class="formula-title">Agglutination Law · रक्त समूह नियम</div>
+          <div class="formula-math">Antigen A + Antibody Anti-A ➔ Agglutination (Clumping)</div>
+          <div class="formula-math">Antigen B + Antibody Anti-B ➔ Agglutination (Clumping)</div>
+          <div class="formula-result">
+            <span>Result for Patient ${patientBlood}:</span>
+            <span>${patientBlood.includes('AB') ? 'Universal Recipient' : patientBlood === 'O-' ? 'Universal Donor' : 'Standard Compatibility'}</span>
+          </div>
+        `;
+
+        document.getElementById('patient-select').addEventListener('change', (e) => {
+          patientBlood = e.target.value;
+          updateBloodCalc();
+        });
+      }
+      updateBloodCalc();
+
+      // Equipment Rack
+      const eqItems = [
+        { id: 'plate', icon: '🥏', en: '3-Well Porcelain Testing Tile', ne: '३ वटा खाल्डो भएको सेतो टायल', onBench: true },
+        { id: 'antiA', icon: '🔵', en: 'Anti-A Monoclonal Serum (Blue)', ne: 'एन्टी-ए सिरम (नीलो बोतल)', onBench: true },
+        { id: 'antiB', icon: '🟡', en: 'Anti-B Monoclonal Serum (Yellow)', ne: 'एन्टी-बी सिरम (पहेंलो बोतल)', onBench: true },
+        { id: 'antiD', icon: '⚪', en: 'Anti-D (Rh) Serum (Colorless)', ne: 'एन्टी-डी आर.एच. सिरम (सेतो)', onBench: true },
+        { id: 'blood', icon: '🩸', en: 'Patient Blood Sample Vial', ne: 'बिरामीको रगतको नमुना', onBench: true }
+      ];
+
+      setEquipmentRack(eqItems, (item) => {
+        playClink();
+        setObservation(`Equipment: ${item.en} (${item.ne})`, item.ne);
+        speakText(`Selected ${item.en}`, `${item.ne} छनोट गरियो।`);
+      });
+
+      actionsGrid.innerHTML = `
+        <button class="lab-action-btn active-step" id="btn-add-blood">
+          <span>1. Drop Blood in 3 Wells</span>
+          <span class="sub">तीनै खाल्डोमा रगत हाल्नुहोस्</span>
+        </button>
+        <button class="lab-action-btn" id="btn-add-serum" disabled>
+          <span>2. Add Anti-A, Anti-B, Anti-D</span>
+          <span class="sub">सिरम मिसाउनुहोस्</span>
+        </button>
+        <button class="lab-action-btn" id="btn-mix" disabled>
+          <span>3. Mix & Observe Agglutination</span>
+          <span class="sub">थक्का (Clumping) हेर्नुहोस्</span>
+        </button>
+        <button class="lab-action-btn btn-reset" id="btn-reset">
+          <span>🔄 Reset</span>
+          <span class="sub">पुनः सुरु</span>
+        </button>
+      `;
+
+      setStep('1', 'Dispense 1 drop of patient blood into Well A, Well B, and Well Rh/D.', 'सेतो टायलको तीनवटै खाल्डोमा १/१ थोपा रगत हाल्नुहोस्।');
+      setObservation('Porcelain plate ready. Waiting for blood drops.', 'टायल तयार छ। रगत हाल्नुहोस्।');
+
+      const btnBlood = document.getElementById('btn-add-blood');
+      const btnSerum = document.getElementById('btn-add-serum');
+      const btnMix = document.getElementById('btn-mix');
+
+      btnBlood.addEventListener('click', () => {
+        playPourSound();
+        wellAMat.opacity = 0.85;
+        wellBMat.opacity = 0.85;
+        wellDMat.opacity = 0.85;
+        btnBlood.disabled = true;
+        btnBlood.classList.remove('active-step');
+        btnSerum.disabled = false;
+        btnSerum.classList.add('active-step');
+        setStep('2', 'Add 1 drop of Blue Anti-A to Well A, Yellow Anti-B to Well B, and Clear Anti-D to Well Rh.', 'पहिलो खाल्डोमा Anti-A (नीलो), दोस्रोमा Anti-B (पहेंलो), र तेस्रोमा Anti-D (सेतो) सिरम हाल्नुहोस्।');
+        setObservation('Blood placed in all 3 wells. Adding antibodies...', 'रगत हालियो। अब सिरम थप्नुहोस्।');
+      });
+
+      btnSerum.addEventListener('click', () => {
+        playTone(700, 'sine', 0.15, 0.2);
+        btnSerum.disabled = true;
+        btnSerum.classList.remove('active-step');
+        btnMix.disabled = false;
+        btnMix.classList.add('active-step');
+        setStep('3', 'Mix each well with separate clean toothpicks. Watch for agglutination (clumping of red cells).', 'अलग-अलग सिन्काले घोल्नुहोस्। कुन खाल्डोमा रगत जम्छ (थक्का बन्छ) हेर्नुहोस्।');
+        setObservation('Antisera added. Ready to mix.', 'सिरम हालियो। अब घोल्नुहोस्।');
+      });
+
+      btnMix.addEventListener('click', () => {
+        playSuccess();
+        // Clumping logic based on patient blood:
+        const hasA = patientBlood.includes('A');
+        const hasB = patientBlood.includes('B');
+        const hasRh = patientBlood.includes('+');
+
+        if (hasA) wellAMat.color.setHex(0x7f1d1d); // Clumped dark granular
+        if (hasB) wellBMat.color.setHex(0x7f1d1d);
+        if (hasRh) wellDMat.color.setHex(0x7f1d1d);
+
+        setStep('4', `Result: Agglutination observed! Patient Blood Group is confirmed as ${patientBlood}.`, `नतिजा: रक्तकणहरू जमेको देखियो! बिरामीको रक्त समूह '${patientBlood}' प्रमाणित भयो।`);
+        setObservation(`Blood Group ${patientBlood} confirmed: Clumping in ${hasA?'A ':''}${hasB?'B ':''}${hasRh?'Rh(D)':''}.`, `रक्त समूह ${patientBlood} प्रमाणित भयो!`);
+        btnMix.disabled = true;
+        btnMix.classList.remove('active-step');
+      });
+
+      document.getElementById('btn-reset').addEventListener('click', () => {
+        setupBloodTestExperiment();
+      });
+    }
+
     // ── 6. Main Experiment Loader & Routing ───────────────────────────────────
     const expSelect = document.getElementById('experiment-select');
     function loadExperiment(id) {
@@ -2893,6 +3646,9 @@
       else if (id === 'prism') setupPrismExperiment();
       else if (id === 'microscope') setupMicroscopeExperiment();
       else if (id === 'titration') setupTitrationExperiment();
+      else if (id === 'human_heart') setupHeartExperiment();
+      else if (id === 'digestive_system') setupDigestiveExperiment();
+      else if (id === 'blood_testing') setupBloodTestExperiment();
     }
 
     expSelect.addEventListener('change', (e) => {
