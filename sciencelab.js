@@ -2,7 +2,7 @@
   'use strict';
 
   // ── 1. Audio Synthesis & Bilingual Speech Narration Engine ────────────────
-  let voiceLang = 'en'; // 'en', 'ne', or 'off'
+  let voiceLang = 'ne'; // PRIMARY: Nepali voice narration // 'en', 'ne', or 'off'
   let sfxEnabled = true;
 
   const AudioCtx = window.AudioContext || window.webkitAudioContext;
@@ -99,18 +99,27 @@
     if (!('speechSynthesis' in window)) return;
     try {
       window.speechSynthesis.cancel();
-      const textToSpeak = voiceLang === 'ne' ? neText : enText;
+      const textToSpeak = voiceLang === 'ne' ? (neText || enText) : (enText || neText);
       const langCode = voiceLang === 'ne' ? 'ne-NP' : 'en-US';
 
       const u = new SpeechSynthesisUtterance(textToSpeak);
       u.lang = langCode;
-      u.rate = voiceLang === 'ne' ? 0.9 : 0.95;
+      u.rate = voiceLang === 'ne' ? 0.88 : 0.95;
       u.pitch = 1.0;
 
       const voices = window.speechSynthesis.getVoices();
       if (voices && voices.length) {
         if (voiceLang === 'ne') {
-          const neVoice = voices.find(v => v.lang.startsWith('ne') || v.lang.startsWith('hi'));
+          // Look for native Nepali, or Devanagari Hindi/Marathi TTS voices
+          const neVoice = voices.find(v => 
+            v.lang.startsWith('ne') || 
+            v.lang.startsWith('hi') || 
+            v.lang.startsWith('mr') || 
+            v.name.toLowerCase().includes('nepali') || 
+            v.name.toLowerCase().includes('hindi') || 
+            v.name.toLowerCase().includes('kalpana') || 
+            v.name.toLowerCase().includes('hemant')
+          );
           if (neVoice) u.voice = neVoice;
         } else {
           const enVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google')));
@@ -121,24 +130,34 @@
     } catch (e) {}
   }
 
+  // Preload voices
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.onvoiceschanged = () => {
+      window.speechSynthesis.getVoices();
+    };
+  }
+
   // Header Buttons
   const voiceBtn = document.getElementById('voice-toggle-btn');
+  voiceBtn.textContent = '🔊 आवाज: नेपाली (ne)';
+  voiceBtn.classList.add('active');
+
   voiceBtn.addEventListener('click', () => {
-    if (voiceLang === 'en') {
-      voiceLang = 'ne';
-      voiceBtn.textContent = '🔊 आवाज: नेपाली (ne)';
-      voiceBtn.classList.add('active');
-      speakText('नेपाली आवाज सक्रिय भयो।', 'नेपाली आवाज सक्रिय भयो।');
-    } else if (voiceLang === 'ne') {
-      voiceLang = 'off';
-      voiceBtn.textContent = '🔇 Voice: OFF';
-      voiceBtn.classList.remove('active');
-      window.speechSynthesis.cancel();
-    } else {
+    if (voiceLang === 'ne') {
       voiceLang = 'en';
       voiceBtn.textContent = '🔊 Voice: English (en)';
       voiceBtn.classList.add('active');
       speakText('English narration activated.', 'English narration activated.');
+    } else if (voiceLang === 'en') {
+      voiceLang = 'off';
+      voiceBtn.textContent = '🔇 Voice: OFF';
+      voiceBtn.classList.remove('active');
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    } else {
+      voiceLang = 'ne';
+      voiceBtn.textContent = '🔊 आवाज: नेपाली (ne)';
+      voiceBtn.classList.add('active');
+      speakText('नेपाली आवाज सक्रिय भयो।', 'नेपाली आवाज सक्रिय भयो।');
     }
   });
 
@@ -451,10 +470,10 @@
 
   function setStep(num, en, ne) {
     stepNumEl.textContent = num;
-    stepTextEl.textContent = `${en} (${ne})`;
+    stepTextEl.textContent = voiceLang === 'ne' ? `${ne} · ${en}` : `${en} (${ne})`;
     currentStepEn = en;
     currentStepNe = ne;
-    assistantSpeech.textContent = en;
+    assistantSpeech.textContent = voiceLang === 'ne' ? ne : en;
     speakText(en, ne);
   }
 
