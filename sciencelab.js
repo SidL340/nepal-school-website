@@ -93,44 +93,122 @@
     } catch(e) {}
   }
 
-  // Bilingual Speech Synthesis
+  // ── Realistic Human Character Voice Engine (Dr. Vigyan) ───────────────────
+  let currentAudioPlayer = null;
+  let isCharacterSpeaking = false;
+
+  function stopAllSpeech() {
+    isCharacterSpeaking = false;
+    if (currentAudioPlayer) {
+      currentAudioPlayer.pause();
+      currentAudioPlayer = null;
+    }
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  function cleanSpokenText(raw) {
+    if (!raw) return '';
+    return raw
+      .replace(/CaCO₃/g, 'क्याल्सियम कार्बोनेट')
+      .replace(/2HCl/g, 'हाइड्रोक्लोरिक एसिड')
+      .replace(/HCl/g, 'हाइड्रोक्लोरिक एसिड')
+      .replace(/NH₄Cl/g, 'अमोनियम क्लोराइड')
+      .replace(/Ca\(OH\)₂/g, 'स्लेक्ड लाइम')
+      .replace(/CO₂/g, 'कार्बन डाइअक्साइड')
+      .replace(/NH₃/g, 'एमोनिया')
+      .replace(/NaOH/g, 'सोडियम हाइड्रोक्साइड')
+      .replace(/V\s*=\s*I\s*×\s*R/g, 'भी बराबर आई गुणन आर')
+      .replace(/➔|⟹|↑|↓/g, ' ')
+      .replace(/[*#_~`]/g, '')
+      .replace(/\s+/g, ' ')
+      .trim();
+  }
+
   function speakText(enText, neText) {
     if (voiceLang === 'off') return;
-    if (!('speechSynthesis' in window)) return;
+    stopAllSpeech();
+
+    const textToSpeak = voiceLang === 'ne' ? (neText || enText) : (enText || neText);
+    const cleaned = cleanSpokenText(textToSpeak);
+    if (!cleaned) return;
+
+    isCharacterSpeaking = true;
+    const langCode = voiceLang === 'ne' ? 'ne' : 'en';
+
+    // Tier 1: Authentic Human Character Voice via Neural TTS stream
+    const encoded = encodeURIComponent(cleaned.substring(0, 180));
+    const humanTtsUrl = `https://translate.google.com/translate_tts?ie=UTF-8&tl=${langCode}&client=tw-ob&q=${encoded}`;
+
+    const audio = new Audio();
+    audio.crossOrigin = 'anonymous';
+    audio.src = humanTtsUrl;
+    currentAudioPlayer = audio;
+
+    let hasPlayedAudio = false;
+
+    audio.onplay = () => {
+      hasPlayedAudio = true;
+      isCharacterSpeaking = true;
+    };
+
+    audio.onended = () => {
+      isCharacterSpeaking = false;
+      currentAudioPlayer = null;
+    };
+
+    audio.onerror = () => {
+      // Tier 2: Neural Browser Speech Synthesis Fallback
+      fallbackBrowserSpeech(cleaned, voiceLang);
+    };
+
+    audio.play().catch(() => {
+      fallbackBrowserSpeech(cleaned, voiceLang);
+    });
+  }
+
+  function fallbackBrowserSpeech(text, lang) {
+    if (!('speechSynthesis' in window)) {
+      isCharacterSpeaking = false;
+      return;
+    }
     try {
       window.speechSynthesis.cancel();
-      const textToSpeak = voiceLang === 'ne' ? (neText || enText) : (enText || neText);
-      const langCode = voiceLang === 'ne' ? 'ne-NP' : 'en-US';
-
-      const u = new SpeechSynthesisUtterance(textToSpeak);
-      u.lang = langCode;
-      u.rate = voiceLang === 'ne' ? 0.88 : 0.95;
-      u.pitch = 1.0;
+      const u = new SpeechSynthesisUtterance(text);
+      u.lang = lang === 'ne' ? 'ne-NP' : 'en-US';
+      u.rate = lang === 'ne' ? 0.90 : 0.95;
+      u.pitch = 1.05; // Slightly warmer, friendly teacher pitch
 
       const voices = window.speechSynthesis.getVoices();
       if (voices && voices.length) {
-        if (voiceLang === 'ne') {
-          // Look for native Nepali, or Devanagari Hindi/Marathi TTS voices
-          const neVoice = voices.find(v => 
+        if (lang === 'ne') {
+          // Prioritize high-quality human Neural / Natural Devanagari voices
+          const bestNe = voices.find(v => 
             v.lang.startsWith('ne') || 
-            v.lang.startsWith('hi') || 
-            v.lang.startsWith('mr') || 
-            v.name.toLowerCase().includes('nepali') || 
-            v.name.toLowerCase().includes('hindi') || 
-            v.name.toLowerCase().includes('kalpana') || 
-            v.name.toLowerCase().includes('hemant')
-          );
-          if (neVoice) u.voice = neVoice;
+            (v.lang.startsWith('hi') && (v.name.includes('Natural') || v.name.includes('Google') || v.name.includes('Neural') || v.name.includes('Swara') || v.name.includes('Madhur')))
+          ) || voices.find(v => v.lang.startsWith('hi') || v.lang.startsWith('mr'));
+          if (bestNe) u.voice = bestNe;
         } else {
-          const enVoice = voices.find(v => v.lang.startsWith('en') && (v.name.includes('Natural') || v.name.includes('Google')));
-          if (enVoice) u.voice = enVoice;
+          // Friendly English Character voice
+          const bestEn = voices.find(v => 
+            v.lang.startsWith('en') && 
+            (v.name.includes('Natural') || v.name.includes('Neural') || v.name.includes('Online') || v.name.includes('Google') || v.name.includes('Guy') || v.name.includes('Aria'))
+          );
+          if (bestEn) u.voice = bestEn;
         }
       }
+
+      u.onstart = () => { isCharacterSpeaking = true; };
+      u.onend = () => { isCharacterSpeaking = false; };
+      u.onerror = () => { isCharacterSpeaking = false; };
+
       window.speechSynthesis.speak(u);
-    } catch (e) {}
+    } catch(e) {
+      isCharacterSpeaking = false;
+    }
   }
 
-  // Preload voices
   if ('speechSynthesis' in window) {
     window.speechSynthesis.onvoiceschanged = () => {
       window.speechSynthesis.getVoices();
@@ -401,6 +479,13 @@
   headMesh.position.y = 2.65;
   avatarGroup.add(headMesh);
 
+  // Animated Talking Mouth Mesh (moves when speaking!)
+  const mouthGeo = new THREE.BoxGeometry(0.12, 0.04, 0.06);
+  const mouthMat = new THREE.MeshBasicMaterial({ color: 0x7f1d1d });
+  const mouthMesh = new THREE.Mesh(mouthGeo, mouthMat);
+  mouthMesh.position.set(0, 2.52, 0.26);
+  avatarGroup.add(mouthMesh);
+
   // Hair
   const hairGeo = new THREE.SphereGeometry(0.3, 16, 16, 0, Math.PI * 2, 0, Math.PI / 2);
   const hairMat = new THREE.MeshStandardMaterial({ color: 0x1e293b });
@@ -432,7 +517,22 @@
     avatarTime += delta;
     if (avatarGroup) {
       avatarGroup.position.y = Math.sin(avatarTime * 1.5) * 0.02;
-      headMesh.rotation.y = Math.sin(avatarTime * 0.8) * 0.12;
+      if (typeof isCharacterSpeaking !== 'undefined' && isCharacterSpeaking) {
+        // Real character talking animation
+        headMesh.rotation.y = Math.sin(avatarTime * 3.5) * 0.15;
+        headMesh.rotation.x = Math.sin(avatarTime * 7.0) * 0.06;
+        if (typeof mouthMesh !== 'undefined') {
+          mouthMesh.scale.y = 1.0 + Math.abs(Math.sin(avatarTime * 14.0)) * 2.2;
+          mouthMesh.scale.x = 1.0 + Math.sin(avatarTime * 9.0) * 0.3;
+        }
+      } else {
+        // Natural resting idle
+        headMesh.rotation.y = Math.sin(avatarTime * 0.8) * 0.08;
+        headMesh.rotation.x = 0;
+        if (typeof mouthMesh !== 'undefined') {
+          mouthMesh.scale.set(1.0, 1.0, 1.0);
+        }
+      }
     }
     controls.update();
     renderer.render(scene, camera);
