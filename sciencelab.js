@@ -1864,19 +1864,7 @@
   // ════════════════════════════════════════════════════════════════════════════
   // ── EXPERIMENT 7: Compound Optical Microscope & Cell Explorer ─────────────
   // ════════════════════════════════════════════════════════════════════════════
-  import subprocess
-
-with open('sciencelab.js', 'r', encoding='utf-8') as f:
-    js = f.read()
-
-# Locate setupMicroscopeExperiment
-m_start = js.find('function setupMicroscopeExperiment() {')
-# Locate the end of setupMicroscopeExperiment (which ends right before setupHeartExperiment)
-m_end = js.find('function setupHeartExperiment() {')
-
-print("setupMicroscopeExperiment found:", m_start != -1, "to", m_end != -1)
-
-new_microscope_func = """function setupMicroscopeExperiment() {
+  function setupMicroscopeExperiment() {
     labGroup.clear();
     const g = new THREE.Group();
 
@@ -2544,26 +2532,6 @@ new_microscope_func = """function setupMicroscopeExperiment() {
     setObservation('Clean laboratory bench ready. Pick microscope from rack.', 'प्रयोगशाला बेन्च तयार। सूक्ष्मदर्शक यन्त्र छनोट गर्नुहोस्।');
     updateActionButtons();
   }
-  """
-
-js = js[:m_start] + new_microscope_func + js[m_end:]
-
-with open('sciencelab.js', 'w', encoding='utf-8') as f:
-    f.write(js)
-
-print("Replaced setupMicroscopeExperiment successfully!")
-res = subprocess.run(['node', '--check', 'sciencelab.js'], capture_output=True, text=True)
-if res.returncode == 0:
-    print("sciencelab.js SYNTAX VERIFIED OK!")
-else:
-    print("Syntax error in sciencelab.js:\n", res.stderr)
-"""
-
-with open('patch_microscope_js.py', 'w', encoding='utf-8') as f:
-    f.write(new_microscope_func)
-
-print("Wrote patch_microscope_js.py")
-
 
   // ════════════════════════════════════════════════════════════════════════════
   // ── EXPERIMENT 8: 3D Beating Human Heart & Circulation ────────────────────
@@ -2571,42 +2539,183 @@ print("Wrote patch_microscope_js.py")
   function setupHeartExperiment() {
     labGroup.clear();
     const g = new THREE.Group();
-    g.position.set(0, 0.4, 0);
+    g.position.set(0, 0.45, 0);
 
-    // Heart Muscle Body
+    // Anatomical 3D Human Heart Group
     const heartGroup = new THREE.Group();
-    const vent = new THREE.Mesh(new THREE.ConeGeometry(0.9, 1.6, 24), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.5 }));
-    vent.rotation.x = Math.PI;
-    vent.position.y = 0.8;
-    heartGroup.add(vent);
 
-    const leftAtrium = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 16), new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.5 }));
-    leftAtrium.position.set(0.45, 1.7, 0);
-    heartGroup.add(leftAtrium);
+    // 1. Realistic Myocardium Texture (muscle fiber striations + coronary vessels)
+    function createMyocardiumTexture() {
+      const c = document.createElement('canvas');
+      c.width = 512; c.height = 512;
+      const ctx = c.getContext('2d');
+      // Deep reddish-brown muscular base
+      ctx.fillStyle = '#831843';
+      ctx.fillRect(0, 0, 512, 512);
 
-    const rightAtrium = new THREE.Mesh(new THREE.SphereGeometry(0.55, 16, 16), new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.5 }));
-    rightAtrium.position.set(-0.45, 1.7, 0);
+      // Muscle fiber striations
+      ctx.strokeStyle = 'rgba(157, 23, 77, 0.45)';
+      ctx.lineWidth = 2;
+      for (let i = 0; i < 512; i += 6) {
+        ctx.beginPath();
+        ctx.moveTo(0, i + Math.sin(i * 0.05) * 8);
+        ctx.bezierCurveTo(150, i + 15, 350, i - 15, 512, i);
+        ctx.stroke();
+      }
+
+      // Branching Coronary Arteries (Bright Red)
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 5;
+      ctx.beginPath();
+      ctx.moveTo(256, 120);
+      ctx.bezierCurveTo(270, 200, 230, 320, 260, 480);
+      ctx.stroke();
+
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(250, 220);
+      ctx.bezierCurveTo(210, 250, 180, 290, 160, 380);
+      ctx.moveTo(255, 310);
+      ctx.bezierCurveTo(290, 340, 320, 380, 340, 440);
+      ctx.stroke();
+
+      // Branching Cardiac Veins (Royal Blue)
+      ctx.strokeStyle = '#3b82f6';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(270, 140);
+      ctx.bezierCurveTo(290, 210, 260, 310, 280, 470);
+      ctx.stroke();
+
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.moveTo(275, 240);
+      ctx.bezierCurveTo(320, 270, 350, 320, 360, 410);
+      ctx.stroke();
+
+      // Pericardial fat deposits (golden yellow patches)
+      ctx.fillStyle = 'rgba(253, 224, 71, 0.35)';
+      for (let p = 0; p < 18; p++) {
+        ctx.beginPath();
+        ctx.arc(180 + (p * 17) % 180, 140 + (p * 23) % 120, 12 + (p % 8), 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      const tex = new THREE.CanvasTexture(c);
+      tex.wrapS = THREE.RepeatWrapping;
+      tex.wrapT = THREE.RepeatWrapping;
+      return tex;
+    }
+
+    const muscleMat = new THREE.MeshStandardMaterial({
+      map: createMyocardiumTexture(),
+      roughness: 0.35,
+      metalness: 0.15,
+      bumpScale: 0.05
+    });
+
+    // 2. Anatomical Ventricles (Left & Right sculpted myocardium)
+    const leftVentricle = new THREE.Mesh(new THREE.SphereGeometry(0.78, 24, 24), muscleMat);
+    leftVentricle.scale.set(0.9, 1.35, 0.85);
+    leftVentricle.rotation.z = -0.22;
+    leftVentricle.position.set(0.18, 0.75, 0);
+    heartGroup.add(leftVentricle);
+
+    const rightVentricle = new THREE.Mesh(new THREE.SphereGeometry(0.68, 24, 24), muscleMat);
+    rightVentricle.scale.set(0.85, 1.25, 0.8);
+    rightVentricle.rotation.z = 0.25;
+    rightVentricle.position.set(-0.35, 0.72, 0.1);
+    heartGroup.add(rightVentricle);
+
+    // Heart Apex (pointed bottom of left ventricle)
+    const apexGeo = new THREE.ConeGeometry(0.35, 0.6, 20);
+    const apex = new THREE.Mesh(apexGeo, muscleMat);
+    apex.rotation.x = Math.PI;
+    apex.rotation.z = -0.2;
+    apex.position.set(0.08, 0.05, 0);
+    heartGroup.add(apex);
+
+    // 3. Atria (Left & Right Auricles)
+    const rightAtrium = new THREE.Mesh(new THREE.SphereGeometry(0.55, 20, 20), new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.4 }));
+    rightAtrium.position.set(-0.55, 1.75, -0.05);
     heartGroup.add(rightAtrium);
 
-    // Major Blood Vessels
-    // Aorta (Red)
+    const leftAtrium = new THREE.Mesh(new THREE.SphereGeometry(0.52, 20, 20), new THREE.MeshStandardMaterial({ color: 0x991b1b, roughness: 0.4 }));
+    leftAtrium.position.set(0.5, 1.75, -0.1);
+    heartGroup.add(leftAtrium);
+
+    // 4. Ascending Aorta & Curving Aortic Arch (Red, with 3 Branch Arteries)
+    const aortaMat = new THREE.MeshStandardMaterial({ color: 0xdc2626, roughness: 0.25, metalness: 0.2 });
     const aortaCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(0.2, 1.8, 0),
-      new THREE.Vector3(0.2, 2.4, 0),
-      new THREE.Vector3(-0.3, 2.6, 0),
-      new THREE.Vector3(-0.6, 2.2, 0)
+      new THREE.Vector3(0.05, 1.5, 0.1),
+      new THREE.Vector3(0.12, 2.2, 0.05),
+      new THREE.Vector3(-0.05, 2.65, 0.0),
+      new THREE.Vector3(-0.45, 2.55, -0.2),
+      new THREE.Vector3(-0.55, 1.8, -0.3)
     ]);
-    const aorta = new THREE.Mesh(new THREE.TubeGeometry(aortaCurve, 20, 0.16, 12, false), new THREE.MeshStandardMaterial({ color: 0xdc2626 }));
+    const aorta = new THREE.Mesh(new THREE.TubeGeometry(aortaCurve, 28, 0.19, 16, false), aortaMat);
     heartGroup.add(aorta);
 
-    // Vena Cava (Blue)
-    const venaCurve = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(-0.55, 2.4, 0),
-      new THREE.Vector3(-0.55, 1.6, 0),
-      new THREE.Vector3(-0.55, 0.8, 0)
+    // 3 Branch Arteries from Arch: Brachiocephalic, Left Common Carotid, Left Subclavian
+    const branchOffsets = [-0.18, 0.0, 0.18];
+    branchOffsets.forEach((bx, idx) => {
+      const branch = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.45, 12), aortaMat);
+      branch.position.set(bx, 2.82, -0.05);
+      branch.rotation.z = (idx - 1) * 0.15;
+      heartGroup.add(branch);
+    });
+
+    // 5. Pulmonary Trunk & Arteries (Blue bifurcation to left/right lungs)
+    const pulmMat = new THREE.MeshStandardMaterial({ color: 0x2563eb, roughness: 0.3, metalness: 0.2 });
+    const pulmTrunkCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.15, 1.45, 0.25),
+      new THREE.Vector3(-0.12, 2.05, 0.2),
+      new THREE.Vector3(-0.18, 2.35, 0.0)
     ]);
-    const venaCava = new THREE.Mesh(new THREE.TubeGeometry(venaCurve, 16, 0.14, 12, false), new THREE.MeshStandardMaterial({ color: 0x2563eb }));
-    heartGroup.add(venaCava);
+    const pulmTrunk = new THREE.Mesh(new THREE.TubeGeometry(pulmTrunkCurve, 20, 0.17, 16, false), pulmMat);
+    heartGroup.add(pulmTrunk);
+
+    // Left & Right pulmonary branch branches
+    const pulmLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.65, 12), pulmMat);
+    pulmLeft.rotation.z = Math.PI / 2.8;
+    pulmLeft.position.set(0.25, 2.28, -0.1);
+    heartGroup.add(pulmLeft);
+
+    const pulmRight = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.65, 12), pulmMat);
+    pulmRight.rotation.z = -Math.PI / 2.8;
+    pulmRight.position.set(-0.55, 2.28, -0.1);
+    heartGroup.add(pulmRight);
+
+    // 6. Superior & Inferior Vena Cava (Blue veins entering right atrium)
+    const venaMat = new THREE.MeshStandardMaterial({ color: 0x1d4ed8, roughness: 0.35 });
+    const supVena = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.9, 16), venaMat);
+    supVena.position.set(-0.65, 2.3, -0.2);
+    heartGroup.add(supVena);
+
+    const infVena = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.7, 16), venaMat);
+    infVena.position.set(-0.62, 0.8, -0.2);
+    heartGroup.add(infVena);
+
+    // 7. Pulmonary Veins (4 red veins entering left atrium)
+    for (let pv = 0; pv < 4; pv++) {
+      const pVein = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.35, 12), aortaMat);
+      pVein.rotation.z = Math.PI / 2;
+      pVein.position.set(0.72, 1.65 + (pv % 2) * 0.22, -0.25 + Math.floor(pv / 2) * 0.25);
+      heartGroup.add(pVein);
+    }
+
+    // 8. Animated Circulatory Blood Flow Particles (Oxygenated & Deoxygenated)
+    const bloodParticles = new THREE.Group();
+    for (let bp = 0; bp < 35; bp++) {
+      const isOxy = bp % 2 === 0;
+      const pMesh = new THREE.Mesh(
+        new THREE.SphereGeometry(0.04, 8, 8),
+        new THREE.MeshBasicMaterial({ color: isOxy ? 0xef4444 : 0x38bdf8 })
+      );
+      pMesh.position.set((Math.random() - 0.5) * 1.2, 0.4 + Math.random() * 2.2, (Math.random() - 0.5) * 0.8);
+      bloodParticles.add(pMesh);
+    }
+    heartGroup.add(bloodParticles);
 
     g.add(heartGroup);
     labGroup.add(g);
@@ -2615,14 +2724,33 @@ print("Wrote patch_microscope_js.py")
     let strokeVol = 70; // mL
     let heartInterval = null;
 
+    // Dual-stage Anatomical Heartbeat Contraction (Atrial Systole ➔ Ventricular Systole)
     function beat() {
       playHeartbeatSound();
-      // Systole contraction & Diastole expansion
-      heartGroup.scale.set(1.12, 1.12, 1.12);
+      // 1. Atria contract
+      rightAtrium.scale.set(0.85, 0.85, 0.85);
+      leftAtrium.scale.set(0.85, 0.85, 0.85);
+
       setTimeout(() => {
-        heartGroup.scale.set(0.96, 0.96, 0.96);
-        setTimeout(() => heartGroup.scale.set(1.0, 1.0, 1.0), 120);
-      }, 140);
+        // 2. Ventricles contract forcefully (Ventricular Systole)
+        rightAtrium.scale.set(1.0, 1.0, 1.0);
+        leftAtrium.scale.set(1.0, 1.0, 1.0);
+
+        leftVentricle.scale.set(0.82, 1.2, 0.78);
+        rightVentricle.scale.set(0.78, 1.15, 0.74);
+        apex.scale.set(0.85, 0.85, 0.85);
+
+        // Aorta expands with blood surge
+        aorta.scale.set(1.12, 1.0, 1.12);
+
+        setTimeout(() => {
+          // 3. Complete Diastolic relaxation
+          leftVentricle.scale.set(0.9, 1.35, 0.85);
+          rightVentricle.scale.set(0.85, 1.25, 0.8);
+          apex.scale.set(1.0, 1.0, 1.0);
+          aorta.scale.set(1.0, 1.0, 1.0);
+        }, 160);
+      }, 130);
     }
 
     function startHeartbeatLoop() {
@@ -2653,8 +2781,10 @@ print("Wrote patch_microscope_js.py")
       `;
 
       formulaBox.innerHTML = `
-        <div class="formula-title">Cardiac Physiology · मुटुको कार्य</div>
+        <div class="formula-title">Cardiac Physiology & Double Circulation · दोहोरो रक्तसञ्चार</div>
         <div class="formula-math">Cardiac Output (CO) = Heart Rate (HR) × Stroke Volume (SV)</div>
+        <div class="formula-math">Pulmonary Circuit: Right Ventricle ➔ Lungs ➔ Left Atrium</div>
+        <div class="formula-math">Systemic Circuit: Left Ventricle ➔ Body ➔ Right Atrium</div>
         <div class="formula-result">
           <span>Total Cardiac Output:</span>
           <span>${cardiacOutput} Liters / minute</span>
@@ -2674,23 +2804,23 @@ print("Wrote patch_microscope_js.py")
     updateHeartCalc();
 
     const eqItems = [
-      { stage: 0, id: 'heart', icon: '❤️', en: '4-Chambered Human Heart', ne: '४ कोठे मानव मुटु', descNe: 'मुटुको संरचना' },
-      { stage: 1, id: 'aorta', icon: '🔴', en: 'Systemic Aorta (Oxygenated)', ne: 'महाधमनी (अक्सिजनयुक्त)', descNe: 'शरीरभरि रगत पठाउने' },
-      { stage: 2, id: 'vena', icon: '🔵', en: 'Vena Cava (Deoxygenated)', ne: 'महाशिरा (अक्सिजनविहीन)', descNe: 'रगत मुटुमा ल्याउने' }
+      { stage: 0, id: 'vent', icon: '❤️', en: 'Muscular Left & Right Ventricles', ne: 'बायाँ र दायाँ भेन्ट्रिकल', descNe: 'रगत पम्प गर्ने मुख्य भाग' },
+      { stage: 1, id: 'aorta', icon: '🔴', en: 'Ascending Aorta & 3 Branch Trunks', ne: 'महाधमनी र ३ मुख्य शाखाहरू', descNe: 'शरीरभरि अक्सिजनयुक्त रगत पठाउने' },
+      { stage: 2, id: 'pulm', icon: '🔵', en: 'Pulmonary Trunk & Vena Cava', ne: 'पल्मोनरी धमनी र महाशिरा', descNe: 'फोक्सो र मुटुबीच रगत लैजाने' }
     ];
 
     renderRack(eqItems, 2, (item) => {
       playClink();
-      setObservation(`Anatomy: ${item.en}`, `${item.ne} मुटुको भाग।`);
+      setObservation(`Anatomy: ${item.en}`, `${item.ne} मुटुको संरचना।`);
     });
 
-    setStep('1', 'Observe authentic lub-dub heartbeat sound and adjust Heart Rate BPM slider to see live cardiac output!', 'मुटुको धड्कन सुन्नुहोस् र मुटुको दर (BPM) सारेर रक्तसञ्चार हेर्नुहोस्!');
-    setObservation('Normal Resting Heart Rate: 72 BPM | Cardiac Output: ~5.04 L/min.', 'सामान्य अवस्थामा मुटु प्रतिमिनेट ७२ पटक धड्किन्छ।');
+    setStep('1', 'Observe authentic 3D heart anatomy with coronary arteries, aortic arch branches, and lub-dub heartbeat!', 'वास्तविक मुटुको ३D संरचना, कोरोनरी रक्तनली र धड्कन अवलोकन गर्नुहोस्!');
+    setObservation('Normal Resting Heart Rate: 72 BPM | Cardiac Output: ~5.04 Liters/min.', 'सामान्य अवस्थामा मुटु प्रतिमिनेट ७२ पटक धड्किन्छ।');
 
     actionsGrid.innerHTML = `
       <button class="lab-action-btn" id="btn-exercise-pulse">
         <span>🏃 Simulate Physical Exercise (120 BPM)</span>
-        <span class="sub">व्यायाम गर्दाको मुटुको गति</span>
+        <span class="sub">व्यायाम गर्दाको मुटुको गति र रक्तसञ्चार</span>
       </button>
       <button class="lab-action-btn btn-reset" id="btn-heart-reset">
         <span>🧘 Resting State (72 BPM)</span>
@@ -2703,7 +2833,7 @@ print("Wrote patch_microscope_js.py")
       strokeVol = 85;
       startHeartbeatLoop();
       updateHeartCalc();
-      setStep('High Cardiac Output!', 'During exercise, heart pumps up to 10.2 Liters/min to supply oxygen to skeletal muscles!', 'व्यायाम गर्दा मुटुले १० लिटरभन्दा बढी रगत पम्प गर्छ!');
+      setStep('High Cardiac Output!', 'During exercise, cardiac output surges to 10.2 L/min to oxygenate working muscles!', 'व्यायाम गर्दा मुटुले प्रतिमिनेट १० लिटरभन्दा बढी रगत पम्प गर्छ!');
     };
     document.getElementById('btn-heart-reset').onclick = () => {
       bpm = 72;
@@ -2720,106 +2850,222 @@ print("Wrote patch_microscope_js.py")
   function setupDigestiveExperiment() {
     labGroup.clear();
     const g = new THREE.Group();
-    g.position.set(0, 0.2, 0);
+    g.position.set(0, 0.1, 0);
 
-    // Mouth
-    const mouth = new THREE.Mesh(new THREE.SphereGeometry(0.35, 16, 16), new THREE.MeshStandardMaterial({ color: 0xfbbf24 }));
-    mouth.position.set(0, 2.6, 0);
-    g.add(mouth);
+    // Human Digestive Anatomy Group
+    const digestiveGroup = new THREE.Group();
 
-    // Esophagus
-    const eso = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 1.1), new THREE.MeshStandardMaterial({ color: 0xf472b6 }));
-    eso.position.set(0, 1.9, 0);
-    g.add(eso);
+    // 1. Semi-transparent Torso Silhouette for anatomical context
+    const torsoMat = new THREE.MeshStandardMaterial({
+      color: 0x38bdf8,
+      transparent: true,
+      opacity: 0.12,
+      wireframe: true
+    });
+    const torso = new THREE.Mesh(new THREE.CylinderGeometry(1.4, 1.2, 3.6, 20), torsoMat);
+    torso.position.y = 1.6;
+    digestiveGroup.add(torso);
 
-    // Stomach (J-shaped)
-    const stomach = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.18, 12, 24, Math.PI), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
-    stomach.rotation.z = -Math.PI / 3;
-    stomach.position.set(-0.25, 1.2, 0);
-    g.add(stomach);
+    // 2. Oral Cavity & Tongue & Salivary Glands
+    const mouthMat = new THREE.MeshStandardMaterial({ color: 0xf43f5e, roughness: 0.6 });
+    const oralCavity = new THREE.Mesh(new THREE.SphereGeometry(0.32, 16, 16), mouthMat);
+    oralCavity.position.set(0, 3.1, 0.15);
+    digestiveGroup.add(oralCavity);
 
-    // Liver & Gallbladder
-    const liver = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.7, 16), new THREE.MeshStandardMaterial({ color: 0x7f1d1d }));
-    liver.rotation.z = Math.PI / 4;
-    liver.position.set(0.5, 1.3, 0);
-    g.add(liver);
+    // Salivary Glands (Parotid, Submandibular)
+    const salivaryMat = new THREE.MeshStandardMaterial({ color: 0xfbbf24, roughness: 0.7 });
+    const parotid = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), salivaryMat);
+    parotid.position.set(0.35, 3.05, 0.1);
+    digestiveGroup.add(parotid);
 
-    // Small Intestine (Coiled)
-    const si = new THREE.Mesh(new THREE.TorusKnotGeometry(0.42, 0.1, 48, 8), new THREE.MeshStandardMaterial({ color: 0xfb923c }));
-    si.position.set(0, 0.55, 0);
-    g.add(si);
+    // 3. Pharynx and Muscular Tubular Esophagus
+    const esoMat = new THREE.MeshStandardMaterial({ color: 0xf472b6, roughness: 0.5 });
+    const esoCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 2.95, 0.15),
+      new THREE.Vector3(0, 2.45, 0.05),
+      new THREE.Vector3(0, 1.95, 0.0),
+      new THREE.Vector3(-0.08, 1.65, 0.05)
+    ]);
+    const esophagus = new THREE.Mesh(new THREE.TubeGeometry(esoCurve, 20, 0.075, 14, false), esoMat);
+    digestiveGroup.add(esophagus);
 
-    // Food Bolus Particle
-    const bolus = new THREE.Mesh(new THREE.SphereGeometry(0.12, 12, 12), new THREE.MeshStandardMaterial({ color: 0x22c55e, emissive: 0x15803d }));
-    bolus.position.set(0, 2.6, 0);
-    g.add(bolus);
+    // 4. Anatomical J-Shaped Stomach (Greater & Lesser Curvature, Fundus, Pylorus)
+    const stomachMat = new THREE.MeshStandardMaterial({ color: 0xb91c1c, roughness: 0.45, metalness: 0.1 });
+    const stomachCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.08, 1.65, 0.05), // Cardiac notch
+      new THREE.Vector3(-0.45, 1.55, 0.15), // Fundus
+      new THREE.Vector3(-0.55, 1.25, 0.1),  // Greater curvature body
+      new THREE.Vector3(-0.25, 1.05, 0.08), // Antrum
+      new THREE.Vector3(0.05, 1.12, 0.05)   // Pyloric sphincter
+    ]);
+    const stomach = new THREE.Mesh(new THREE.TubeGeometry(stomachCurve, 24, 0.22, 16, false), stomachMat);
+    digestiveGroup.add(stomach);
 
+    // 5. Dual-lobed Liver & Gallbladder
+    const liverMat = new THREE.MeshStandardMaterial({ color: 0x7f1d1d, roughness: 0.5 });
+    const rightLobe = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.8, 16), liverMat);
+    rightLobe.rotation.z = Math.PI / 3;
+    rightLobe.rotation.y = 0.3;
+    rightLobe.position.set(0.48, 1.5, 0.08);
+    digestiveGroup.add(rightLobe);
+
+    const leftLobe = new THREE.Mesh(new THREE.ConeGeometry(0.35, 0.55, 16), liverMat);
+    leftLobe.rotation.z = -Math.PI / 4;
+    leftLobe.position.set(0.08, 1.6, 0.12);
+    digestiveGroup.add(leftLobe);
+
+    // Emerald Green Gallbladder tucked under liver
+    const gallMat = new THREE.MeshStandardMaterial({ color: 0x15803d, roughness: 0.3 });
+    const gallbladder = new THREE.Mesh(new THREE.SphereGeometry(0.11, 14, 14), gallMat);
+    gallbladder.scale.set(0.8, 1.4, 0.8);
+    gallbladder.position.set(0.38, 1.28, 0.22);
+    digestiveGroup.add(gallbladder);
+
+    // 6. Lobulated Pancreas in Duodenal C-Loop
+    const pancMat = new THREE.MeshStandardMaterial({ color: 0xeab308, roughness: 0.7 });
+    const pancreas = new THREE.Mesh(new THREE.BoxGeometry(0.65, 0.14, 0.14), pancMat);
+    pancreas.position.set(-0.05, 1.05, -0.05);
+    pancreas.rotation.z = -0.15;
+    digestiveGroup.add(pancreas);
+
+    // 7. C-Shaped Duodenum
+    const duodMat = new THREE.MeshStandardMaterial({ color: 0xfb923c, roughness: 0.5 });
+    const duodCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0.05, 1.12, 0.05),
+      new THREE.Vector3(0.35, 1.05, 0.05),
+      new THREE.Vector3(0.32, 0.85, 0.05),
+      new THREE.Vector3(0.0, 0.82, 0.05)
+    ]);
+    const duodenum = new THREE.Mesh(new THREE.TubeGeometry(duodCurve, 16, 0.11, 12, false), duodMat);
+    digestiveGroup.add(duodenum);
+
+    // 8. Coiled Small Intestine (Jejunum & Ileum mesentery loops)
+    const smallIntestineGroup = new THREE.Group();
+    const siMat = new THREE.MeshStandardMaterial({ color: 0xf97316, roughness: 0.6 });
+    for (let si = 0; si < 8; si++) {
+      const loop = new THREE.Mesh(new THREE.TorusGeometry(0.24 + (si % 3) * 0.06, 0.075, 12, 20), siMat);
+      loop.position.set((si % 3 - 1) * 0.22, 0.55 + Math.floor(si / 3) * 0.16, 0.08 + (si % 2) * 0.06);
+      loop.rotation.x = Math.PI / 2 + (si * 0.3);
+      smallIntestineGroup.add(loop);
+    }
+    digestiveGroup.add(smallIntestineGroup);
+
+    // 9. Complete Large Intestine (Colon with Haustra pouches)
+    const colonMat = new THREE.MeshStandardMaterial({ color: 0xa16207, roughness: 0.65 });
+    // Cecum & Appendix
+    const cecum = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.35, 14), colonMat);
+    cecum.position.set(0.65, 0.35, 0.1);
+    digestiveGroup.add(cecum);
+
+    const appendix = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 0.22), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+    appendix.position.set(0.72, 0.18, 0.1);
+    appendix.rotation.z = -0.4;
+    digestiveGroup.add(appendix);
+
+    // Ascending Colon
+    const ascColon = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.75, 14), colonMat);
+    ascColon.position.set(0.65, 0.85, 0.1);
+    digestiveGroup.add(ascColon);
+
+    // Transverse Colon
+    const transColon = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 1.25, 14), colonMat);
+    transColon.rotation.z = Math.PI / 2;
+    transColon.position.set(0, 1.25, 0.15);
+    digestiveGroup.add(transColon);
+
+    // Descending Colon & Sigmoid & Rectum
+    const descColon = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.85, 14), colonMat);
+    descColon.position.set(-0.65, 0.8, 0.1);
+    digestiveGroup.add(descColon);
+
+    const sigmoidCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.65, 0.35, 0.1),
+      new THREE.Vector3(-0.4, 0.15, 0.05),
+      new THREE.Vector3(0.0, 0.08, -0.05),
+      new THREE.Vector3(0.0, -0.2, -0.05) // Rectum
+    ]);
+    const sigmoid = new THREE.Mesh(new THREE.TubeGeometry(sigmoidCurve, 18, 0.15, 14, false), colonMat);
+    digestiveGroup.add(sigmoid);
+
+    // 10. Glowing Animated Food Bolus & Chyme Particle
+    const bolusMat = new THREE.MeshStandardMaterial({ color: 0x4ade80, emissive: 0x22c55e, roughness: 0.2 });
+    const bolus = new THREE.Mesh(new THREE.SphereGeometry(0.11, 16, 16), bolusMat);
+    bolus.position.set(0, 3.1, 0.15);
+    digestiveGroup.add(bolus);
+
+    g.add(digestiveGroup);
     labGroup.add(g);
 
-    let bolusStage = 0; // 0=Mouth, 1=Esophagus, 2=Stomach, 3=Small Intestine
-    const bolusCoords = [
-      { y: 2.6, en: 'Mouth: Salivary Amylase digests starch into maltose.', ne: 'मुख: र्‍यालको एमाइलेजले स्टार्च पचाउँछ।' },
-      { y: 1.9, en: 'Esophagus: Peristaltic wave contractions push food down.', ne: 'ग्रसनली: पेरिस्टाल्सिस चालले खाना तल धकेल्छ।' },
-      { y: 1.2, en: 'Stomach: Gastric juice (HCl + Pepsin) digests proteins into peptones.', ne: 'आमाशय: हाइड्रोक्लोरिक अम्ल र पेप्सिनले प्रोटिन पचाउँछ।' },
-      { y: 0.55, en: 'Small Intestine: Bile emulsifies fats; villi absorb nutrients into blood.', ne: 'सानो आन्द्रा: पित्तले चिल्लो पदार्थ पचाउँछ र भिल्लाईले सोस्छ।' }
+    let bolusStage = 0;
+    const bolusTrajectory = [
+      { pos: [0, 3.1, 0.15], organ: 'Mouth Cavity / मुख', en: 'Mouth: Teeth masticate food, Salivary Amylase digests starch into maltose.', ne: 'मुख: दाँतले चपाउने र र्‍यालको एमाइलेजले स्टार्चलाई माल्टोजमा परिणत गर्छ।' },
+      { pos: [0, 2.2, 0.08], organ: 'Esophagus / ग्रसनली', en: 'Esophagus: Peristaltic involuntary muscular contractions propel bolus downward.', ne: 'ग्रसनली: पेरिस्टाल्सिस मांसपेशी खुम्चिने चालले खाना आमाशयतिर लैजान्छ।' },
+      { pos: [-0.4, 1.35, 0.12], organ: 'Stomach / आमाशय', en: 'Stomach: Gastric juice (HCl + Pepsin) digests proteins into peptones; churns food into chyme.', ne: 'आमाशय: हाइड्रोक्लोरिक एसिड र पेप्सिनले प्रोटिनलाई पेप्टोनमा बदल्छ।' },
+      { pos: [0.18, 0.95, 0.05], organ: 'Duodenum & Liver / कलेजो र पित्त', en: 'Duodenum: Bile from gallbladder emulsifies lipids; Pancreatic enzymes break down nutrients.', ne: 'डुओडेनम: पित्तले चिल्लो पदार्थ टुक्र्याउँछ र प्यान्क्रियाजको रस मिसिन्छ।' },
+      { pos: [0.0, 0.55, 0.12], organ: 'Small Intestine / सानो आन्द्रा', en: 'Small Intestine: Millions of microvilli absorb digested amino acids, glucose, and fatty acids into blood.', ne: 'सानो आन्द्रा: भिल्लाईमार्फत पोषक तत्वहरू रगतमा सोसिन्छन्।' },
+      { pos: [0.65, 0.65, 0.1], organ: 'Large Intestine / ठूलो आन्द्रा', en: 'Large Intestine (Colon): Absorbs water & mineral salts; compacts undigested waste into feces.', ne: 'ठूलो आन्द्रा: पानी र खनिज सोसेर नपचेको फोहोरलाई दिसामा परिणत गर्छ।' }
     ];
 
     slidersWrap.innerHTML = `
       <div class="calc-slider-group">
         <div class="slider-label-row">
-          <span>Digestive Journey Tracker:</span>
+          <span>Active Digestive Station:</span>
           <span class="val" id="bolus-pos-tag">Mouth Cavity</span>
         </div>
       </div>
     `;
 
     formulaBox.innerHTML = `
-      <div class="formula-title">Human Digestive Physiology · पाचन प्रणाली</div>
-      <div class="formula-math">Starch ──(Amylase)──➔ Maltose</div>
-      <div class="formula-math">Protein ──(Pepsin/HCl)──➔ Peptones ──(Trypsin)──➔ Amino Acids</div>
-      <div class="formula-math">Fats ──(Bile/Lipase)──➔ Fatty Acids + Glycerol</div>
+      <div class="formula-title">Biochemical Enzyme Digestion · पाचन इन्जाइमहरू</div>
+      <div class="formula-math">Starch ──(Salivary Amylase)──➔ Maltose</div>
+      <div class="formula-math">Protein ──(Stomach Pepsin / HCl)──➔ Peptones ──(Trypsin)──➔ Amino Acids</div>
+      <div class="formula-math">Lipids ──(Liver Bile Salt Emulsion)──➔ Fatty Acids + Glycerol</div>
+      <div class="formula-result">
+        <span>Absorption Site:</span>
+        <span>Small Intestine Villi (90% Nutrient Uptake)</span>
+      </div>
     `;
 
     const eqItems = [
-      { stage: 0, id: 'mouth', icon: '👄', en: 'Mouth & Salivary Glands', ne: 'मुख र र्‍याल ग्रन्थी', descNe: 'एमाइलेज इन्जाइम' },
-      { stage: 1, id: 'eso', icon: '〰️', en: 'Esophagus (Peristalsis)', ne: 'ग्रसनली', descNe: 'खाना नली' },
-      { stage: 2, id: 'stomach', icon: '🫄', en: 'Stomach (HCl & Pepsin)', ne: 'आमाशय (पेट)', descNe: 'प्रोटिन पाचन' },
-      { stage: 3, id: 'intestine', icon: '➰', en: 'Small Intestine & Villi', ne: 'सानो आन्द्रा', descNe: 'पोषकतत्व शोषण' }
+      { stage: 0, id: 'mouth', icon: '👄', en: 'Oral Cavity & Salivary Glands', ne: 'मुख र र्‍याल ग्रन्थी', descNe: 'एमाइलेजले स्टार्च पाचन' },
+      { stage: 1, id: 'stomach', icon: '🫄', en: 'J-Shaped Stomach (HCl & Pepsin)', ne: 'आमाशय (पेट)', descNe: 'प्रोटिन पाचन' },
+      { stage: 2, id: 'liver', icon: '🫀', en: 'Liver, Gallbladder & Pancreas', ne: 'कलेजो, पित्तथैली र प्यान्क्रियाज', descNe: 'पित्तरस र इन्जाइम' },
+      { stage: 3, id: 'intestine', icon: '➰', en: 'Small & Large Intestine Villi', ne: 'सानो र ठूलो आन्द्रा', descNe: 'पोषक तत्व शोषण' }
     ];
 
     renderRack(eqItems, 3, (item) => {
       playClink();
-      setObservation(`Organ: ${item.en}`, `${item.ne}`);
+      setObservation(`Anatomy: ${item.en}`, `${item.ne} पाचन प्रणाली।`);
     });
 
-    setStep('1', 'Click "Advance Food Bolus" to trace food journey and chemical enzyme digestion from mouth to intestines!', 'खानाको डल्लो अगाडि बढाएर मुखदेखि आन्द्रासम्मको पाचन प्रक्रिया हेर्नुहोस्!');
-    setObservation('Digestive System initialized. Ready to swallow bolus.', 'पाचन प्रणाली तयार।');
+    setStep('1', 'Observe authentic 3D human digestive tract and click "Advance Food Bolus" to trace chemical digestion!', 'मानव पाचन प्रणालीको वास्तविक ३D संरचना हेर्नुहोस् र खानाको डल्लो अगाडि बढाउनुहोस्!');
+    setObservation('Digestive Anatomy: Mouth, Esophagus, Stomach, Liver, Duodenum, Small & Large Intestine.', 'पाचन प्रणालीका सम्पूर्ण अंगहरू तयार।');
 
     actionsGrid.innerHTML = `
       <button class="lab-action-btn" id="btn-bolus-step">
         <span>🍔 Swallow & Advance Food Bolus</span>
-        <span class="sub">खानालाई अगाडि पठाउनुहोस्</span>
+        <span class="sub">खानालाई अर्को पाचन अंगमा पठाउनुहोस्</span>
       </button>
       <button class="lab-action-btn btn-reset" id="btn-bolus-reset">
-        <span>🔄 Restart Journey</span>
+        <span>🔄 Restart Digestive Journey</span>
         <span class="sub">सुरुबाट</span>
       </button>
     `;
 
     document.getElementById('btn-bolus-step').onclick = () => {
-      bolusStage = (bolusStage + 1) % bolusCoords.length;
-      const target = bolusCoords[bolusStage];
-      bolus.position.y = target.y;
+      bolusStage = (bolusStage + 1) % bolusTrajectory.length;
+      const target = bolusTrajectory[bolusStage];
+      bolus.position.set(target.pos[0], target.pos[1], target.pos[2]);
       playPourSound();
       playSuccess();
-      setStep(`Stage ${bolusStage + 1}`, target.en, target.ne);
+      setStep(`Stage ${bolusStage + 1}: ${target.organ}`, target.en, target.ne);
       setObservation(target.en, target.ne);
-      document.getElementById('bolus-pos-tag').textContent = ['Mouth', 'Esophagus', 'Stomach', 'Small Intestine'][bolusStage];
+      const tag = document.getElementById('bolus-pos-tag');
+      if (tag) tag.textContent = target.organ;
     };
     document.getElementById('btn-bolus-reset').onclick = () => setupDigestiveExperiment();
   }
 
-  // ════════════════════════════════════════════════════════════════════════════
   // ── EXPERIMENT 10: ABO & Rh Blood Group Testing Lab ───────────────────────
   // ════════════════════════════════════════════════════════════════════════════
   function setupBloodTestExperiment() {
