@@ -640,6 +640,33 @@
       color: #cbd5e1;
       white-space: nowrap;
     }
+    
+    .eq-card.clickable {
+      cursor: pointer;
+    }
+    .eq-card.clickable:hover {
+      background: rgba(14, 165, 233, 0.25);
+      border-color: var(--lab-cyan);
+      transform: translateX(4px);
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3);
+    }
+    .eq-badge.badge-pick {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      color: #fff;
+      border: 1px solid #38bdf8;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(14, 165, 233, 0.4);
+    }
+    .eq-badge.badge-pick:hover {
+      background: #38bdf8;
+      color: #000;
+    }
+    .eq-badge.badge-bench {
+      background: rgba(16, 185, 129, 0.2);
+      color: #34d399;
+      border: 1px solid rgba(16, 185, 129, 0.4);
+    }
+
     .eq-card.on-bench .eq-badge {
       background: rgba(16, 185, 129, 0.2);
       color: #34d399;
@@ -784,7 +811,7 @@
           <option value="titration">3. Acid-Base Neutralization Titration (HCl + NaOH)</option>
         </optgroup>
         <optgroup label="Physics · कक्षा ९ र १०">
-          <option value="ohms_law">4. Verification of Ohm's Law (V = I × R)</option>
+          <option value="ohms_law">4. Verification of Ohm\'s Law (V = I × R)</option>
           <option value="archimedes">5. Archimedes' Principle & Upthrust Verification</option>
           <option value="prism">6. Triangular Prism Light Dispersion (VIBGYOR)</option>
         </optgroup>
@@ -1144,7 +1171,7 @@
       ctx.font = '15px monospace';
       ctx.fillText('• CaCO₃ + 2HCl ➔ CaCl₂ + H₂O + CO₂↑', 45, 90);
       ctx.fillText('• 2NH₄Cl + Ca(OH)₂ ➔ CaCl₂ + 2H₂O + 2NH₃↑', 45, 125);
-      ctx.fillText('• Ohm's Law: V = I × R  |  Archimedes: U = V·d·g', 45, 160);
+      ctx.fillText("• Ohm\'s Law: V = I × R  |  Archimedes: U = V·d·g", 45, 160);
       ctx.fillText('• Safety: Safety Goggles & Lab Coat Mandatory!', 45, 195);
       return new THREE.CanvasTexture(c);
     }
@@ -1333,6 +1360,51 @@
       currentStepNe = ne;
       assistantSpeech.textContent = en;
       speakText(en, ne);
+    }
+
+    
+    // ── Global Interactive Equipment Rack Engine ─────────────────────────────
+    function setEquipmentRack(items, onSelectCallback) {
+      const searchInput = document.getElementById('rack-search-input');
+
+      function update(query = '') {
+        const q = query.toLowerCase().trim();
+        const filtered = items.filter(i => i.en.toLowerCase().includes(q) || i.ne.toLowerCase().includes(q));
+        rackCountTag.textContent = `${filtered.length} items`;
+
+        rackList.innerHTML = filtered.map((item, idx) => `
+          <div class="eq-card ${item.onBench ? 'on-bench' : 'clickable'}" data-index="${idx}" title="${item.onBench ? 'Already assembled on workbench' : 'Tap to pick & place on workbench'}">
+            <div class="eq-card-left">
+              <span class="eq-icon">${item.icon}</span>
+              <div class="eq-names">
+                <h5>${item.en}</h5>
+                <p>${item.ne}</p>
+              </div>
+            </div>
+            <span class="eq-badge ${item.onBench ? 'badge-bench' : 'badge-pick'}">
+              ${item.onBench ? '✓ On Bench' : '👉 Pick'}
+            </span>
+          </div>
+        `).join('');
+
+        // Clicking an equipment item in the rack places/activates it!
+        rackList.querySelectorAll('.eq-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const idx = parseInt(card.dataset.index);
+            const selected = filtered[idx];
+            if (selected && onSelectCallback) {
+              onSelectCallback(selected, idx);
+            }
+          });
+        });
+      }
+
+      if (searchInput) {
+        searchInput.value = '';
+        searchInput.oninput = (e) => update(e.target.value);
+      }
+      update();
+      return update;
     }
 
     function setObservation(en, ne) {
@@ -1531,34 +1603,35 @@
       }
       updateCalculations();
 
+      let btnCaCO3, btnHCl, btnFlame, btnLime, btnReset;
+
       // Equipment Rack Items
       const eqItems = [
-        { icon: '🧪', en: "Woulfe's Bottle", ne: 'वुल्फको बोतल', onBench: true },
-        { icon: '🌾', en: 'Thistle Funnel', ne: 'थिसल फनेल', onBench: true },
-        { icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', onBench: true },
-        { icon: '🫙', en: 'Gas Jar', ne: 'ग्यास जार', onBench: true },
-        { icon: '🪨', en: 'Marble Chips (CaCO₃)', ne: 'चुनढुङ्गा टुक्रा', onBench: false },
-        { icon: '🧪', en: 'Dilute HCl Acid', ne: 'पातलो हाइड्रोक्लोरिक अम्ल', onBench: false },
-        { icon: '🪵', en: 'Splinter Stick', ne: 'बल्दो सिन्का', onBench: false },
-        { icon: '🥛', en: 'Lime Water Ca(OH)₂', ne: 'चुनपानी', onBench: true }
+        { id: 'bottle', icon: '🧪', en: "Woulfe\'s Bottle", ne: 'वुल्फको बोतल', onBench: true },
+        { id: 'funnel', icon: '🌾', en: 'Thistle Funnel', ne: 'थिसल फनेल', onBench: true },
+        { id: 'tube', icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', onBench: true },
+        { id: 'jar', icon: '🫙', en: 'Gas Jar', ne: 'ग्यास जार', onBench: true },
+        { id: 'caco3', icon: '🪨', en: 'Marble Chips (CaCO₃)', ne: 'चुनढुङ्गा टुक्रा', onBench: false },
+        { id: 'hcl', icon: '🧪', en: 'Dilute HCl Acid', ne: 'पातलो हाइड्रोक्लोरिक अम्ल', onBench: false },
+        { id: 'splinter', icon: '🪵', en: 'Splinter Stick', ne: 'बल्दो सिन्का', onBench: false },
+        { id: 'lime', icon: '🥛', en: 'Lime Water Ca(OH)₂', ne: 'चुनपानी', onBench: true }
       ];
 
-      function renderRack() {
-        rackCountTag.textContent = `${eqItems.length} items`;
-        rackList.innerHTML = eqItems.map(item => `
-          <div class="eq-card ${item.onBench ? 'on-bench' : ''}">
-            <div class="eq-card-left">
-              <span class="eq-icon">${item.icon}</span>
-              <div class="eq-names">
-                <h5>${item.en}</h5>
-                <p>${item.ne}</p>
-              </div>
-            </div>
-            <span class="eq-badge">${item.onBench ? 'On Bench (बेन्चमा)' : 'Ready (तयार)'}</span>
-          </div>
-        `).join('');
-      }
-      renderRack();
+      const updateCO2Rack = setEquipmentRack(eqItems, (item) => {
+        if (item.id === 'caco3' && btnCaCO3 && !btnCaCO3.disabled) {
+          btnCaCO3.click();
+        } else if (item.id === 'hcl' && btnHCl && !btnHCl.disabled) {
+          btnHCl.click();
+        } else if (item.id === 'splinter' && btnFlame && !btnFlame.disabled) {
+          btnFlame.click();
+        } else if (item.id === 'lime' && btnLime && !btnLime.disabled) {
+          btnLime.click();
+        } else {
+          playClink();
+          setObservation(`Apparatus Selected: ${item.en} (${item.ne})`, item.ne);
+          speakText(`Selected ${item.en}`, `${item.ne} छनोट गरियो।`);
+        }
+      });
 
       // Animation loop
       currentAnimTick = () => {
@@ -1597,20 +1670,20 @@
         </button>
       `;
 
-      setStep('1', 'Tap "Add Marble Chips" to load calcium carbonate into the Woulfe's bottle.', 'वुल्फको बोतलमा चुनढुङ्गा (CaCO₃) हाल्न बटन थिच्नुहोस्।');
+      setStep('1', 'Tap "Add Marble Chips" to load calcium carbonate into the Woulfe\'s bottle.', 'वुल्फको बोतलमा चुनढुङ्गा (CaCO₃) हाल्न बटन थिच्नुहोस्।');
       setObservation('Apparatus assembled. Ready for reactants.', 'उपकरण तयार छ। चुनढुङ्गा हाल्नुहोस्।');
 
       // Actions
-      const btnCaCO3 = document.getElementById('btn-caco3');
-      const btnHCl = document.getElementById('btn-hcl');
-      const btnFlame = document.getElementById('btn-flame');
-      const btnLime = document.getElementById('btn-lime');
-      const btnReset = document.getElementById('btn-reset');
+      btnCaCO3 = document.getElementById('btn-caco3');
+      btnHCl = document.getElementById('btn-hcl');
+      btnFlame = document.getElementById('btn-flame');
+      btnLime = document.getElementById('btn-lime');
+      btnReset = document.getElementById('btn-reset');
 
       btnCaCO3.addEventListener('click', () => {
         chipsGroup.visible = true;
         eqItems[4].onBench = true;
-        renderRack();
+        updateCO2Rack();
         playClink();
         btnCaCO3.disabled = true;
         btnCaCO3.classList.remove('active-step');
@@ -1625,7 +1698,7 @@
         isReacting = true;
         bubbles.forEach(b => b.visible = true);
         eqItems[5].onBench = true;
-        renderRack();
+        updateCO2Rack();
         playPourSound();
         setTimeout(playBubbleSound, 400);
         btnHCl.disabled = true;
@@ -1759,41 +1832,33 @@
       let isHeating = false;
 
       
+      let btnBurner, btnLitmus, btnFumes, btnReset;
+
       // Equipment Rack Items for NH3
       const eqItems = [
-        { icon: '🧪', en: 'Hard Glass Test Tube', ne: 'कडा काँचको टेस्ट ट्युब', onBench: true },
-        { icon: '🔥', en: 'Bunsen Burner', ne: 'बुन्सेन बर्नर', onBench: true },
-        { icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', onBench: true },
-        { icon: '🫙', en: 'Inverted Gas Jar', ne: 'उल्टो ग्यास जार', onBench: true },
-        { icon: '🧂', en: 'Ammonium Chloride (NH₄Cl)', ne: 'अमोनियम क्लोराइड (नौसादर)', onBench: true },
-        { icon: '⚪', en: 'Slaked Lime Ca(OH)₂', ne: 'बुझेको चुन', onBench: true },
-        { icon: '🟥', en: 'Moist Red Litmus Paper', ne: 'भिजेको रातो लिटमस', onBench: false },
-        { icon: '🧪', en: 'Conc. HCl Dipped Glass Rod', ne: 'HCl भिजेको काँचको डन्डी', onBench: false }
+        { id: 'tube', icon: '🧪', en: 'Hard Glass Test Tube', ne: 'कडा काँचको टेस्ट ट्युब', onBench: true },
+        { id: 'burner', icon: '🔥', en: 'Bunsen Burner', ne: 'बुन्सेन बर्नर', onBench: true },
+        { id: 'dtube', icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', onBench: true },
+        { id: 'jar', icon: '🫙', en: 'Inverted Gas Jar', ne: 'उल्टो ग्यास जार', onBench: true },
+        { id: 'nh4cl', icon: '🧂', en: 'Ammonium Chloride (NH₄Cl)', ne: 'अमोनियम क्लोराइड (नौसादर)', onBench: true },
+        { id: 'caoh', icon: '⚪', en: 'Slaked Lime Ca(OH)₂', ne: 'बुझेको चुन', onBench: true },
+        { id: 'litmus', icon: '🟥', en: 'Moist Red Litmus Paper', ne: 'भिजेको रातो लिटमस', onBench: false },
+        { id: 'fumes', icon: '🧪', en: 'Conc. HCl Dipped Glass Rod', ne: 'HCl भिजेको काँचको डन्डी', onBench: false }
       ];
 
-      function renderRack(query = '') {
-        const q = query.toLowerCase().trim();
-        const filtered = eqItems.filter(i => i.en.toLowerCase().includes(q) || i.ne.toLowerCase().includes(q));
-        rackCountTag.textContent = `${filtered.length} items`;
-        rackList.innerHTML = filtered.map(item => `
-          <div class="eq-card ${item.onBench ? 'on-bench' : ''}">
-            <div class="eq-card-left">
-              <span class="eq-icon">${item.icon}</span>
-              <div class="eq-names">
-                <h5>${item.en}</h5>
-                <p>${item.ne}</p>
-              </div>
-            </div>
-            <span class="eq-badge">${item.onBench ? 'On Bench (बेन्चमा)' : 'Ready (तयार)'}</span>
-          </div>
-        `).join('');
-      }
-      renderRack();
-      const searchInput = document.getElementById('rack-search-input');
-      if (searchInput) {
-        searchInput.value = '';
-        searchInput.oninput = (e) => renderRack(e.target.value);
-      }
+      const updateNH3Rack = setEquipmentRack(eqItems, (item) => {
+        if (item.id === 'burner' && btnBurner && !btnBurner.disabled) {
+          btnBurner.click();
+        } else if (item.id === 'litmus' && btnLitmus && !btnLitmus.disabled) {
+          btnLitmus.click();
+        } else if (item.id === 'fumes' && btnFumes && !btnFumes.disabled) {
+          btnFumes.click();
+        } else {
+          playClink();
+          setObservation(`Apparatus Selected: ${item.en} (${item.ne})`, item.ne);
+          speakText(`Selected ${item.en}`, `${item.ne} छनोट गरियो।`);
+        }
+      });
 
       function updateNH3Calc() {
         // 2NH4Cl (107g) + Ca(OH)2 (74g) -> CaCl2 + 2H2O + 2NH3 (44.8 L)
@@ -1870,10 +1935,10 @@
       setStep('1', 'Turn on Bunsen burner to heat the solid mixture of NH₄Cl and Ca(OH)₂ in 2:1 ratio.', 'बुन्सेन बर्नर बाली NH₄Cl र Ca(OH)₂ को मिश्रणलाई तताउनुहोस्।');
       setObservation('Hard glass tube clamped slanted downwards to prevent condensation cracking.', 'काँचको नलीलाई तलतिर ढल्काएर राखिएको छ।');
 
-      const btnBurner = document.getElementById('btn-burner');
-      const btnLitmus = document.getElementById('btn-litmus');
-      const btnFumes = document.getElementById('btn-fumes');
-      const btnReset = document.getElementById('btn-reset');
+      btnBurner = document.getElementById('btn-burner');
+      btnLitmus = document.getElementById('btn-litmus');
+      btnFumes = document.getElementById('btn-fumes');
+      btnReset = document.getElementById('btn-reset');
 
       btnBurner.addEventListener('click', () => {
         burnerFlame.visible = true;
@@ -1917,7 +1982,7 @@
       });
     }
 
-    // ─── 4C. Experiment 3: Verification of Ohm's Law (V = I * R) ──────────────
+    // ─── 4C. Experiment 3: Verification of Ohm\'s Law (V = I * R) ──────────────
     function setupOhmsExperiment() {
       labGroup.clear();
       const g = new THREE.Group();
@@ -1977,13 +2042,13 @@
 
       labGroup.add(g);
 
-      // Ohm's Law Parameters
+      // Ohm\'s Law Parameters
       let voltage = 4.0;    // Volts
       let resistance = 5.0; // Ohms (Nichrome coil)
       let switchOn = false;
 
       
-      // Equipment Rack Items for Ohm's Law
+      // Equipment Rack Items for Ohm\'s Law
       const eqItems = [
         { icon: '🔋', en: 'DC Battery Power Bank', ne: 'डीसी ब्याट्री स्रोत', onBench: true },
         { icon: '📊', en: 'Analog Voltmeter (V)', ne: 'भोल्टमिटर', onBench: true },
@@ -2044,7 +2109,7 @@
         `;
 
         formulaBox.innerHTML = `
-          <div class="formula-title">Ohm's Law Calculation · ओहमको नियम</div>
+          <div class="formula-title">Ohm\'s Law Calculation · ओहमको नियम</div>
           <div class="formula-math">I = V / R = ${voltage.toFixed(1)}V / ${resistance.toFixed(1)}Ω</div>
           <div class="formula-math">Power P = V × I = ${(voltage * current).toFixed(2)} Watts</div>
           <div class="formula-result">
@@ -2084,7 +2149,7 @@
 
       const btnSwitch = document.getElementById('btn-switch');
       const btnPlot = document.getElementById('btn-plot');
-      const btnReset = document.getElementById('btn-reset');
+      btnReset = document.getElementById('btn-reset');
 
       btnSwitch.addEventListener('click', () => {
         switchOn = !switchOn;
@@ -2272,7 +2337,7 @@
 
       const btnLower = document.getElementById('btn-lower');
       const btnVerify = document.getElementById('btn-verify');
-      const btnReset = document.getElementById('btn-reset');
+      btnReset = document.getElementById('btn-reset');
 
       btnLower.addEventListener('click', () => {
         isSubmerged = true;
@@ -2290,7 +2355,7 @@
 
       btnVerify.addEventListener('click', () => {
         playSuccess();
-        setStep('3', 'Upthrust equals the weight of displaced liquid! Archimedes' Principle is verified 100%.', 'उर्ध्वचाप विस्थापित पानीको तौलसँग बराबर भयो! आर्किमिडिजको सिद्धान्त प्रमाणीकरण भयो।');
+        setStep('3', 'Upthrust equals the weight of displaced liquid! Archimedes\' Principle is verified 100%.', 'उर्ध्वचाप विस्थापित पानीको तौलसँग बराबर भयो! आर्किमिडिजको सिद्धान्त प्रमाणीकरण भयो।');
         setObservation('Upthrust (U) = Weight of Displaced Water = Loss of Weight.', 'उर्ध्वचाप = विस्थापित तरलको तौल (सिद्धान्त प्रमाणित)।');
         btnVerify.disabled = true;
         btnVerify.classList.remove('active-step');
@@ -2415,7 +2480,7 @@
       setObservation('Triangular prism placed on bench. Waiting for light beam.', 'काँचको प्रिज्म तयार छ। प्रकाश पठाउनुहोस्।');
 
       const btnProject = document.getElementById('btn-project');
-      const btnReset = document.getElementById('btn-reset');
+      btnReset = document.getElementById('btn-reset');
 
       btnProject.addEventListener('click', () => {
         spectrumGroup.visible = true;
@@ -2542,7 +2607,7 @@
       setObservation('Slide on stage. Adjusting focal length...', 'स्लाइड स्टेजमा छ। फोकस मिलाउँदै...');
 
       const btnFocus = document.getElementById('btn-focus');
-      const btnReset = document.getElementById('btn-reset');
+      btnReset = document.getElementById('btn-reset');
 
       btnFocus.addEventListener('click', () => {
         playSuccess();
@@ -2674,7 +2739,7 @@
       setObservation('Initial burette reading = 0.00 mL. Alkaline pH > 9.', 'ब्युरेटको सुरुवाती पाठ = ०.०० मि.लि.।');
 
       const btnTitrate = document.getElementById('btn-titrate');
-      const btnReset = document.getElementById('btn-reset');
+      btnReset = document.getElementById('btn-reset');
 
       btnTitrate.addEventListener('click', () => {
         playPourSound();
@@ -2726,7 +2791,7 @@
         ]
       },
       ohms_law: {
-        title: "Verification of Ohm's Law (V = I × R)",
+        title: "Verification of Ohm\'s Law (V = I × R)",
         neTitle: "ओहमको नियमको प्रमाणीकरण",
         principle: "At constant physical conditions (especially temperature), current (I) flowing through a conductor is directly proportional to the potential difference (V) applied across its ends.",
         equation: "V ∝ I  ➔  V = I × R  (Where R is the electrical resistance in Ohms)",
