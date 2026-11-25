@@ -434,6 +434,27 @@
       color: #fff;
     }
 
+    
+    .eq-card.current-step-card {
+      border: 1px solid var(--lab-cyan);
+      background: rgba(14, 165, 233, 0.2);
+      box-shadow: 0 0 15px rgba(14, 165, 233, 0.4);
+      animation: pulseCard 2s infinite;
+      cursor: pointer;
+    }
+    @keyframes pulseCard {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.02); }
+    }
+    .eq-card.locked-card {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+    .eq-badge.badge-locked {
+      background: rgba(255, 255, 255, 0.08);
+      color: #94a3b8;
+    }
+
     /* Right Sidebar: Equipment Rack & Calculation Panel */
     .lab-sidebar {
       display: flex;
@@ -1364,7 +1385,8 @@
 
     
     // ── Global Interactive Equipment Rack Engine ─────────────────────────────
-    function setEquipmentRack(items, onSelectCallback) {
+    // ── Global Interactive Equipment Rack Engine (Progressive Assembly) ──────
+    function setEquipmentRack(items, activeStage, onSelectCallback) {
       const searchInput = document.getElementById('rack-search-input');
 
       function update(query = '') {
@@ -1372,28 +1394,37 @@
         const filtered = items.filter(i => i.en.toLowerCase().includes(q) || i.ne.toLowerCase().includes(q));
         rackCountTag.textContent = `${filtered.length} items`;
 
-        rackList.innerHTML = filtered.map((item, idx) => `
-          <div class="eq-card ${item.onBench ? 'on-bench' : 'clickable'}" data-index="${idx}" title="${item.onBench ? 'Already assembled on workbench' : 'Tap to pick & place on workbench'}">
-            <div class="eq-card-left">
-              <span class="eq-icon">${item.icon}</span>
-              <div class="eq-names">
-                <h5>${item.en}</h5>
-                <p>${item.ne}</p>
-              </div>
-            </div>
-            <span class="eq-badge ${item.onBench ? 'badge-bench' : 'badge-pick'}">
-              ${item.onBench ? '✓ On Bench' : '👉 Pick'}
-            </span>
-          </div>
-        `).join('');
+        rackList.innerHTML = filtered.map((item, idx) => {
+          const isDone = item.stage < activeStage;
+          const isCurrent = item.stage === activeStage;
+          const isLocked = item.stage > activeStage;
 
-        // Clicking an equipment item in the rack places/activates it!
+          let badgeClass = isDone ? 'badge-bench' : isCurrent ? 'badge-pick' : 'badge-locked';
+          let badgeText = isDone ? '✓ On Bench' : isCurrent ? `👉 ${item.stage + 1}. Pick` : `🔒 Step ${item.stage + 1}`;
+
+          return `
+            <div class="eq-card ${isDone ? 'on-bench' : isCurrent ? 'current-step-card' : 'locked-card'}" 
+                 data-stage="${item.stage}" 
+                 title="${isDone ? 'Assembled on workbench' : isCurrent ? 'Click to assemble on bench now!' : 'Complete earlier steps first'}">
+              <div class="eq-card-left">
+                <span class="eq-icon">${item.icon}</span>
+                <div class="eq-names">
+                  <h5>${item.en}</h5>
+                  <p>${item.ne}</p>
+                </div>
+              </div>
+              <span class="eq-badge ${badgeClass}">${badgeText}</span>
+            </div>
+          `;
+        }).join('');
+
+        // Clicking an equipment item
         rackList.querySelectorAll('.eq-card').forEach(card => {
           card.addEventListener('click', () => {
-            const idx = parseInt(card.dataset.index);
-            const selected = filtered[idx];
+            const stg = parseInt(card.dataset.stage);
+            const selected = items.find(i => i.stage === stg);
             if (selected && onSelectCallback) {
-              onSelectCallback(selected, idx);
+              onSelectCallback(selected, stg);
             }
           });
         });
@@ -1431,13 +1462,15 @@
     // ── 4. EXPERIMENTS DEFINITIONS & IMPLEMENTATIONS ───────────────────────────
 
     // ─── 4A. Experiment 1: Lab Prep of Carbon Dioxide (CO2) ───────────────────
-    function setupCO2Experiment() {
+        function setupCO2Experiment() {
       labGroup.clear();
       const g = new THREE.Group();
 
-      // Woulfe's 2-neck Bottle
+      // ── 3D Apparatus Meshes (All start HIDDEN until student picks them from rack!) ──
+      // 1. Woulfe's 2-neck Bottle
       const bottle = new THREE.Group();
       bottle.position.set(-1.0, 0, 0);
+      bottle.visible = false; // Hidden at start!
 
       const bBody = new THREE.Mesh(new THREE.CylinderGeometry(0.7, 0.75, 1.2, 24), glassMaterial);
       bBody.position.y = 0.6;
@@ -1470,25 +1503,42 @@
         chipsGroup.add(chip);
       }
       bottle.add(chipsGroup);
-
-      // Thistle Funnel in neck1
-      const funnelStem = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.7, 16), glassMaterial);
-      funnelStem.position.set(-0.3, 1.55, 0);
-      bottle.add(funnelStem);
-      const funnelTop = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.32, 16, 1, true), glassMaterial);
-      funnelTop.position.set(-0.3, 2.5, 0);
-      bottle.add(funnelTop);
-
       g.add(bottle);
 
-      // Upright Gas Jar (Collecting CO2 by upward displacement of air)
+      // 2. Thistle Funnel (Separate group inserted into neck 1)
+      const funnelGroup = new THREE.Group();
+      funnelGroup.position.set(-1.0, 0, 0);
+      funnelGroup.visible = false; // Hidden at start!
+
+      const funnelStem = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.7, 16), glassMaterial);
+      funnelStem.position.set(-0.3, 1.55, 0);
+      funnelGroup.add(funnelStem);
+      const funnelTop = new THREE.Mesh(new THREE.ConeGeometry(0.24, 0.32, 16, 1, true), glassMaterial);
+      funnelTop.position.set(-0.3, 2.5, 0);
+      funnelGroup.add(funnelTop);
+      g.add(funnelGroup);
+
+      // 3. Glass Delivery Tube
+      const tubeCurve = new THREE.CatmullRomCurve3([
+        new THREE.Vector3(-0.7, 1.5, 0),
+        new THREE.Vector3(-0.7, 2.1, 0),
+        new THREE.Vector3(0.5, 2.1, 0),
+        new THREE.Vector3(1.3, 2.1, 0),
+        new THREE.Vector3(1.3, 0.35, 0)
+      ]);
+      const deliveryTube = new THREE.Mesh(new THREE.TubeGeometry(tubeCurve, 32, 0.035, 12, false), glassMaterial);
+      deliveryTube.visible = false; // Hidden at start!
+      g.add(deliveryTube);
+
+      // 4. Upright Gas Jar
       const jarGroup = new THREE.Group();
       jarGroup.position.set(1.3, 0, 0);
+      jarGroup.visible = false; // Hidden at start!
+
       const jar = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 1.7, 24), glassMaterial);
       jar.position.y = 0.85;
       jarGroup.add(jar);
 
-      // Invisible gas cloud that turns slightly opaque
       const gasCloudMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, transparent: true, opacity: 0 });
       const gasCloud = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 1.6, 16), gasCloudMat);
       gasCloud.position.y = 0.85;
@@ -1504,12 +1554,13 @@
       flame.position.y = -0.4;
       splinterGroup.add(flame);
       jarGroup.add(splinterGroup);
-
       g.add(jarGroup);
 
-      // Lime Water Test Tube in Rack
+      // 5. Lime Water Test Tube in Rack
       const limeRack = new THREE.Group();
       limeRack.position.set(2.6, 0, 0);
+      limeRack.visible = false; // Hidden at start!
+
       const rackStand = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.5), new THREE.MeshStandardMaterial({ color: 0x451a03 }));
       rackStand.position.y = 0.35;
       limeRack.add(rackStand);
@@ -1522,19 +1573,7 @@
       const limeLiquid = new THREE.Mesh(new THREE.CylinderGeometry(0.11, 0.11, 0.65, 16), limeLiquidMat);
       limeLiquid.position.y = 0.52;
       limeRack.add(limeLiquid);
-
       g.add(limeRack);
-
-      // Glass Delivery Tube connecting neck2 to gas jar
-      const tubeCurve = new THREE.CatmullRomCurve3([
-        new THREE.Vector3(-0.7, 1.5, 0),
-        new THREE.Vector3(-0.7, 2.1, 0),
-        new THREE.Vector3(0.5, 2.1, 0),
-        new THREE.Vector3(1.3, 2.1, 0),
-        new THREE.Vector3(1.3, 0.35, 0)
-      ]);
-      const deliveryTube = new THREE.Mesh(new THREE.TubeGeometry(tubeCurve, 32, 0.035, 12, false), glassMaterial);
-      g.add(deliveryTube);
 
       // Bubbles in bottle
       const bubbles = [];
@@ -1556,10 +1595,8 @@
       let isReacting = false;
 
       function updateCalculations() {
-        // CaCO3 + 2HCl -> CaCl2 + H2O + CO2
-        // Molar mass CaCO3 = 100.09 g/mol, Molar mass CO2 = 44.01 g/mol
         const molesCaCO3 = caco3Mass / 100.09;
-        const volumeCO2Liters = molesCaCO3 * 22.4; // at NTP
+        const volumeCO2Liters = molesCaCO3 * 22.4;
         const volumeCO2mL = (volumeCO2Liters * 1000).toFixed(0);
 
         slidersWrap.innerHTML = `
@@ -1589,7 +1626,6 @@
           </div>
         `;
 
-        // Listeners for sliders
         document.getElementById('caco3-range').addEventListener('input', (e) => {
           caco3Mass = parseInt(e.target.value);
           document.getElementById('caco3-val').textContent = `${caco3Mass} g`;
@@ -1603,37 +1639,124 @@
       }
       updateCalculations();
 
-      let btnCaCO3, btnHCl, btnFlame, btnLime, btnReset;
+      // ── Step-by-Step Equipment Inventory (Ordered from assembly to reaction & tests) ──
+      let currentStage = 0; // Starts at Step 0: Clean Workbench!
+      let updateRackFn = null;
 
-      // Equipment Rack Items
       const eqItems = [
-        { id: 'bottle', icon: '🧪', en: "Woulfe\'s Bottle", ne: 'वुल्फको बोतल', onBench: true },
-        { id: 'funnel', icon: '🌾', en: 'Thistle Funnel', ne: 'थिसल फनेल', onBench: true },
-        { id: 'tube', icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', onBench: true },
-        { id: 'jar', icon: '🫙', en: 'Gas Jar', ne: 'ग्यास जार', onBench: true },
-        { id: 'caco3', icon: '🪨', en: 'Marble Chips (CaCO₃)', ne: 'चुनढुङ्गा टुक्रा', onBench: false },
-        { id: 'hcl', icon: '🧪', en: 'Dilute HCl Acid', ne: 'पातलो हाइड्रोक्लोरिक अम्ल', onBench: false },
-        { id: 'splinter', icon: '🪵', en: 'Splinter Stick', ne: 'बल्दो सिन्का', onBench: false },
-        { id: 'lime', icon: '🥛', en: 'Lime Water Ca(OH)₂', ne: 'चुनपानी', onBench: true }
+        { stage: 0, id: 'bottle', icon: '🧪', en: "Woulfe\'s Bottle", ne: 'वुल्फको बोतल', descEn: 'Place Woulfe\'s bottle on workbench', descNe: 'वुल्फको बोतल बेन्चमा राख्नुहोस्' },
+        { stage: 1, id: 'funnel', icon: '🌾', en: 'Thistle Funnel', ne: 'थिसल फनेल', descEn: 'Insert funnel into 1st neck', descNe: 'पहिलो मुखमा थिसल फनेल जोड्नुहोस्' },
+        { stage: 2, id: 'tube', icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', descEn: 'Connect delivery tube to 2nd neck', descNe: 'दोस्रो मुखमा डेलिभरी नली जोड्नुहोस्' },
+        { stage: 3, id: 'jar', icon: '🫙', en: 'Gas Jar', ne: 'ग्यास जार', descEn: 'Place gas jar at outlet to collect CO₂', descNe: 'ग्यास संकलन गर्न जार राख्नुहोस्' },
+        { stage: 4, id: 'caco3', icon: '🪨', en: 'Marble Chips (CaCO₃)', ne: 'चुनढुङ्गा टुक्रा', descEn: 'Load marble chips into bottle', descNe: 'बोतलमा चुनढुङ्गाका टुक्राहरू हाल्नुहोस्' },
+        { stage: 5, id: 'hcl', icon: '🧪', en: 'Dilute HCl Acid', ne: 'पातलो हाइड्रोक्लोरिक अम्ल', descEn: 'Pour dilute acid down funnel', descNe: 'फनेलबाट पातलो अम्ल खन्याउनुहोस्' },
+        { stage: 6, id: 'splinter', icon: '🪵', en: 'Splinter Stick', ne: 'बल्दो सिन्का', descEn: 'Test with burning splinter', descNe: 'बल्दो सिन्का जारको मुखमा लैजानुहोस्' },
+        { stage: 7, id: 'lime', icon: '🥛', en: 'Lime Water Ca(OH)₂', ne: 'चुनपानी', descEn: 'Bubble CO₂ into lime water', descNe: 'चुनपानी दूधिलो बनाउने परीक्षण' }
       ];
 
-      const updateCO2Rack = setEquipmentRack(eqItems, (item) => {
-        if (item.id === 'caco3' && btnCaCO3 && !btnCaCO3.disabled) {
-          btnCaCO3.click();
-        } else if (item.id === 'hcl' && btnHCl && !btnHCl.disabled) {
-          btnHCl.click();
-        } else if (item.id === 'splinter' && btnFlame && !btnFlame.disabled) {
-          btnFlame.click();
-        } else if (item.id === 'lime' && btnLime && !btnLime.disabled) {
-          btnLime.click();
-        } else {
+      function executeStage(stageIndex) {
+        if (stageIndex === 0) {
+          bottle.visible = true;
           playClink();
-          setObservation(`Apparatus Selected: ${item.en} (${item.ne})`, item.ne);
-          speakText(`Selected ${item.en}`, `${item.ne} छनोट गरियो।`);
+          currentStage = 1;
+          setStep('2', 'Great! Woulfe\'s bottle is placed. Now pick the "Thistle Funnel" from the rack.', 'राम्रो! वुल्फको बोतल बेन्चमा राखियो। अब र्‍याकबाट "थिसल फनेल" छनोट गर्नुहोस्।');
+          setObservation('Woulfe\'s bottle placed on workbench. Waiting for thistle funnel.', 'वुल्फको बोतल राखियो। अब थिसल फनेल जोड्नुहोस्।');
+        } else if (stageIndex === 1) {
+          funnelGroup.visible = true;
+          playClink();
+          currentStage = 2;
+          setStep('3', 'Thistle funnel inserted! Now pick the "Delivery Tube" from the rack to connect the gas path.', 'थिसल फनेल जोडियो! अब र्‍याकबाट "डेलिभरी नली" छनोट गर्नुहोस्।');
+          setObservation('Thistle funnel inserted in 1st neck. Lower end will dip in acid.', 'पहिलो मुखमा थिसल फनेल जडान भयो।');
+        } else if (stageIndex === 2) {
+          deliveryTube.visible = true;
+          playClink();
+          currentStage = 3;
+          setStep('4', 'Delivery tube connected! Now pick the "Gas Jar" to collect the carbon dioxide gas.', 'डेलिभरी नली जोडियो! अब CO₂ ग्यास संकलन गर्न "ग्यास जार" छनोट गर्नुहोस्।');
+          setObservation('Delivery tube connected to 2nd neck.', 'डेलिभरी नली जोडियो। अब ग्यास जार राख्नुहोस्।');
+        } else if (stageIndex === 3) {
+          jarGroup.visible = true;
+          playClink();
+          currentStage = 4;
+          setStep('5', 'Apparatus assembled! Now pick "Marble Chips (CaCO₃)" from the rack to load the solid reactant.', 'उपकरण जडान सम्पन्न भयो! अब चुनढुङ्गा (CaCO₃) छनोट गरी बोतलमा हाल्नुहोस्।');
+          setObservation('Apparatus assembled. Ready to load calcium carbonate chips.', 'सम्पूर्ण उपकरण बेन्चमा मिलाइयो। अब चुनढुङ्गा हाल्नुहोस्।');
+        } else if (stageIndex === 4) {
+          chipsGroup.visible = true;
+          playClink();
+          currentStage = 5;
+          setStep('6', 'Marble chips loaded! Pick "Dilute HCl Acid" and pour it down the thistle funnel to initiate reaction.', 'चुनढुङ्गा हालियो! अब "पातलो HCl अम्ल" छनोट गरी फनेलबाट खन्याउनुहोस्।');
+          setObservation('CaCO₃ resting at bottom. Waiting for dilute hydrochloric acid.', 'चुनढुङ्गा फ्लास्कको पिँधमा छ। अम्ल हाल्न तयार।');
+        } else if (stageIndex === 5) {
+          liquid.scale.set(1, 1, 1);
+          isReacting = true;
+          bubbles.forEach(b => b.visible = true);
+          playPourSound();
+          setTimeout(playBubbleSound, 400);
+          currentStage = 6;
+          setStep('7', 'Furious effervescence! Reaction: CaCO₃ + 2HCl ➔ CaCl₂ + H₂O + CO₂↑. Now pick "Splinter Stick" to test.', 'तीव्र रासायनिक प्रतिक्रिया सुरु भयो! अब बल्दो सिन्का परीक्षणका लागि "सिन्का" छनोट गर्नुहोस्।');
+          setObservation('CO₂ gas collecting by upward displacement of air.', 'कार्बन डाइअक्साइड ग्यास तीव्रताका साथ संकलन हुँदैछ।');
+        } else if (stageIndex === 6) {
+          splinterGroup.visible = true;
+          splinterGroup.position.set(1.3, 2.1, 0);
+          playFlameSound();
+          setObservation('Lowering burning splinter into mouth of CO₂ gas jar...', 'बल्दो सिन्का ग्यास जारको मुखमा लैजाँदै...');
+          setTimeout(() => {
+            flame.visible = false;
+            playTone(220, 'sawtooth', 0.25, 0.2);
+            currentStage = 7;
+            setStep('8', 'Flame extinguished immediately! CO₂ does not support combustion. Finally, pick "Lime Water" to confirm.', 'बल्दो सिन्का तुरुन्त निभ्यो! CO₂ ले बल्न मद्दत गर्दैन। अब "चुनपानी" छनोट गर्नुहोस्।');
+            setObservation('Flame Extinguished! (सिन्का निभ्यो - CO₂ बल्न मद्दत गर्दैन)', 'कार्बन डाइअक्साइड प्रज्ज्वलनशील छैन।');
+            updateActionButtons();
+            if (updateRackFn) updateRackFn();
+          }, 800);
+        } else if (stageIndex === 7) {
+          limeRack.visible = true;
+          playBubbleSound();
+          limeLiquidMat.color.setHex(0xf8fafc); // Milky white
+          limeLiquidMat.opacity = 0.95;
+          playSuccess();
+          currentStage = 8;
+          setStep('Done!', 'Lime water turned milky white! Ca(OH)₂ + CO₂ ➔ CaCO₃↓ + H₂O. Practical 100% verified and complete!', 'चुनपानी दूधिलो बन्यो! CaCO₃ को सेतो अवक्षेप बन्यो। प्रयोगशाला कार्य १००% सफल भयो!');
+          setObservation('Lime water turned milky white! Experiment 100% verified.', 'चुनपानी दूधिलो बन्यो - CO₂ ग्यास प्रमाणित भयो!');
+        }
+
+        updateActionButtons();
+        if (updateRackFn) updateRackFn();
+      }
+
+      function updateActionButtons() {
+        const currentItem = eqItems[currentStage] || { descEn: 'Experiment Complete!', descNe: 'प्रयोग सम्पन्न भयो!' };
+        actionsGrid.innerHTML = `
+          <button class="lab-action-btn active-step" id="btn-next-action" ${currentStage >= 8 ? 'disabled' : ''}>
+            <span>👉 Step ${currentStage + 1}: ${currentItem.en || 'Complete'}</span>
+            <span class="sub">${currentItem.descNe || ''}</span>
+          </button>
+          <button class="lab-action-btn btn-reset" id="btn-reset">
+            <span>🔄 Start Clean Bench</span>
+            <span class="sub">खाली बेन्चबाट सुरु</span>
+          </button>
+        `;
+
+        const btnNext = document.getElementById('btn-next-action');
+        if (btnNext && currentStage < 8) {
+          btnNext.onclick = () => executeStage(currentStage);
+        }
+        document.getElementById('btn-reset').onclick = () => setupCO2Experiment();
+      }
+
+      updateRackFn = setEquipmentRack(eqItems, currentStage, (item, stg) => {
+        if (stg === currentStage) {
+          executeStage(stg);
+        } else if (stg < currentStage) {
+          playClink();
+          setObservation(`${item.en} is already assembled on the workbench.`, `${item.ne} पहिले नै बेन्चमा जडान भइसकेको छ।`);
+        } else {
+          playTone(200, 'sawtooth', 0.2, 0.15);
+          setObservation(`Please do Step ${currentStage + 1} first: ${eqItems[currentStage].en}`, `पहिले चरण ${currentStage + 1} को उपकरण छनोट गर्नुहोस्: ${eqItems[currentStage].ne}।`);
+          speakText(`Please do Step ${currentStage + 1} first: ${eqItems[currentStage].en}`, `पहिले ${eqItems[currentStage].ne} छनोट गर्नुहोस्।`);
         }
       });
 
-      // Animation loop
+      // Render Loop
       currentAnimTick = () => {
         if (isReacting) {
           bubbles.forEach(b => {
@@ -1646,131 +1769,57 @@
         }
       };
 
-      // Control Deck Buttons
-      actionsGrid.innerHTML = `
-        <button class="lab-action-btn active-step" id="btn-caco3">
-          <span>1. Add Marble Chips</span>
-          <span class="sub">चुनढुङ्गा हाल्नुहोस्</span>
-        </button>
-        <button class="lab-action-btn" id="btn-hcl" disabled>
-          <span>2. Pour Dilute HCl</span>
-          <span class="sub">पातलो अम्ल खन्याउनुहोस्</span>
-        </button>
-        <button class="lab-action-btn" id="btn-flame" disabled>
-          <span>3. Burning Splinter</span>
-          <span class="sub">सिन्का परीक्षण</span>
-        </button>
-        <button class="lab-action-btn" id="btn-lime" disabled>
-          <span>4. Lime Water Test</span>
-          <span class="sub">चुनपानी दूधिलो परीक्षण</span>
-        </button>
-        <button class="lab-action-btn btn-reset" id="btn-reset">
-          <span>🔄 Reset</span>
-          <span class="sub">पुनः सुरु</span>
-        </button>
-      `;
-
-      setStep('1', 'Tap "Add Marble Chips" to load calcium carbonate into the Woulfe\'s bottle.', 'वुल्फको बोतलमा चुनढुङ्गा (CaCO₃) हाल्न बटन थिच्नुहोस्।');
-      setObservation('Apparatus assembled. Ready for reactants.', 'उपकरण तयार छ। चुनढुङ्गा हाल्नुहोस्।');
-
-      // Actions
-      btnCaCO3 = document.getElementById('btn-caco3');
-      btnHCl = document.getElementById('btn-hcl');
-      btnFlame = document.getElementById('btn-flame');
-      btnLime = document.getElementById('btn-lime');
-      btnReset = document.getElementById('btn-reset');
-
-      btnCaCO3.addEventListener('click', () => {
-        chipsGroup.visible = true;
-        eqItems[4].onBench = true;
-        updateCO2Rack();
-        playClink();
-        btnCaCO3.disabled = true;
-        btnCaCO3.classList.remove('active-step');
-        btnHCl.disabled = false;
-        btnHCl.classList.add('active-step');
-        setStep('2', 'Pour dilute HCl down the thistle funnel. Lower end must dip inside liquid to prevent gas escape.', 'थिसल फनेलबाट पातलो HCl अम्ल हाल्नुहोस्। फनेलको तल्लो भाग तरलमा डुब्नुपर्छ।');
-        setObservation('Marble chips loaded. Waiting for acid.', 'चुनढुङ्गा फ्लास्कमा हालियो। अम्लको प्रतीक्षा।');
-      });
-
-      btnHCl.addEventListener('click', () => {
-        liquid.scale.set(1, 1, 1);
-        isReacting = true;
-        bubbles.forEach(b => b.visible = true);
-        eqItems[5].onBench = true;
-        updateCO2Rack();
-        playPourSound();
-        setTimeout(playBubbleSound, 400);
-        btnHCl.disabled = true;
-        btnHCl.classList.remove('active-step');
-        btnFlame.disabled = false;
-        btnFlame.classList.add('active-step');
-        btnLime.disabled = false;
-        setStep('3', 'Furious effervescence! CO₂ gas is collecting by upward displacement of air. Test with burning splinter.', 'तीव्र बुदबुदाहटसहित CO₂ ग्यास बन्दैछ। अब बल्दो सिन्का परीक्षण गर्नुहोस्।');
-        setObservation('Reaction: CaCO₃ + 2HCl ➔ CaCl₂ + H₂O + CO₂↑', 'कार्बन डाइअक्साइड ग्यास तीव्रताका साथ संकलन भइरहेको छ।');
-      });
-
-      btnFlame.addEventListener('click', () => {
-        splinterGroup.visible = true;
-        splinterGroup.position.set(1.3, 2.1, 0);
-        playFlameSound();
-        setObservation('Lowering burning splinter into mouth of CO₂ gas jar...', 'बल्दो सिन्का ग्यास जारको मुखमा लैजाँदै...');
-        setTimeout(() => {
-          flame.visible = false;
-          playTone(220, 'sawtooth', 0.25, 0.2);
-          setStep('4', 'Burning splinter extinguishes instantly! CO₂ does not support combustion. Now test with lime water.', 'बल्दो सिन्का तुरुन्त निभ्यो! CO₂ ग्यासले बल्न मद्दत गर्दैन। अब चुनपानी परीक्षण गर्नुहोस्।');
-          setObservation('Flame Extinguished! (सिन्का निभ्यो - CO₂ बल्न मद्दत गर्दैन)', 'कार्बन डाइअक्साइड प्रज्ज्वलनशील छैन।');
-          btnFlame.disabled = true;
-          btnFlame.classList.remove('active-step');
-          btnLime.classList.add('active-step');
-        }, 800);
-      });
-
-      btnLime.addEventListener('click', () => {
-        playBubbleSound();
-        limeLiquidMat.color.setHex(0xf8fafc); // Turns milky white
-        limeLiquidMat.opacity = 0.95;
-        playSuccess();
-        setStep('5', 'Lime water turned milky white! CO₂ reacted with Ca(OH)₂ forming insoluble calcium carbonate precipitate.', 'चुनपानी दूधिलो भयो! Ca(OH)₂ + CO₂ ➔ CaCO₃↓ + H₂O (अघुलनशील चुनढुङ्गा बन्यो)।');
-        setObservation('Lime water turned milky white! Experiment 100% verified.', 'चुनपानी दूधिलो बन्यो - CO₂ ग्यास प्रमाणित भयो!');
-        btnLime.disabled = true;
-        btnLime.classList.remove('active-step');
-      });
-
-      btnReset.addEventListener('click', () => {
-        setupCO2Experiment();
-      });
+      // Initial Step Guidance on Empty Bench
+      setStep('1', 'Welcome to the lab! The workbench is clean. Go to the Equipment Rack on the right and pick "Woulfe\'s Bottle" to begin.', 'स्वागत छ! बेन्च खाली छ। दायाँपट्टिको र्‍याकबाट "वुल्फको बोतल" छनोट गरी सुरु गर्नुहोस्।');
+      setObservation('Clean workbench. Ready for student to choose apparatus from the rack.', 'खाली बेन्च। विद्यार्थीले र्‍याकबाट उपकरण छनोट गरी जडान गर्नुपर्नेछ।');
+      updateActionButtons();
     }
 
-    // ─── 4B. Experiment 2: Lab Prep of Ammonia Gas (NH3) ─────────────────────
-    function setupNH3Experiment() {
+        function setupNH3Experiment() {
       labGroup.clear();
       const g = new THREE.Group();
 
-      // Stand and Clamped Hard Glass Test Tube (slanted downwards)
-      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.8), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
-      stand.position.set(-1.4, 1.4, 0);
-      g.add(stand);
+      // ── 3D Apparatus Meshes (All start HIDDEN until student picks them from rack!) ──
+      // 1. Stand and Clamp
+      const standGroup = new THREE.Group();
+      standGroup.position.set(-1.4, 0, 0);
+      standGroup.visible = false;
 
+      const standBase = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.1, 0.6), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 }));
+      standBase.position.y = 0.05;
+      standGroup.add(standBase);
+
+      const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.8), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
+      stand.position.y = 1.4;
+      standGroup.add(stand);
+
+      const clampArm = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.06, 0.06), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
+      clampArm.position.set(0.4, 1.8, 0);
+      standGroup.add(clampArm);
+      g.add(standGroup);
+
+      // 2. Hard Glass Test Tube (slanted downwards to prevent condensation crack)
       const tubeGroup = new THREE.Group();
       tubeGroup.position.set(-0.8, 1.8, 0);
-      tubeGroup.rotation.z = 0.22; // Slanted downwards to prevent water crack
+      tubeGroup.rotation.z = 0.22;
+      tubeGroup.visible = false;
 
       const hardTube = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.8, 20), glassMaterial);
-      hardTube.position.y = 0;
       tubeGroup.add(hardTube);
 
-      // Solid Reactant Mixture (NH4Cl + Ca(OH)2 2:1 ratio)
+      // Solid Reactant Mixture (NH4Cl + Ca(OH)2 in 2:1 ratio)
       const mixMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.9 });
       const mixMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.8, 16), mixMat);
       mixMesh.position.y = -0.4;
+      mixMesh.visible = false;
       tubeGroup.add(mixMesh);
-
       g.add(tubeGroup);
 
-      // Bunsen Burner with Blue Flame
+      // 3. Bunsen Burner with Flame
       const burnerGroup = new THREE.Group();
       burnerGroup.position.set(-0.8, 0, 0);
+      burnerGroup.visible = false;
+
       const bBase = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.4, 0.15), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.7 }));
       bBase.position.y = 0.075;
       burnerGroup.add(bBase);
@@ -1784,25 +1833,27 @@
       burnerGroup.add(burnerFlame);
       g.add(burnerGroup);
 
-      // Inverted Gas Jar (Ammonia is collected by downward displacement of air)
+      // 4. Inverted Gas Jar
       const jarGroup = new THREE.Group();
       jarGroup.position.set(1.4, 1.3, 0);
+      jarGroup.visible = false;
+
       const invertedJar = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 1.8, 24), glassMaterial);
       invertedJar.rotation.x = Math.PI; // upside down
       jarGroup.add(invertedJar);
 
-      // Gas Cloud
       const nh3CloudMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, transparent: true, opacity: 0 });
       const nh3Cloud = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.42, 1.7, 16), nh3CloudMat);
       jarGroup.add(nh3Cloud);
+      g.add(jarGroup);
 
-      // Red Litmus Test Strip
-      const litmus = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.4, 0.02), new THREE.MeshStandardMaterial({ color: 0xef4444 })); // Red initially
+      // 5. Red Litmus Test Strip
+      const litmus = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.4, 0.02), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
       litmus.position.set(1.4, 0.1, 0);
       litmus.visible = false;
       g.add(litmus);
 
-      // Glass Rod Dipped in Conc. HCl
+      // 6. Glass Rod Dipped in Conc. HCl
       const rodGroup = new THREE.Group();
       rodGroup.position.set(1.4, 0.1, 0);
       rodGroup.visible = false;
@@ -1814,7 +1865,7 @@
       rodGroup.add(whiteFumes);
       g.add(rodGroup);
 
-      // Delivery tube connecting slanted tube to inverted jar
+      // 7. Delivery tube connecting tube to jar
       const nh3Curve = new THREE.CatmullRomCurve3([
         new THREE.Vector3(-0.7, 1.8, 0),
         new THREE.Vector3(0.3, 2.3, 0),
@@ -1822,6 +1873,7 @@
         new THREE.Vector3(1.4, 1.8, 0)
       ]);
       const nh3DeliveryTube = new THREE.Mesh(new THREE.TubeGeometry(nh3Curve, 32, 0.035, 12, false), glassMaterial);
+      nh3DeliveryTube.visible = false;
       g.add(nh3DeliveryTube);
 
       labGroup.add(g);
@@ -1831,37 +1883,7 @@
       let caoh2Grams = 5;
       let isHeating = false;
 
-      
-      let btnBurner, btnLitmus, btnFumes, btnReset;
-
-      // Equipment Rack Items for NH3
-      const eqItems = [
-        { id: 'tube', icon: '🧪', en: 'Hard Glass Test Tube', ne: 'कडा काँचको टेस्ट ट्युब', onBench: true },
-        { id: 'burner', icon: '🔥', en: 'Bunsen Burner', ne: 'बुन्सेन बर्नर', onBench: true },
-        { id: 'dtube', icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', onBench: true },
-        { id: 'jar', icon: '🫙', en: 'Inverted Gas Jar', ne: 'उल्टो ग्यास जार', onBench: true },
-        { id: 'nh4cl', icon: '🧂', en: 'Ammonium Chloride (NH₄Cl)', ne: 'अमोनियम क्लोराइड (नौसादर)', onBench: true },
-        { id: 'caoh', icon: '⚪', en: 'Slaked Lime Ca(OH)₂', ne: 'बुझेको चुन', onBench: true },
-        { id: 'litmus', icon: '🟥', en: 'Moist Red Litmus Paper', ne: 'भिजेको रातो लिटमस', onBench: false },
-        { id: 'fumes', icon: '🧪', en: 'Conc. HCl Dipped Glass Rod', ne: 'HCl भिजेको काँचको डन्डी', onBench: false }
-      ];
-
-      const updateNH3Rack = setEquipmentRack(eqItems, (item) => {
-        if (item.id === 'burner' && btnBurner && !btnBurner.disabled) {
-          btnBurner.click();
-        } else if (item.id === 'litmus' && btnLitmus && !btnLitmus.disabled) {
-          btnLitmus.click();
-        } else if (item.id === 'fumes' && btnFumes && !btnFumes.disabled) {
-          btnFumes.click();
-        } else {
-          playClink();
-          setObservation(`Apparatus Selected: ${item.en} (${item.ne})`, item.ne);
-          speakText(`Selected ${item.en}`, `${item.ne} छनोट गरियो।`);
-        }
-      });
-
       function updateNH3Calc() {
-        // 2NH4Cl (107g) + Ca(OH)2 (74g) -> CaCl2 + 2H2O + 2NH3 (44.8 L)
         const molesNH4Cl = nh4clGrams / 53.49;
         const nh3Moles = molesNH4Cl;
         const nh3VolumeML = (nh3Moles * 22400).toFixed(0);
@@ -1906,6 +1928,119 @@
       }
       updateNH3Calc();
 
+      // Progressive Assembly Stages for NH3
+      let currentStage = 0;
+      let updateRackFn = null;
+
+      const eqItems = [
+        { stage: 0, id: 'stand', icon: '🏗️', en: 'Retort Stand with Clamp', ne: 'रिटोर्ट स्ट्यान्ड र क्ल्याम्प', descEn: 'Place retort stand on workbench', descNe: 'स्ट्यान्ड बेन्चमा राख्नुहोस्' },
+        { stage: 1, id: 'tube', icon: '🧪', en: 'Hard Glass Test Tube', ne: 'कडा काँचको टेस्ट ट्युब', descEn: 'Clamp tube slanted downwards', descNe: 'टेस्ट ट्युबलाई तलतिर ढल्काएर जोड्नुहोस्' },
+        { stage: 2, id: 'mixture', icon: '🧂', en: 'Solid NH₄Cl + Ca(OH)₂ (2:1)', ne: 'अमोनियम क्लोराइड र चुनको मिश्रण', descEn: 'Load solid mixture into tube', descNe: 'ठोस मिश्रण नलीमा हाल्नुहोस्' },
+        { stage: 3, id: 'dtube', icon: '🔄', en: 'Delivery Tube', ne: 'डेलिभरी नली', descEn: 'Connect delivery tube to mouth of tube', descNe: 'डेलिभरी नली जोड्नुहोस्' },
+        { stage: 4, id: 'jar', icon: '🫙', en: 'Inverted Gas Jar', ne: 'उल्टो ग्यास जार', descEn: 'Position inverted gas jar over tube', descNe: 'उल्टो ग्यास जार मिलाउनुहोस्' },
+        { stage: 5, id: 'burner', icon: '🔥', en: 'Bunsen Burner', ne: 'बुन्सेन बर्नर', descEn: 'Place burner under tube and ignite', descNe: 'बुन्सेन बर्नर राखी बाल्नुहोस्' },
+        { stage: 6, id: 'litmus', icon: '🟥', en: 'Moist Red Litmus Paper', ne: 'भिजेको रातो लिटमस', descEn: 'Hold moist red litmus at jar mouth', descNe: 'रातो लिटमस नीलो हुने परीक्षण' },
+        { stage: 7, id: 'fumes', icon: '🧪', en: 'Conc. HCl Dipped Glass Rod', ne: 'HCl भिजेको काँचको डन्डी', descEn: 'Test with conc. HCl rod for white fumes', descNe: 'बाक्लो सेतो धुवाँ परीक्षण' }
+      ];
+
+      function executeStage(stageIndex) {
+        if (stageIndex === 0) {
+          standGroup.visible = true;
+          playClink();
+          currentStage = 1;
+          setStep('2', 'Retort stand placed! Pick the "Hard Glass Test Tube" from the rack to clamp it slanted downwards.', 'स्ट्यान्ड राखियो! अब कडा काँचको टेस्ट ट्युबलाई तलतिर ढल्काएर क्ल्याम्पमा जोड्नुहोस्।');
+          setObservation('Stand assembled. Slanted angle prevents condensed water from cracking hot glass.', 'स्ट्यान्ड तयार भयो। टेस्ट ट्युब जोड्नुहोस्।');
+        } else if (stageIndex === 1) {
+          tubeGroup.visible = true;
+          playClink();
+          currentStage = 2;
+          setStep('3', 'Test tube clamped! Pick "Solid NH₄Cl + Ca(OH)₂ (2:1)" from rack to load solid reactants.', 'टेस्ट ट्युब जोडियो! अब नौसादर र बुझेको चुनको ठोस मिश्रण नलीमा हाल्नुहोस्।');
+          setObservation('Hard glass tube ready. Waiting for 2:1 solid mixture.', 'टेस्ट ट्युब तयार भयो। मिश्रण हाल्नुहोस्।');
+        } else if (stageIndex === 2) {
+          mixMesh.visible = true;
+          playClink();
+          currentStage = 3;
+          setStep('4', 'Reactant mixture loaded! Pick the "Delivery Tube" from the rack to connect the gas exit path.', 'ठोस मिश्रण हालियो! अब ग्यास निकासका लागि "डेलिभरी नली" जोड्नुहोस्।');
+          setObservation('Reactants ready: 2NH₄Cl + Ca(OH)₂ in 2:1 ratio by weight.', 'ठोस मिश्रण तयार। डेलिभरी नली जोड्नुहोस्।');
+        } else if (stageIndex === 3) {
+          nh3DeliveryTube.visible = true;
+          playClink();
+          currentStage = 4;
+          setStep('5', 'Delivery tube connected! Pick the "Inverted Gas Jar" to collect NH₃ by downward displacement of air.', 'डेलिभरी नली जोडियो! अब एमोनिया संकलन गर्न "उल्टो ग्यास जार" मिलाउनुहोस्।');
+          setObservation('Ammonia is lighter than air (vapor density = 8.5), collected in inverted jar.', 'उल्टो ग्यास जार मिलाउनुहोस्।');
+        } else if (stageIndex === 4) {
+          jarGroup.visible = true;
+          playClink();
+          currentStage = 5;
+          setStep('6', 'Apparatus fully assembled! Pick "Bunsen Burner" and place it under the test tube to begin heating.', 'उपकरण तयार भयो! अब "बुन्सेन बर्नर" राखी बाल्नुहोस्।');
+          setObservation('Apparatus assembled. Ready to heat mixture.', 'सम्पूर्ण उपकरण तयार। बर्नर बाल्नुहोस्।');
+        } else if (stageIndex === 5) {
+          burnerGroup.visible = true;
+          burnerFlame.visible = true;
+          isHeating = true;
+          playFlameSound();
+          currentStage = 6;
+          setStep('7', 'Heating! Ammonia gas (NH₃) is evolving and filling the jar. Pick "Moist Red Litmus Paper" to test.', 'तताइँदैछ! एमोनिया ग्यास बन्दैछ। अब "भिजेको रातो लिटमस" छनोट गरी परीक्षण गर्नुहोस्।');
+          setObservation('2NH₄Cl + Ca(OH)₂ ─(Heat)─➔ CaCl₂ + 2H₂O + 2NH₃↑', 'एमोनिया ग्यास संकलन भइरहेको छ।');
+        } else if (stageIndex === 6) {
+          litmus.visible = true;
+          playClink();
+          setTimeout(() => {
+            litmus.material.color.setHex(0x3b82f6); // Turns BLUE!
+            playSuccess();
+            currentStage = 7;
+            setStep('8', 'Moist red litmus paper turned BLUE! Ammonia is basic/alkaline. Finally, pick "Conc. HCl Dipped Glass Rod".', 'रातो लिटमस नीलो भयो! एमोनिया क्षार हो। अब "HCl मा भिजेको काँचको डन्डी" छनोट गर्नुहोस्।');
+            setObservation('Litmus: Red ➔ Blue (Alkaline Gas Confirmed)', 'रातो लिटमस नीलो बन्यो - एमोनिया क्षार हो।');
+            updateActionButtons();
+            if (updateRackFn) updateRackFn();
+          }, 600);
+        } else if (stageIndex === 7) {
+          rodGroup.visible = true;
+          playHissSound();
+          playSuccess();
+          currentStage = 8;
+          setStep('Done!', 'Dense white fumes of Ammonium Chloride (NH₄Cl) formed! NH₃ + HCl ➔ NH₄Cl↑. Practical 100% complete!', 'बाक्लो सेतो धुवाँ (NH₄Cl) बन्यो! एमोनिया ग्यास बन्ने विधि १००% प्रमाणित भयो!');
+          setObservation('Dense white fumes of ammonium chloride confirmed NH₃.', 'कन्सन्ट्रेटेड HCl र NH₃ मिलेर बाक्लो सेतो धुवाँ बन्यो।');
+        }
+
+        updateActionButtons();
+        if (updateRackFn) updateRackFn();
+      }
+
+      function updateActionButtons() {
+        const currentItem = eqItems[currentStage] || { descEn: 'Experiment Complete!', descNe: 'प्रयोग सम्पन्न भयो!' };
+        actionsGrid.innerHTML = `
+          <button class="lab-action-btn active-step" id="btn-nh3-action" ${currentStage >= 8 ? 'disabled' : ''}>
+            <span>👉 Step ${currentStage + 1}: ${currentItem.en || 'Complete'}</span>
+            <span class="sub">${currentItem.descNe || ''}</span>
+          </button>
+          <button class="lab-action-btn btn-reset" id="btn-nh3-reset">
+            <span>🔄 Start Clean Bench</span>
+            <span class="sub">खाली बेन्चबाट सुरु</span>
+          </button>
+        `;
+
+        const btnNext = document.getElementById('btn-nh3-action');
+        if (btnNext && currentStage < 8) {
+          btnNext.onclick = () => executeStage(currentStage);
+        }
+        document.getElementById('btn-nh3-reset').onclick = () => setupNH3Experiment();
+      }
+
+      updateRackFn = setEquipmentRack(eqItems, currentStage, (item, stg) => {
+        if (stg === currentStage) {
+          executeStage(stg);
+        } else if (stg < currentStage) {
+          playClink();
+          setObservation(`${item.en} is already assembled on the workbench.`, `${item.ne} पहिले नै बेन्चमा जडान भइसकेको छ।`);
+        } else {
+          playTone(200, 'sawtooth', 0.2, 0.15);
+          setObservation(`Please do Step ${currentStage + 1} first: ${eqItems[currentStage].en}`, `पहिले चरण ${currentStage + 1} को उपकरण छनोट गर्नुहोस्: ${eqItems[currentStage].ne}।`);
+          speakText(`Please do Step ${currentStage + 1} first: ${eqItems[currentStage].en}`, `पहिले ${eqItems[currentStage].ne} छनोट गर्नुहोस्।`);
+        }
+      });
+
+      // Render Loop
       currentAnimTick = () => {
         if (isHeating) {
           burnerFlame.scale.y = 1 + Math.sin(Date.now() * 0.02) * 0.15;
@@ -1913,76 +2048,11 @@
         }
       };
 
-      actionsGrid.innerHTML = `
-        <button class="lab-action-btn active-step" id="btn-burner">
-          <span>1. Ignite Bunsen Burner</span>
-          <span class="sub">बुन्सेन बर्नर बाल्नुहोस्</span>
-        </button>
-        <button class="lab-action-btn" id="btn-litmus" disabled>
-          <span>2. Moist Red Litmus Test</span>
-          <span class="sub">रातो लिटमस नीलो हुने</span>
-        </button>
-        <button class="lab-action-btn" id="btn-fumes" disabled>
-          <span>3. Conc. HCl Glass Rod</span>
-          <span class="sub">बाक्लो सेतो धुवाँ परीक्षण</span>
-        </button>
-        <button class="lab-action-btn btn-reset" id="btn-reset">
-          <span>🔄 Reset</span>
-          <span class="sub">पुनः सुरु</span>
-        </button>
-      `;
-
-      setStep('1', 'Turn on Bunsen burner to heat the solid mixture of NH₄Cl and Ca(OH)₂ in 2:1 ratio.', 'बुन्सेन बर्नर बाली NH₄Cl र Ca(OH)₂ को मिश्रणलाई तताउनुहोस्।');
-      setObservation('Hard glass tube clamped slanted downwards to prevent condensation cracking.', 'काँचको नलीलाई तलतिर ढल्काएर राखिएको छ।');
-
-      btnBurner = document.getElementById('btn-burner');
-      btnLitmus = document.getElementById('btn-litmus');
-      btnFumes = document.getElementById('btn-fumes');
-      btnReset = document.getElementById('btn-reset');
-
-      btnBurner.addEventListener('click', () => {
-        burnerFlame.visible = true;
-        isHeating = true;
-        playFlameSound();
-        btnBurner.disabled = true;
-        btnBurner.classList.remove('active-step');
-        btnLitmus.disabled = false;
-        btnLitmus.classList.add('active-step');
-        setStep('2', 'Reaction starting: Ammonia gas (NH₃) is evolving and collecting in the inverted jar by downward displacement of air.', 'एमोनिया ग्यास बन्दैछ र हावाको अधोमुखी विस्थापनद्वारा उल्टो ग्यास जारमा जम्मा हुँदैछ।');
-        setObservation('Ammonia is lighter than air (vapor density = 8.5 vs air 14.4).', 'एमोनिया हावाभन्दा हलुका भएकाले उल्टो जारमा संकलन गरिन्छ।');
-      });
-
-      btnLitmus.addEventListener('click', () => {
-        litmus.visible = true;
-        playClink();
-        setTimeout(() => {
-          litmus.material.color.setHex(0x3b82f6); // Turns BLUE
-          playSuccess();
-          setStep('3', 'Moist red litmus paper turned BLUE! Proves ammonia is a basic/alkaline gas.', 'भिजेको रातो लिटमस कागज नीलो भयो! यसले एमोनिया क्षारिय ग्यास भएको प्रमाणित गर्दछ।');
-          setObservation('Litmus: Red ➔ Blue (Alkaline Gas Confirmed)', 'रातो लिटमस नीलो बन्यो - एमोनिया क्षार हो।');
-          btnLitmus.disabled = true;
-          btnLitmus.classList.remove('active-step');
-          btnFumes.disabled = false;
-          btnFumes.classList.add('active-step');
-        }, 600);
-      });
-
-      btnFumes.addEventListener('click', () => {
-        rodGroup.visible = true;
-        playHissSound();
-        playSuccess();
-        setStep('4', 'Dense white fumes of Ammonium Chloride (NH₄Cl) formed! NH₃ + HCl ➔ NH₄Cl↑. Experiment verified!', 'बाक्लो सेतो धुवाँ (NH₄Cl) बन्यो! NH₃ + HCl ➔ NH₄Cl। प्रयोग पूर्णरूपमा सफल भयो!');
-        setObservation('Dense white fumes of ammonium chloride confirmed NH₃.', 'कन्सन्ट्रेटेड HCl र NH₃ मिलेर बाक्लो सेतो धुवाँ बन्यो।');
-        btnFumes.disabled = true;
-        btnFumes.classList.remove('active-step');
-      });
-
-      btnReset.addEventListener('click', () => {
-        setupNH3Experiment();
-      });
+      setStep('1', 'Welcome! The workbench is clean. Go to the Equipment Rack and pick the "Retort Stand with Clamp" to begin assembling NH₃ apparatus.', 'स्वागत छ! बेन्च खाली छ। दायाँपट्टिको र्‍याकबाट "रिटोर्ट स्ट्यान्ड र क्ल्याम्प" छनोट गरी सुरु गर्नुहोस्।');
+      setObservation('Clean workbench. Ready for student to choose apparatus from the rack.', 'खाली बेन्च। विद्यार्थीले र्‍याकबाट उपकरण छनोट गरी जडान गर्नुपर्नेछ।');
+      updateActionButtons();
     }
 
-    // ─── 4C. Experiment 3: Verification of Ohm\'s Law (V = I * R) ──────────────
     function setupOhmsExperiment() {
       labGroup.clear();
       const g = new THREE.Group();
@@ -3465,52 +3535,60 @@
     }
 
     // ─── 4J. Experiment 10: ABO & Rh Blood Group Testing Lab ─────────────────
-    function setupBloodTestExperiment() {
+        function setupBloodTestExperiment() {
       labGroup.clear();
       const g = new THREE.Group();
 
-      // White Porcelain 3-Well Cavity Plate
+      // White Porcelain 3-Well Cavity Plate (Hidden at start!)
       const plate = new THREE.Mesh(new THREE.BoxGeometry(3.2, 0.15, 1.4), new THREE.MeshStandardMaterial({ color: 0xf8fafc, roughness: 0.1, metalness: 0.1 }));
       plate.position.set(0, 0.075, 0);
+      plate.visible = false;
       g.add(plate);
 
       // Wells (Cavities A, B, D/Rh)
       const wellGeo = new THREE.CylinderGeometry(0.38, 0.38, 0.08, 24);
-      const wellAMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.4 }); // Well A
-      const wellBMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.4 }); // Well B
-      const wellDMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.4 }); // Well D
+      const wellAMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.1 });
+      const wellBMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.1 });
+      const wellDMat = new THREE.MeshStandardMaterial({ color: 0xef4444, transparent: true, opacity: 0.1 });
 
       const wellA = new THREE.Mesh(wellGeo, wellAMat);
       wellA.position.set(-1.0, 0.12, 0);
+      wellA.visible = false;
       g.add(wellA);
 
       const wellB = new THREE.Mesh(wellGeo, wellBMat);
       wellB.position.set(0, 0.12, 0);
+      wellB.visible = false;
       g.add(wellB);
 
       const wellD = new THREE.Mesh(wellGeo, wellDMat);
       wellD.position.set(1.0, 0.12, 0);
+      wellD.visible = false;
       g.add(wellD);
 
       // Reagent Bottles (Anti-A Blue, Anti-B Yellow, Anti-D Clear)
       const bottleGeo = new THREE.CylinderGeometry(0.14, 0.14, 0.55, 16);
 
-      const bAntiA = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0x2563eb })); // Blue Anti-A
+      const bAntiA = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0x2563eb }));
       bAntiA.position.set(-1.0, 0.28, -1.0);
+      bAntiA.visible = false;
       g.add(bAntiA);
 
-      const bAntiB = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0xeab308 })); // Yellow Anti-B
+      const bAntiB = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0xeab308 }));
       bAntiB.position.set(0, 0.28, -1.0);
+      bAntiB.visible = false;
       g.add(bAntiB);
 
-      const bAntiD = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0xe2e8f0 })); // Clear Anti-D
+      const bAntiD = new THREE.Mesh(bottleGeo, new THREE.MeshStandardMaterial({ color: 0xe2e8f0 }));
       bAntiD.position.set(1.0, 0.28, -1.0);
+      bAntiD.visible = false;
       g.add(bAntiD);
 
       labGroup.add(g);
 
-      // Patient Blood Group Types
-      let patientBlood = 'B+'; // Default test subject
+      let patientBlood = 'B+';
+      let currentStage = 0;
+      let updateRackFn = null;
 
       function updateBloodCalc() {
         slidersWrap.innerHTML = `
@@ -3549,90 +3627,106 @@
       }
       updateBloodCalc();
 
-      // Equipment Rack
       const eqItems = [
-        { id: 'plate', icon: '🥏', en: '3-Well Porcelain Testing Tile', ne: '३ वटा खाल्डो भएको सेतो टायल', onBench: true },
-        { id: 'antiA', icon: '🔵', en: 'Anti-A Monoclonal Serum (Blue)', ne: 'एन्टी-ए सिरम (नीलो बोतल)', onBench: true },
-        { id: 'antiB', icon: '🟡', en: 'Anti-B Monoclonal Serum (Yellow)', ne: 'एन्टी-बी सिरम (पहेंलो बोतल)', onBench: true },
-        { id: 'antiD', icon: '⚪', en: 'Anti-D (Rh) Serum (Colorless)', ne: 'एन्टी-डी आर.एच. सिरम (सेतो)', onBench: true },
-        { id: 'blood', icon: '🩸', en: 'Patient Blood Sample Vial', ne: 'बिरामीको रगतको नमुना', onBench: true }
+        { stage: 0, id: 'plate', icon: '🥏', en: '3-Well Porcelain Testing Tile', ne: '३ वटा खाल्डो भएको सेतो टायल', descEn: 'Place porcelain tile on bench', descNe: 'टायल बेन्चमा राख्नुहोस्' },
+        { stage: 1, id: 'blood', icon: '🩸', en: 'Patient Blood Dropper', ne: 'बिरामीको रगतको नमुना', descEn: 'Dispense 1 drop in each well', descNe: 'तीनै खाल्डोमा १/१ थोपा रगत हाल्नुहोस्' },
+        { stage: 2, id: 'antiA', icon: '🔵', en: 'Anti-A Monoclonal Serum (Blue)', ne: 'एन्टी-ए सिरम (नीलो बोतल)', descEn: 'Add Anti-A serum to Well A', descNe: 'Well A मा एन्टी-ए सिरम हाल्नुहोस्' },
+        { stage: 3, id: 'antiB', icon: '🟡', en: 'Anti-B Monoclonal Serum (Yellow)', ne: 'एन्टी-बी सिरम (पहेंलो बोतल)', descEn: 'Add Anti-B serum to Well B', descNe: 'Well B मा एन्टी-बी सिरम हाल्नुहोस्' },
+        { stage: 4, id: 'antiD', icon: '⚪', en: 'Anti-D (Rh) Serum (Colorless)', ne: 'एन्टी-डी आर.एच. सिरम (सेतो)', descEn: 'Add Anti-D serum to Well Rh', descNe: 'Well Rh मा एन्टी-डी सिरम हाल्नुहोस्' },
+        { stage: 5, id: 'toothpick', icon: '🥢', en: 'Sterile Mixing Toothpicks', ne: 'घोल्ने सफा सिन्का', descEn: 'Mix and observe agglutination', descNe: 'घोल्नुहोस् र थक्का हेर्नुहोस्' }
       ];
 
-      setEquipmentRack(eqItems, (item) => {
-        playClink();
-        setObservation(`Equipment: ${item.en} (${item.ne})`, item.ne);
-        speakText(`Selected ${item.en}`, `${item.ne} छनोट गरियो।`);
+      function executeStage(stageIndex) {
+        if (stageIndex === 0) {
+          plate.visible = true;
+          wellA.visible = true;
+          wellB.visible = true;
+          wellD.visible = true;
+          playClink();
+          currentStage = 1;
+          setStep('2', 'Porcelain tile ready! Pick "Patient Blood Dropper" from the rack to add 1 drop to each well.', 'टायल राखियो! अब र्‍याकबाट "रगतको नमुना" छनोट गरी तीनवटै खाल्डोमा हाल्नुहोस्।');
+          setObservation('White porcelain tile on bench. Waiting for blood drops.', 'टायल तयार भयो। रगत हाल्नुहोस्।');
+        } else if (stageIndex === 1) {
+          playPourSound();
+          wellAMat.opacity = 0.85;
+          wellBMat.opacity = 0.85;
+          wellDMat.opacity = 0.85;
+          currentStage = 2;
+          setStep('3', 'Blood placed in all 3 wells! Pick "Anti-A Monoclonal Serum (Blue)" to add antibody to Well A.', 'तीनै खाल्डोमा रगत हालियो! अब र्‍याकबाट "एन्टी-ए सिरम (नीलो बोतल)" छनोट गर्नुहोस्।');
+          setObservation('Blood drops dispensed. Ready for Anti-A serum.', 'रगत हालियो। अब Anti-A सिरम हाल्नुहोस्।');
+        } else if (stageIndex === 2) {
+          bAntiA.visible = true;
+          playTone(700, 'sine', 0.15, 0.2);
+          currentStage = 3;
+          setStep('4', 'Anti-A added! Now pick "Anti-B Monoclonal Serum (Yellow)" from rack to add to Well B.', 'Anti-A हालियो! अब र्‍याकबाट "एन्टी-बी सिरम (पहेंलो बोतल)" छनोट गरी Well B मा हाल्नुहोस्।');
+          setObservation('Well A loaded with Anti-A. Waiting for Anti-B.', 'Well A तयार। अब Anti-B हाल्नुहोस्।');
+        } else if (stageIndex === 3) {
+          bAntiB.visible = true;
+          playTone(700, 'sine', 0.15, 0.2);
+          currentStage = 4;
+          setStep('5', 'Anti-B added! Now pick "Anti-D (Rh) Serum" from rack to test Rh factor in Well Rh/D.', 'Anti-B हालियो! अब र्‍याकबाट "एन्टी-डी (Rh) सिरम" छनोट गरी Well Rh मा हाल्नुहोस्।');
+          setObservation('Well A & B loaded. Waiting for Anti-D Rh serum.', 'Anti-B हालियो। अब Anti-D हाल्नुहोस्।');
+        } else if (stageIndex === 4) {
+          bAntiD.visible = true;
+          playTone(700, 'sine', 0.15, 0.2);
+          currentStage = 5;
+          setStep('6', 'All antisera added! Pick "Sterile Mixing Toothpicks" from rack to mix each well and observe clumping.', 'सबै सिरम हालियो! अब "घोल्ने सफा सिन्का" छनोट गरी प्रत्येक खाल्डो घोल्नुहोस् र थक्का हेर्नुहोस्।');
+          setObservation('All reagents loaded. Ready to mix with toothpicks.', 'सिरमहरू हालिए। अब घोल्नुहोस्।');
+        } else if (stageIndex === 5) {
+          playSuccess();
+          const hasA = patientBlood.includes('A');
+          const hasB = patientBlood.includes('B');
+          const hasRh = patientBlood.includes('+');
+
+          if (hasA) wellAMat.color.setHex(0x7f1d1d);
+          if (hasB) wellBMat.color.setHex(0x7f1d1d);
+          if (hasRh) wellDMat.color.setHex(0x7f1d1d);
+
+          currentStage = 6;
+          setStep('Done!', `Agglutination confirmed! Patient blood type is ${patientBlood}. Practical 100% complete!`, `थक्का प्रमाणित भयो! बिरामीको रक्त समूह '${patientBlood}' पुष्टि भयो। प्रयोग सम्पन्न!`);
+          setObservation(`Blood Group ${patientBlood} confirmed: Clumping in ${hasA?'A ':''}${hasB?'B ':''}${hasRh?'Rh(D)':''}.`, `रक्त समूह ${patientBlood} प्रमाणित भयो!`);
+        }
+
+        updateActionButtons();
+        if (updateRackFn) updateRackFn();
+      }
+
+      function updateActionButtons() {
+        const currentItem = eqItems[currentStage] || { descEn: 'Testing Complete!', descNe: 'परीक्षण सम्पन्न भयो!' };
+        actionsGrid.innerHTML = `
+          <button class="lab-action-btn active-step" id="btn-blood-action" ${currentStage >= 6 ? 'disabled' : ''}>
+            <span>👉 Step ${currentStage + 1}: ${currentItem.en || 'Complete'}</span>
+            <span class="sub">${currentItem.descNe || ''}</span>
+          </button>
+          <button class="lab-action-btn btn-reset" id="btn-blood-reset">
+            <span>🔄 Start Clean Bench</span>
+            <span class="sub">खाली बेन्चबाट सुरु</span>
+          </button>
+        `;
+
+        const btnNext = document.getElementById('btn-blood-action');
+        if (btnNext && currentStage < 6) {
+          btnNext.onclick = () => executeStage(currentStage);
+        }
+        document.getElementById('btn-blood-reset').onclick = () => setupBloodTestExperiment();
+      }
+
+      updateRackFn = setEquipmentRack(eqItems, currentStage, (item, stg) => {
+        if (stg === currentStage) {
+          executeStage(stg);
+        } else if (stg < currentStage) {
+          playClink();
+          setObservation(`${item.en} is already used on the testing plate.`, `${item.ne} पहिले नै प्रयोग भइसकेको छ।`);
+        } else {
+          playTone(200, 'sawtooth', 0.2, 0.15);
+          setObservation(`Please do Step ${currentStage + 1} first: ${eqItems[currentStage].en}`, `पहिले चरण ${currentStage + 1} को उपकरण छनोट गर्नुहोस्: ${eqItems[currentStage].ne}।`);
+          speakText(`Please do Step ${currentStage + 1} first: ${eqItems[currentStage].en}`, `पहिले ${eqItems[currentStage].ne} छनोट गर्नुहोस्।`);
+        }
       });
 
-      actionsGrid.innerHTML = `
-        <button class="lab-action-btn active-step" id="btn-add-blood">
-          <span>1. Drop Blood in 3 Wells</span>
-          <span class="sub">तीनै खाल्डोमा रगत हाल्नुहोस्</span>
-        </button>
-        <button class="lab-action-btn" id="btn-add-serum" disabled>
-          <span>2. Add Anti-A, Anti-B, Anti-D</span>
-          <span class="sub">सिरम मिसाउनुहोस्</span>
-        </button>
-        <button class="lab-action-btn" id="btn-mix" disabled>
-          <span>3. Mix & Observe Agglutination</span>
-          <span class="sub">थक्का (Clumping) हेर्नुहोस्</span>
-        </button>
-        <button class="lab-action-btn btn-reset" id="btn-reset">
-          <span>🔄 Reset</span>
-          <span class="sub">पुनः सुरु</span>
-        </button>
-      `;
-
-      setStep('1', 'Dispense 1 drop of patient blood into Well A, Well B, and Well Rh/D.', 'सेतो टायलको तीनवटै खाल्डोमा १/१ थोपा रगत हाल्नुहोस्।');
-      setObservation('Porcelain plate ready. Waiting for blood drops.', 'टायल तयार छ। रगत हाल्नुहोस्।');
-
-      const btnBlood = document.getElementById('btn-add-blood');
-      const btnSerum = document.getElementById('btn-add-serum');
-      const btnMix = document.getElementById('btn-mix');
-
-      btnBlood.addEventListener('click', () => {
-        playPourSound();
-        wellAMat.opacity = 0.85;
-        wellBMat.opacity = 0.85;
-        wellDMat.opacity = 0.85;
-        btnBlood.disabled = true;
-        btnBlood.classList.remove('active-step');
-        btnSerum.disabled = false;
-        btnSerum.classList.add('active-step');
-        setStep('2', 'Add 1 drop of Blue Anti-A to Well A, Yellow Anti-B to Well B, and Clear Anti-D to Well Rh.', 'पहिलो खाल्डोमा Anti-A (नीलो), दोस्रोमा Anti-B (पहेंलो), र तेस्रोमा Anti-D (सेतो) सिरम हाल्नुहोस्।');
-        setObservation('Blood placed in all 3 wells. Adding antibodies...', 'रगत हालियो। अब सिरम थप्नुहोस्।');
-      });
-
-      btnSerum.addEventListener('click', () => {
-        playTone(700, 'sine', 0.15, 0.2);
-        btnSerum.disabled = true;
-        btnSerum.classList.remove('active-step');
-        btnMix.disabled = false;
-        btnMix.classList.add('active-step');
-        setStep('3', 'Mix each well with separate clean toothpicks. Watch for agglutination (clumping of red cells).', 'अलग-अलग सिन्काले घोल्नुहोस्। कुन खाल्डोमा रगत जम्छ (थक्का बन्छ) हेर्नुहोस्।');
-        setObservation('Antisera added. Ready to mix.', 'सिरम हालियो। अब घोल्नुहोस्।');
-      });
-
-      btnMix.addEventListener('click', () => {
-        playSuccess();
-        // Clumping logic based on patient blood:
-        const hasA = patientBlood.includes('A');
-        const hasB = patientBlood.includes('B');
-        const hasRh = patientBlood.includes('+');
-
-        if (hasA) wellAMat.color.setHex(0x7f1d1d); // Clumped dark granular
-        if (hasB) wellBMat.color.setHex(0x7f1d1d);
-        if (hasRh) wellDMat.color.setHex(0x7f1d1d);
-
-        setStep('4', `Result: Agglutination observed! Patient Blood Group is confirmed as ${patientBlood}.`, `नतिजा: रक्तकणहरू जमेको देखियो! बिरामीको रक्त समूह '${patientBlood}' प्रमाणित भयो।`);
-        setObservation(`Blood Group ${patientBlood} confirmed: Clumping in ${hasA?'A ':''}${hasB?'B ':''}${hasRh?'Rh(D)':''}.`, `रक्त समूह ${patientBlood} प्रमाणित भयो!`);
-        btnMix.disabled = true;
-        btnMix.classList.remove('active-step');
-      });
-
-      document.getElementById('btn-reset').addEventListener('click', () => {
-        setupBloodTestExperiment();
-      });
+      setStep('1', 'Welcome! The bench is clean. Go to the Equipment Rack on the right and pick the "3-Well Porcelain Testing Tile" to begin.', 'स्वागत छ! बेन्च खाली छ। दायाँपट्टिको र्‍याकबाट "३ वटा खाल्डो भएको सेतो टायल" छनोट गरी सुरु गर्नुहोस्।');
+      setObservation('Clean workbench. Ready for student to choose testing equipment.', 'खाली बेन्च। विद्यार्थीले र्‍याकबाट परीक्षण उपकरण छनोट गर्नुपर्नेछ।');
+      updateActionButtons();
     }
 
     // ── 6. Main Experiment Loader & Routing ───────────────────────────────────
