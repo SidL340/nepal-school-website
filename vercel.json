@@ -1,4 +1,5 @@
 {
+  "outputDirectory": ".",
   "cleanUrls": true,
   "redirects": [
     { "source": "/hajiri", "destination": "https://hajirinepal.vercel.app", "permanent": false }
