@@ -297,23 +297,25 @@
       margin-left: 0.4rem;
     }
 
+    
     /* ── Optical Eyepiece Viewfinder Overlay (Microscope) ── */
     .microscope-eyepiece-overlay {
       position: absolute;
-      top: 10px;
-      right: 10px;
-      background: rgba(11, 19, 38, 0.95);
+      top: 8px;
+      right: 8px;
+      background: rgba(11, 19, 38, 0.97);
       border: 1.5px solid var(--lab-cyan);
       border-radius: 12px;
-      padding: 0.6rem;
+      padding: 0.55rem;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 0.4rem;
-      z-index: 20;
-      backdrop-filter: blur(12px);
-      box-shadow: 0 8px 30px rgba(0,0,0,0.7), 0 0 20px rgba(56, 189, 248, 0.3);
-      max-width: 280px;
+      gap: 0.35rem;
+      z-index: 30;
+      backdrop-filter: blur(14px);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.8), 0 0 25px rgba(56, 189, 248, 0.35);
+      max-width: 300px;
+      user-select: none;
     }
     .eyepiece-title-row {
       display: flex;
@@ -326,22 +328,33 @@
       font-weight: 800;
       color: var(--lab-cyan);
     }
+    .stage-coord-badge {
+      font-size: 0.6rem;
+      color: #94a3b8;
+      font-family: 'JetBrains Mono', monospace;
+      background: rgba(255,255,255,0.06);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+    }
     .eyepiece-bezel {
-      width: 210px;
-      height: 210px;
+      width: 220px;
+      height: 220px;
       border-radius: 50%;
       border: 6px solid #1e293b;
-      box-shadow: inset 0 0 25px rgba(0,0,0,0.9), 0 0 15px rgba(0,0,0,0.6);
+      box-shadow: inset 0 0 30px rgba(0,0,0,0.95), 0 0 20px rgba(0,0,0,0.7);
       position: relative;
       overflow: hidden;
       background: #000;
-      cursor: crosshair;
+      cursor: grab;
+    }
+    .eyepiece-bezel:active {
+      cursor: grabbing;
     }
     #cell-canvas {
       width: 100%;
       height: 100%;
       display: block;
-      transition: filter 0.15s ease;
+      transition: filter 0.12s ease;
     }
     .eyepiece-reticle {
       position: absolute;
@@ -351,22 +364,37 @@
       height: 100%;
       transform: translate(-50%, -50%);
       pointer-events: none;
-      background: radial-gradient(circle, transparent 65%, rgba(0,0,0,0.85) 100%);
+      background: radial-gradient(circle, transparent 65%, rgba(0,0,0,0.9) 100%);
       border-radius: 50%;
     }
     .eyepiece-reticle::before, .eyepiece-reticle::after {
       content: '';
       position: absolute;
-      background: rgba(255, 255, 255, 0.25);
+      background: rgba(255, 255, 255, 0.22);
     }
-    .eyepiece-reticle::before { top: 50%; left: 10%; right: 10%; height: 1px; }
-    .eyepiece-reticle::after { left: 50%; top: 10%; bottom: 10%; width: 1px; }
-    
+    .eyepiece-reticle::before { top: 50%; left: 8%; right: 8%; height: 1px; }
+    .eyepiece-reticle::after { left: 50%; top: 8%; bottom: 8%; width: 1px; }
+
+    .eyepiece-drag-hint {
+      position: absolute;
+      bottom: 6px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.75);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #cbd5e1;
+      font-size: 0.58rem;
+      padding: 0.1rem 0.4rem;
+      border-radius: 999px;
+      pointer-events: none;
+      white-space: nowrap;
+    }
+
     .eyepiece-controls-row {
       width: 100%;
       display: flex;
       flex-direction: column;
-      gap: 0.35rem;
+      gap: 0.3rem;
     }
     .eyepiece-specimen-pills {
       display: grid;
@@ -390,23 +418,86 @@
       border-color: var(--lab-cyan);
       color: #fff;
     }
-    .eyepiece-slider-group {
+
+    /* Mechanical Stage Sliding & Focal Wheel Controls */
+    .micro-adjusters-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.3rem;
+      width: 100%;
+    }
+    .adjuster-box {
+      background: rgba(15, 23, 42, 0.85);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 6px;
+      padding: 0.25rem 0.35rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+    }
+    .adjuster-label {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: var(--lab-cyan);
+    }
+    .stage-dpad {
+      display: grid;
+      grid-template-columns: 20px 20px 20px;
+      grid-template-rows: 20px 20px;
+      gap: 2px;
+      justify-content: center;
+    }
+    .stage-btn {
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #fff;
+      font-size: 0.62rem;
+      border-radius: 3px;
       display: flex;
       align-items: center;
-      justify-content: space-between;
-      gap: 0.4rem;
-      font-size: 0.65rem;
-      color: #94a3b8;
+      justify-content: center;
+      cursor: pointer;
+      user-select: none;
     }
-    .eyepiece-slider-group input[type="range"] {
-      flex: 1;
-      height: 4px;
-      accent-color: var(--lab-cyan);
+    .stage-btn:hover {
+      background: var(--lab-cyan);
+      color: #000;
+    }
+    .stage-btn.btn-up { grid-column: 2; grid-row: 1; }
+    .stage-btn.btn-left { grid-column: 1; grid-row: 2; }
+    .stage-btn.btn-down { grid-column: 2; grid-row: 2; }
+    .stage-btn.btn-right { grid-column: 3; grid-row: 2; }
+
+    .focus-wheel-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.2rem;
+      width: 100%;
+    }
+    .wheel-buttons-row {
+      display: flex;
+      gap: 0.2rem;
+      width: 100%;
+      justify-content: center;
+    }
+    .focus-step-btn {
+      background: rgba(30, 41, 59, 0.85);
+      border: 1px solid rgba(255,255,255,0.15);
+      color: #cbd5e1;
+      font-size: 0.58rem;
+      padding: 0.15rem 0.35rem;
+      border-radius: 3px;
       cursor: pointer;
     }
+    .focus-step-btn:hover {
+      border-color: var(--lab-cyan);
+      color: #fff;
+    }
     .focus-badge {
-      font-size: 0.62rem;
-      padding: 0.15rem 0.4rem;
+      font-size: 0.58rem;
+      padding: 0.1rem 0.35rem;
       border-radius: 4px;
       font-weight: 700;
       background: rgba(239, 68, 68, 0.2);
@@ -422,21 +513,20 @@
       background: rgba(15, 23, 42, 0.9);
       border: 1px solid rgba(255, 255, 255, 0.08);
       border-radius: 6px;
-      padding: 0.3rem 0.5rem;
-      font-size: 0.65rem;
+      padding: 0.25rem 0.45rem;
+      font-size: 0.62rem;
     }
     .organelle-info-box h5 {
       color: var(--lab-gold);
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       font-weight: 700;
     }
     .organelle-info-box p {
       color: #cbd5e1;
       line-height: 1.25;
-      margin-top: 2px;
+      margin-top: 1px;
     }
-
-    /* ── Workbench Control Deck (Docked at Bottom, ~100px) ── */
+/* ── Workbench Control Deck (Docked at Bottom, ~100px) ── */
     .lab-bench-deck {
       background: rgba(15, 23, 42, 0.95);
       border: 1px solid var(--lab-card-border);
@@ -938,29 +1028,52 @@
         <div class="microscope-eyepiece-overlay" id="microscope-eyepiece-overlay" style="display:none;">
           <div class="eyepiece-title-row">
             <span>🔬 Optical Eyepiece (आइपिस)</span>
-            <span class="focus-badge" id="eyepiece-focus-badge">Blurry: Turn Knob</span>
+            <span class="stage-coord-badge" id="stage-coords-tag">X: 0 µm, Y: 0 µm</span>
+            <span class="focus-badge" id="eyepiece-focus-badge">Blurry: Turn Wheel</span>
           </div>
 
-          <div class="eyepiece-bezel" id="eyepiece-bezel" title="Click any organelle to inspect biological function">
-            <canvas id="cell-canvas" width="210" height="210"></canvas>
+          <div class="eyepiece-bezel" id="eyepiece-bezel" title="Drag to slide specimen across field of view / Click organelle to inspect">
+            <canvas id="cell-canvas" width="220" height="220"></canvas>
             <div class="eyepiece-reticle"></div>
+            <div class="eyepiece-drag-hint">↔️ Drag to slide & explore cells</div>
           </div>
 
           <div class="eyepiece-controls-row">
             <div class="eyepiece-specimen-pills">
-              <div class="spec-pill active" data-spec="plant">🌿 Plant</div>
-              <div class="spec-pill" data-spec="animal">🧬 Animal</div>
+              <div class="spec-pill active" data-spec="plant">🌿 Plant Cell</div>
+              <div class="spec-pill" data-spec="animal">🧬 Animal Cell</div>
               <div class="spec-pill" data-spec="stomata">🍃 Stomata</div>
             </div>
 
-            <div class="eyepiece-slider-group">
-              <span>Focus Knob (फोकस):</span>
-              <input type="range" id="focus-knob-slider" min="0" max="100" value="15" />
+            <div class="micro-adjusters-grid">
+              <!-- Mechanical Stage X/Y Caliper Navigation -->
+              <div class="adjuster-box">
+                <span class="adjuster-label">Stage Calipers (स्लाइड सार्नुहोस्)</span>
+                <div class="stage-dpad">
+                  <button class="stage-btn btn-up" id="btn-stage-up" title="Slide Stage Up">▲</button>
+                  <button class="stage-btn btn-left" id="btn-stage-left" title="Slide Stage Left">◀</button>
+                  <button class="stage-btn btn-down" id="btn-stage-down" title="Slide Stage Down">▼</button>
+                  <button class="stage-btn btn-right" id="btn-stage-right" title="Slide Stage Right">▶</button>
+                </div>
+              </div>
+
+              <!-- Coarse & Fine Focal Rotary Wheel -->
+              <div class="adjuster-box">
+                <span class="adjuster-label">Focal Wheel (फोकस नब)</span>
+                <div class="focus-wheel-wrap">
+                  <input type="range" class="custom-range" id="focus-knob-slider" min="0" max="100" value="15" title="Rotate focus knob" />
+                  <div class="wheel-buttons-row">
+                    <button class="focus-step-btn" id="btn-coarse-minus">- Coarse</button>
+                    <button class="focus-step-btn" id="btn-fine-focus" style="color:var(--lab-cyan);font-weight:700;">🎯 Sharp</button>
+                    <button class="focus-step-btn" id="btn-coarse-plus">+ Coarse</button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div class="organelle-info-box" id="organelle-callout">
-              <h5 id="callout-title">Click Organelle / अंग छुनुहोस्</h5>
-              <p id="callout-desc">Click any part of the cell inside the eyepiece to inspect its biological function.</p>
+              <h5 id="callout-title">Tap Organelle / अंग छुनुहोस्</h5>
+              <p id="callout-desc">Click any part of the cell inside the eyepiece to inspect its biological structure and function.</p>
             </div>
           </div>
         </div>

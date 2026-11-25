@@ -1177,46 +1177,90 @@
   // ════════════════════════════════════════════════════════════════════════════
   // ── EXPERIMENT 3: Acid-Base Neutralization Titration (HCl + NaOH) ──────────
   // ════════════════════════════════════════════════════════════════════════════
-  function setupTitrationExperiment() {
+    function setupTitrationExperiment() {
     labGroup.clear();
     const g = new THREE.Group();
 
-    // Stand & Burette Clamp
-    const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.2), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
-    stand.position.set(-0.6, 1.6, 0);
-    g.add(stand);
+    // 1. Heavy Base Retort Stand with Clamp
+    const standGroup = new THREE.Group();
+    standGroup.position.set(-0.6, 0, 0);
+    standGroup.visible = false;
 
-    // 50mL Graduated Burette
-    const burette = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 2.4, 20), glassMaterial);
-    burette.position.set(-0.1, 1.9, 0);
-    g.add(burette);
+    const sBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.12, 0.7), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85, roughness: 0.2 }));
+    sBase.position.y = 0.06;
+    standGroup.add(sBase);
 
-    const naohLiquid = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 2.0, 16), new THREE.MeshStandardMaterial({ color: 0xbae6fd, transparent: true, opacity: 0.5 }));
-    naohLiquid.position.set(-0.1, 1.9, 0);
-    g.add(naohLiquid);
+    const sRod = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 3.2), new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9, roughness: 0.15 }));
+    sRod.position.y = 1.6;
+    standGroup.add(sRod);
 
-    // Conical Flask
-    const flask = new THREE.Mesh(new THREE.ConeGeometry(0.55, 0.8, 20), glassMaterial);
-    flask.position.set(-0.1, 0.4, 0);
-    g.add(flask);
+    const clamp = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.08, 0.08), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
+    clamp.position.set(0.35, 2.1, 0);
+    standGroup.add(clamp);
+    g.add(standGroup);
+
+    // 2. 50 mL Graduated Glass Burette
+    const buretteGroup = new THREE.Group();
+    buretteGroup.position.set(0, 0, 0);
+    buretteGroup.visible = false;
+
+    const buretteTube = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 2.5, 24), glassMaterial);
+    buretteTube.position.y = 2.0;
+    buretteGroup.add(buretteTube);
+
+    // Stopcock tap
+    const stopcock = new THREE.Mesh(new THREE.BoxGeometry(0.18, 0.06, 0.06), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
+    stopcock.position.y = 0.85;
+    buretteGroup.add(stopcock);
+
+    const tip = new THREE.Mesh(new THREE.ConeGeometry(0.065, 0.2, 16), glassMaterial);
+    tip.position.y = 0.75;
+    tip.rotation.x = Math.PI;
+    buretteGroup.add(tip);
+
+    // Liquid inside burette (Standard 0.1M NaOH)
+    const buretteLiquidMat = new THREE.MeshStandardMaterial({ color: 0xbae6fd, transparent: true, opacity: 0.55 });
+    const buretteLiquid = new THREE.Mesh(new THREE.CylinderGeometry(0.058, 0.058, 2.0, 16), buretteLiquidMat);
+    buretteLiquid.position.y = 2.0;
+    buretteGroup.add(buretteLiquid);
+    g.add(buretteGroup);
+
+    // 3. 250 mL Conical Flask with 25mL HCl
+    const flaskGroup = new THREE.Group();
+    flaskGroup.position.set(0, 0, 0);
+    flaskGroup.visible = false;
+
+    const flaskBody = new THREE.Mesh(new THREE.ConeGeometry(0.65, 0.85, 24), glassMaterial);
+    flaskBody.position.y = 0.45;
+    flaskGroup.add(flaskBody);
+
+    const flaskNeck = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 0.35, 16), glassMaterial);
+    flaskNeck.position.y = 0.95;
+    flaskGroup.add(flaskNeck);
 
     const flaskLiquidMat = new THREE.MeshStandardMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
-    const flaskLiquid = new THREE.Mesh(new THREE.ConeGeometry(0.48, 0.4, 16), flaskLiquidMat);
-    flaskLiquid.position.set(-0.1, 0.2, 0);
-    g.add(flaskLiquid);
+    const flaskLiquid = new THREE.Mesh(new THREE.ConeGeometry(0.56, 0.45, 20), flaskLiquidMat);
+    flaskLiquid.position.y = 0.24;
+    flaskGroup.add(flaskLiquid);
+    g.add(flaskGroup);
+
+    // 4. Indicator Dropper Bottle
+    const indicatorBot = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 0.45, 16), new THREE.MeshStandardMaterial({ color: 0xec4899 }));
+    indicatorBot.position.set(1.4, 0.25, 0);
+    indicatorBot.visible = false;
+    g.add(indicatorBot);
 
     labGroup.add(g);
 
     let naohTitrantVol = 0.0;
-    let hclVol = 25.0;
-    let hclMolarity = 0.1;
-    let naohMolarity = 0.1;
+    let currentStage = 0;
+    let updateRackFn = null;
 
     function updateTitrationCalc() {
       const isNeutral = naohTitrantVol >= 25.0;
       if (isNeutral) {
         flaskLiquidMat.color.setHex(0xf472b6); // Permanent pale pink endpoint!
-        flaskLiquidMat.opacity = 0.85;
+        flaskLiquidMat.opacity = 0.88;
       } else {
         flaskLiquidMat.color.setHex(0xffffff);
         flaskLiquidMat.opacity = 0.4;
@@ -1228,105 +1272,189 @@
             <span>Burette Stopcock Dispense:</span>
             <span class="val">${naohTitrantVol.toFixed(1)} mL NaOH</span>
           </div>
-          <input type="range" class="custom-range" id="titrant-range" min="0" max="30" step="0.5" value="${naohTitrantVol}" />
+          <input type="range" class="custom-range" id="titrant-range" min="0" max="30" step="0.5" value="${naohTitrantVol}" ${currentStage < 4 ? 'disabled' : ''} />
         </div>
       `;
 
       formulaBox.innerHTML = `
-        <div class="formula-title">Titration Equation · उदासीनीकरण</div>
+        <div class="formula-title">Neutralization Stoichiometry · उदासीनीकरण</div>
         <div class="formula-math">HCl + NaOH ➔ NaCl + H₂O</div>
-        <div class="formula-math">M₁V₁ (Acid) = M₂V₂ (Base)</div>
+        <div class="formula-math">M₁V₁ (Acid) = M₂V₂ (Base) ⟹ (0.1M)(25mL) = (0.1M)(V₂)</div>
         <div class="formula-result">
-          <span>Current pH Status:</span>
-          <span>${isNeutral ? 'Neutralized (pH 7.0) ✓' : 'Acidic (pH < 7.0)'}</span>
+          <span>Current Status:</span>
+          <span>${isNeutral ? 'Neutralized Pale Pink (pH 7.0) ✓' : naohTitrantVol > 0 ? 'Acidic: Titrating...' : 'Ready for Titration'}</span>
         </div>
       `;
 
-      document.getElementById('titrant-range').oninput = (e) => {
-        naohTitrantVol = parseFloat(e.target.value);
-        playPourSound();
-        updateTitrationCalc();
-      };
+      const tRange = document.getElementById('titrant-range');
+      if (tRange) {
+        tRange.oninput = (e) => {
+          naohTitrantVol = parseFloat(e.target.value);
+          playPourSound();
+          updateTitrationCalc();
+          if (naohTitrantVol >= 25.0) {
+            playSuccess();
+            setStep('Endpoint Reached!', 'Permanent pale pink color obtained! Neutralization complete at exactly 25.0 mL NaOH. M₁V₁ = M₂V₂ verified!', 'स्थायी हल्का गुलाबी रङ आयो! उदासीनीकरण १००% सफल भयो!');
+            setObservation('End point: 25.0 mL NaOH neutralized 25.0 mL HCl.', 'उदासीनीकरण सम्पन्न।');
+          }
+        };
+      }
     }
     updateTitrationCalc();
 
     const eqItems = [
-      { stage: 0, id: 'stand', icon: '🏗️', en: 'Titration Stand & Clamp', ne: 'स्ट्यान्ड र क्ल्याम्प', descNe: 'स्ट्यान्ड बेन्चमा मिलाउनुहोस्' },
-      { stage: 1, id: 'burette', icon: '📏', en: '50 mL Graduated Burette', ne: '५० एमएल ब्युरेट', descNe: 'ब्युरेटमा ०.१ M NaOH भर्नुहोस्' },
-      { stage: 2, id: 'flask', icon: '⚗️', en: '250 mL Conical Flask', ne: 'कोनिकल फ्लास्क', descNe: 'फ्लास्कमा २५ mL HCl राख्नुहोस्' },
-      { stage: 3, id: 'indicator', icon: '💧', en: 'Phenolphthalein Indicator', ne: 'फेनोल्फथेलिन सूचक', descNe: '२ थोपा सूचक हाल्नुहोस्' },
-      { stage: 4, id: 'titrate', icon: '🎯', en: 'Titrate to Pale Pink Endpoint', ne: 'हल्का गुलाबी रङ नआएसम्म टाइट्रेसन', descNe: 'अन्तिम बिन्दु पत्ता लगाउनुहोस्' }
+      { stage: 0, id: 'stand', icon: '🏗️', en: 'Retort Stand with Burette Clamp', ne: 'रिटोर्ट स्ट्यान्ड र क्ल्याम्प', descNe: 'स्ट्यान्ड बेन्चमा राख्नुहोस्' },
+      { stage: 1, id: 'flask', icon: '⚗️', en: '250 mL Conical Flask with 25mL HCl', ne: 'कोनिकल फ्लास्कमा २५ mL HCl', descNe: 'फ्लास्क बेन्चमा मिलाउनुहोस्' },
+      { stage: 2, id: 'indicator', icon: '💧', en: 'Phenolphthalein Indicator (2 drops)', ne: 'फेनोल्फथेलिन सूचक हाल्नुहोस्', descNe: 'अम्लमा रङहीन रहने' },
+      { stage: 3, id: 'burette', icon: '📏', en: '50 mL Burette with 0.1M NaOH', ne: '५० एमएल ब्युरेटमा ०.१ M NaOH', descNe: 'ब्युरेट क्ल्याम्पमा जोड्नुहोस्' },
+      { stage: 4, id: 'titrate', icon: '🎯', en: 'Open Stopcock to Titrate', ne: 'ब्युरेटबाट थोपाथोपा खन्याउनुहोस्', descNe: 'गुलाबी रङ आउने अन्तिम बिन्दु' }
     ];
 
-    let currentStage = 0;
-    renderRack(eqItems, currentStage, (item, stg) => {
-      playClink();
-      setObservation(`${item.en} ready for titration.`, `${item.ne} तयार।`);
+    function executeStage(stg) {
+      if (stg === 0) {
+        standGroup.visible = true;
+        playClink();
+        currentStage = 1;
+        setStep('2', 'Stand placed! Pick "250 mL Conical Flask with 25mL HCl" from the rack.', 'स्ट्यान्ड राखियो! अब २५ mL HCl भएको कोनिकल फ्लास्क बेन्चमा राख्नुहोस्।');
+        setObservation('Retort stand with burette clamp ready.', 'स्ट्यान्ड तयार।');
+      } else if (stg === 1) {
+        flaskGroup.visible = true;
+        playClink();
+        currentStage = 2;
+        setStep('3', 'Flask placed! Pick "Phenolphthalein Indicator" from rack to add 2 drops into the acid.', 'फ्लास्क राखियो! अब २ थोपा फेनोल्फथेलिन सूचक अम्लमा हाल्नुहोस्।');
+        setObservation('HCl in flask: Solution remains clear/colorless in acid.', 'अम्लमा फेनोल्फथेलिन रङहीन रहन्छ।');
+      } else if (stg === 2) {
+        indicatorBot.visible = true;
+        playPourSound();
+        currentStage = 3;
+        setStep('4', 'Indicator added! Pick "50 mL Burette with 0.1M NaOH" from the rack to clamp above the flask.', 'सूचक हालियो! अब ०.१ M NaOH भरिएको ५० एमएल ब्युरेट क्ल्याम्पमा जोड्नुहोस्।');
+        setObservation('Indicator ready. Clamping graduated burette.', 'ब्युरेट जोड्न तयार।');
+      } else if (stg === 3) {
+        buretteGroup.visible = true;
+        playClink();
+        currentStage = 4;
+        updateTitrationCalc();
+        setStep('5', 'Apparatus assembled! Open stopcock to dispense NaOH dropwise until pale pink endpoint.', 'उपकरण तयार भयो! अब ब्युरेटको नब खोलेर हल्का गुलाबी रङ नआएसम्म टाइट्रेसन गर्नुहोस्।');
+        setObservation('Burette clamped at 0.00 mL mark. Ready to titrate.', 'टाइट्रेसन सुरु गर्न तयार।');
+      } else if (stg === 4) {
+        naohTitrantVol = 25.0;
+        playPourSound();
+        playSuccess();
+        updateTitrationCalc();
+        currentStage = 5;
+        setStep('Done!', 'Permanent pale pink endpoint reached at 25.0 mL! Neutralization reaction complete! Practical 100% complete!', 'स्थायी हल्का गुलाबी रङ आयो! उदासीनीकरण १००% सम्पन्न भयो!');
+        setObservation('Endpoint reached: V₁ = 25.0 mL HCl, V₂ = 25.0 mL NaOH. M₁V₁ = M₂V₂ verified.', 'उदासीनीकरण १००% प्रमाणित।');
+      }
+
+      updateActionButtons();
+      if (updateRackFn) updateRackFn();
+    }
+
+    function updateActionButtons() {
+      const cur = eqItems[currentStage] || { en: 'Titration Complete!', ne: 'प्रयोग सम्पन्न!' };
+      actionsGrid.innerHTML = `
+        <button class="lab-action-btn" id="btn-titrate-next" ${currentStage >= 5 ? 'disabled' : ''}>
+          <span>👉 Step ${currentStage + 1}: ${cur.en}</span>
+          <span class="sub">${cur.ne}</span>
+        </button>
+        <button class="lab-action-btn btn-reset" id="btn-titrate-clean">
+          <span>🔄 Clean Bench</span>
+          <span class="sub">खाली बेन्चबाट सुरु</span>
+        </button>
+      `;
+
+      const bNext = document.getElementById('btn-titrate-next');
+      if (bNext && currentStage < 5) {
+        bNext.onclick = () => executeStage(currentStage);
+      }
+      document.getElementById('btn-titrate-clean').onclick = () => setupTitrationExperiment();
+    }
+
+    updateRackFn = renderRack(eqItems, currentStage, (item, stg) => {
+      if (stg === currentStage) executeStage(stg);
+      else if (stg < currentStage) setObservation(`${item.en} is already assembled.`, `${item.ne} राखिसकियो।`);
     });
 
-    setStep('1', 'Fill burette with 0.1M NaOH standard solution and add 2 drops phenolphthalein to HCl in conical flask.', 'ब्युरेटमा ०.१ M NaOH भर्नुहोस् र फ्लास्कमा फेनोल्फथेलिन सूचक हाल्नुहोस्।');
-    setObservation('Indicator added: Solution is colorless in acid.', 'अम्लीय घोलमा फेनोल्फथेलिन रङहीन रहन्छ।');
-
-    actionsGrid.innerHTML = `
-      <button class="lab-action-btn" id="btn-titrate-drop">
-        <span>💧 Dispense 1 mL NaOH from Burette</span>
-        <span class="sub">ब्युरेटबाट १ mL NaOH खन्याउनुहोस्</span>
-      </button>
-      <button class="lab-action-btn btn-reset" id="btn-titrate-reset">
-        <span>🔄 Reset Burette</span>
-        <span class="sub">सुरुबाट</span>
-      </button>
-    `;
-
-    document.getElementById('btn-titrate-drop').onclick = () => {
-      naohTitrantVol = Math.min(30, naohTitrantVol + 1.0);
-      playPourSound();
-      updateTitrationCalc();
-      if (naohTitrantVol >= 25.0) {
-        playSuccess();
-        setStep('Endpoint Reached!', 'Permanent pale pink color obtained! Neutralization complete at 25.0 mL NaOH. M₁V₁ = M₂V₂ verified!', 'स्थायी हल्का गुलाबी रङ आयो! उदासीनीकरण सम्पन्न भयो!');
-        setObservation('Endpoint: HCl + NaOH ➔ NaCl + H₂O (Neutralized pH 7.0)', 'उदासीनीकरण सम्पन्न।');
-      } else {
-        setObservation(`Titrating: ${naohTitrantVol.toFixed(1)} mL dispensed. Swirling flask...`, `खन्याइँदैछ: ${naohTitrantVol.toFixed(1)} mL पुग्यो।`);
-      }
-    };
-    document.getElementById('btn-titrate-reset').onclick = () => setupTitrationExperiment();
+    setStep('1', 'Pick "Retort Stand with Burette Clamp" from the rack to place on your workbench.', 'उपकरण र्याकबाट स्ट्यान्ड र क्ल्याम्प छनोट गरी बेन्चमा राख्नुहोस्।');
+    setObservation('Clean laboratory bench ready for Acid-Base Titration.', 'टाइट्रेसन बेन्च तयार।');
+    updateActionButtons();
   }
 
   // ════════════════════════════════════════════════════════════════════════════
-  // ── EXPERIMENT 4: Verification of Ohm\'s Law (V = I * R) ───────────────────
+  // ── EXPERIMENT 4: Verification of Ohm's Law (V = I * R) ───────────────────
   // ════════════════════════════════════════════════════════════════════════════
-  function setupOhmsExperiment() {
+    function setupOhmsExperiment() {
     labGroup.clear();
     const g = new THREE.Group();
 
-    // Battery Bank
-    const battery = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.6, 0.8), new THREE.MeshStandardMaterial({ color: 0x1e3a8a, metalness: 0.5 }));
-    battery.position.set(-2.0, 0.3, 0);
-    g.add(battery);
+    // 1. DC Battery Power Supply
+    const battGroup = new THREE.Group();
+    battGroup.position.set(-2.0, 0, 0);
+    battGroup.visible = false;
 
-    // Analog Voltmeter
+    const battery = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.65, 0.8), new THREE.MeshStandardMaterial({ color: 0x1e3a8a, metalness: 0.6, roughness: 0.3 }));
+    battery.position.y = 0.325;
+    battGroup.add(battery);
+
+    const termPos = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.15), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
+    termPos.position.set(-0.35, 0.7, 0);
+    battGroup.add(termPos);
+
+    const termNeg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.15), new THREE.MeshStandardMaterial({ color: 0x0f172a }));
+    termNeg.position.set(0.35, 0.7, 0);
+    battGroup.add(termNeg);
+    g.add(battGroup);
+
+    // 2. Constantan Resistor Wire on Wooden Board
+    const resGroup = new THREE.Group();
+    resGroup.position.set(0, 0, 0);
+    resGroup.visible = false;
+
+    const resBoard = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.1, 0.6), new THREE.MeshStandardMaterial({ color: 0x78350f, roughness: 0.8 }));
+    resBoard.position.y = 0.05;
+    resGroup.add(resBoard);
+
+    const resWire = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 1.1), new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.9 }));
+    resWire.rotation.z = Math.PI / 2;
+    resWire.position.y = 0.12;
+    resGroup.add(resWire);
+    g.add(resGroup);
+
+    // 3. Sliding Rheostat
+    const rheoGroup = new THREE.Group();
+    rheoGroup.position.set(0.2, 0, 0.9);
+    rheoGroup.visible = false;
+
+    const rheoTube = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.16, 1.6, 20), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 }));
+    rheoTube.rotation.z = Math.PI / 2;
+    rheoTube.position.y = 0.28;
+    rheoGroup.add(rheoTube);
+
+    const sliderKnob = new THREE.Mesh(new THREE.BoxGeometry(0.15, 0.18, 0.2), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.9 }));
+    sliderKnob.position.set(0, 0.44, 0);
+    rheoGroup.add(sliderKnob);
+    g.add(rheoGroup);
+
+    // 4. Analog Voltmeter (Parallel)
     const voltMeter = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.4, 20), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8 }));
     voltMeter.rotation.x = Math.PI / 4;
-    voltMeter.position.set(0, 0.4, -0.6);
+    voltMeter.position.set(0, 0.4, -0.7);
+    voltMeter.visible = false;
     g.add(voltMeter);
 
-    // Analog Ammeter
+    // 5. Analog Ammeter (Series)
     const ampMeter = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 0.4, 20), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8 }));
     ampMeter.rotation.x = Math.PI / 4;
-    ampMeter.position.set(1.4, 0.4, -0.6);
+    ampMeter.position.set(1.5, 0.4, -0.7);
+    ampMeter.visible = false;
     g.add(ampMeter);
-
-    // Rheostat
-    const rheostat = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 1.6, 16), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.8 }));
-    rheostat.rotation.z = Math.PI / 2;
-    rheostat.position.set(0.2, 0.3, 0.6);
-    g.add(rheostat);
 
     labGroup.add(g);
 
     let voltage = 6.0;
-    const resistance = 10.0; // 10 Ohms
+    const resistance = 10.0;
+    let currentStage = 0;
+    let updateRackFn = null;
 
     function updateOhmsCalc() {
       const current = voltage / resistance;
@@ -1337,13 +1465,13 @@
             <span>Rheostat Potential Difference (V):</span>
             <span class="val">${voltage.toFixed(1)} V</span>
           </div>
-          <input type="range" class="custom-range" id="volt-range" min="1.0" max="12.0" step="0.5" value="${voltage}" />
+          <input type="range" class="custom-range" id="volt-range" min="1.0" max="12.0" step="0.5" value="${voltage}" ${currentStage < 4 ? 'disabled' : ''} />
         </div>
       `;
 
       formulaBox.innerHTML = `
-        <div class="formula-title">Ohm\'s Law · ओमको नियम</div>
-        <div class="formula-math">V = I × R  ⟹  I = V / R</div>
+        <div class="formula-title">Ohm's Law · ओमको नियम</div>
+        <div class="formula-math">V = I × R  ⟹  I = V / R (Slope = R)</div>
         <div class="formula-result">
           <span>Circuit Current (I):</span>
           <span>${current.toFixed(2)} A</span>
@@ -1354,94 +1482,166 @@
         </div>
       `;
 
-      document.getElementById('volt-range').oninput = (e) => {
-        voltage = parseFloat(e.target.value);
-        playTone(300 + voltage * 50, 'sine', 0.08, 0.1);
-        updateOhmsCalc();
-      };
+      const vRange = document.getElementById('volt-range');
+      if (vRange) {
+        vRange.oninput = (e) => {
+          voltage = parseFloat(e.target.value);
+          playTone(300 + voltage * 50, 'sine', 0.08, 0.1);
+          updateOhmsCalc();
+        };
+      }
     }
     updateOhmsCalc();
 
     const eqItems = [
-      { stage: 0, id: 'batt', icon: '🔋', en: 'DC Battery Bank (12V)', ne: 'ब्याट्री', descNe: 'पावर सप्लाई जोड्नुहोस्' },
-      { stage: 1, id: 'rheo', icon: '🎚️', en: 'Sliding Rheostat', ne: 'रियोस्ट्याट', descNe: 'करेन्ट नियन्त्रक' },
-      { stage: 2, id: 'res', icon: '⚡', en: 'Constantan Resistor Wire', ne: 'प्रतिरोधक तार', descNe: '१० ओम प्रतिरोधक' },
-      { stage: 3, id: 'volt', icon: '📟', en: 'Analog Voltmeter (Parallel)', ne: 'भोल्टमिटर (समानान्तर)', descNe: 'भोल्टेज नाप्नुहोस्' },
-      { stage: 4, id: 'amm', icon: '🧭', en: 'Analog Ammeter (Series)', ne: 'एमिमिटर (श्रेणीबद्ध)', descNe: 'करेन्ट नाप्नुहोस्' }
+      { stage: 0, id: 'batt', icon: '🔋', en: 'DC Battery Bank (12V)', ne: '१२ भोल्ट ब्याट्री', descNe: 'पावर सप्लाई बेन्चमा राख्नुहोस्' },
+      { stage: 1, id: 'res', icon: '⚡', en: 'Constantan Resistor Wire (10Ω)', ne: '१० ओम प्रतिरोधक तार', descNe: 'प्रतिरोधक बोर्ड मिलाउनुहोस्' },
+      { stage: 2, id: 'rheo', icon: '🎚️', en: 'Sliding Rheostat (Variable R)', ne: 'रियोस्ट्याट (करेन्ट नियन्त्रक)', descNe: 'श्रेणीक्रममा जोड्नुहोस्' },
+      { stage: 3, id: 'amm', icon: '🧭', en: 'Analog Ammeter (Series)', ne: 'एमिमिटर (श्रेणीक्रम)', descNe: 'करेन्ट नाप्ने मिटर' },
+      { stage: 4, id: 'volt', icon: '📟', en: 'Analog Voltmeter (Parallel)', ne: 'भोल्टमिटर (समानान्तर)', descNe: 'भोल्टेज नाप्ने मिटर' }
     ];
 
-    renderRack(eqItems, 4, (item) => {
-      playClink();
-      setObservation(`Circuit element: ${item.en}`, `${item.ne} परिपथमा जडान छ।`);
+    function executeStage(stg) {
+      if (stg === 0) {
+        battGroup.visible = true;
+        playClink();
+        currentStage = 1;
+        setStep('2', 'Battery placed! Pick "Constantan Resistor Wire (10Ω)" from the rack to place on bench.', 'ब्याट्री राखियो! अब १० ओम प्रतिरोधक तार बेन्चमा राख्नुहोस्।');
+        setObservation('DC Power source connected (12V max).', 'पावर सप्लाई तयार।');
+      } else if (stg === 1) {
+        resGroup.visible = true;
+        playClink();
+        currentStage = 2;
+        setStep('3', 'Resistor placed! Pick "Sliding Rheostat" from rack to regulate circuit voltage and current.', 'प्रतिरोधक राखियो! अब रियोस्ट्याट जोड्नुहोस्।');
+        setObservation('Standard Constantan resistance wire (R = 10 Ω) ready.', 'प्रतिरोधक तयार।');
+      } else if (stg === 2) {
+        rheoGroup.visible = true;
+        playClink();
+        currentStage = 3;
+        setStep('4', 'Rheostat connected! Pick "Analog Ammeter" from rack to connect in series.', 'रियोस्ट्याट जोडियो! अब श्रेणीक्रममा एमिमिटर जोड्नुहोस्।');
+        setObservation('Variable rheostat ready to control current.', 'रियोस्ट्याट तयार।');
+      } else if (stg === 3) {
+        ampMeter.visible = true;
+        playClink();
+        currentStage = 4;
+        setStep('5', 'Ammeter connected! Pick "Analog Voltmeter" from rack to connect in parallel across resistor.', 'एमिमिटर जोडियो! अब प्रतिरोधकको समानान्तरमा भोल्टमिटर जोड्नुहोस्।');
+        setObservation('Ammeter in series measures total circuit current (Amperes).', 'एमिमिटर जडान भयो।');
+      } else if (stg === 4) {
+        voltMeter.visible = true;
+        playClink();
+        playSuccess();
+        currentStage = 5;
+        updateOhmsCalc();
+        setStep('Circuit Complete!', 'Circuit is active! Adjust the Rheostat slider to vary voltage and observe proportional current. V = I × R verified!', 'परिपथ पूरा भयो! भोल्टेज बढाउँदा करेन्ट पनि समानुपातिक रूपमा बढेको हेर्नुहोस्।');
+        setObservation('Ohm\'s Law Verified: Ratio V/I = constant Resistance (10 Ω).', 'ओमको नियम १००% प्रमाणित।');
+      }
+
+      updateActionButtons();
+      if (updateRackFn) updateRackFn();
+    }
+
+    function updateActionButtons() {
+      const cur = eqItems[currentStage] || { en: 'Ohm\'s Law Verified!', ne: 'प्रयोग सम्पन्न!' };
+      actionsGrid.innerHTML = `
+        <button class="lab-action-btn" id="btn-ohms-next" ${currentStage >= 5 ? 'disabled' : ''}>
+          <span>👉 Step ${currentStage + 1}: ${cur.en}</span>
+          <span class="sub">${cur.ne}</span>
+        </button>
+        <button class="lab-action-btn btn-reset" id="btn-ohms-clean">
+          <span>🔄 Clean Bench</span>
+          <span class="sub">खाली बेन्चबाट सुरु</span>
+        </button>
+      `;
+
+      const bNext = document.getElementById('btn-ohms-next');
+      if (bNext && currentStage < 5) {
+        bNext.onclick = () => executeStage(currentStage);
+      }
+      document.getElementById('btn-ohms-clean').onclick = () => setupOhmsExperiment();
+    }
+
+    updateRackFn = renderRack(eqItems, currentStage, (item, stg) => {
+      if (stg === currentStage) executeStage(stg);
+      else if (stg < currentStage) setObservation(`${item.en} is already assembled.`, `${item.ne} राखिसकियो।`);
     });
 
-    setStep('1', 'Slide the rheostat to vary voltage and observe proportional current change. V ∝ I is verified!', 'रियोस्ट्याट चलाएर भोल्टेज बदल्नुहोस् र करेन्ट नाप्नुहोस्।');
-    setObservation('V = I × R. The slope of V vs I gives constant Resistance (10 Ω).', 'भोल्टेज बढाउँदा करेन्ट पनि समानुपातिक रूपमा बढ्छ।');
-
-    actionsGrid.innerHTML = `
-      <button class="lab-action-btn" id="btn-ohms-step">
-        <span>⚡ Step Voltage (+2V)</span>
-        <span class="sub">भोल्टेज बढाउनुहोस्</span>
-      </button>
-      <button class="lab-action-btn btn-reset" id="btn-ohms-reset">
-        <span>🔄 Reset Circuit</span>
-        <span class="sub">सुरुबाट</span>
-      </button>
-    `;
-
-    document.getElementById('btn-ohms-step').onclick = () => {
-      voltage = voltage >= 12.0 ? 2.0 : voltage + 2.0;
-      playTone(400 + voltage * 40, 'triangle', 0.12, 0.15);
-      updateOhmsCalc();
-      setObservation(`Voltage set to ${voltage.toFixed(1)}V. Current = ${(voltage / resistance).toFixed(2)}A`, `भोल्टेज ${voltage}V मा करेन्ट ${(voltage/resistance).toFixed(2)}A भयो।`);
-    };
-    document.getElementById('btn-ohms-reset').onclick = () => setupOhmsExperiment();
+    setStep('1', 'Pick "DC Battery Bank (12V)" from the rack to place on your workbench.', 'उपकरण र्याकबाट १२ भोल्ट ब्याट्री छनोट गरी बेन्चमा राख्नुहोस्।');
+    setObservation('Clean laboratory bench ready for Ohm\'s Law verification.', 'ओमको नियम परीक्षण बेन्च तयार।');
+    updateActionButtons();
   }
 
   // ════════════════════════════════════════════════════════════════════════════
-  // ── EXPERIMENT 5: Archimedes\' Principle & Upthrust ─────────────────────────
+  // ── EXPERIMENT 5: Archimedes' Principle & Upthrust ─────────────────────────
   // ════════════════════════════════════════════════════════════════════════════
-  function setupArchimedesExperiment() {
+    function setupArchimedesExperiment() {
     labGroup.clear();
     const g = new THREE.Group();
 
-    // Retort Stand with Spring Balance
-    const stand = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 3.2), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
-    stand.position.set(-0.8, 1.6, 0);
-    g.add(stand);
+    // 1. Heavy Retort Stand with Spring Balance
+    const standGroup = new THREE.Group();
+    standGroup.position.set(-0.8, 0, 0);
+    standGroup.visible = false;
+
+    const sBase = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.12, 0.8), new THREE.MeshStandardMaterial({ color: 0x334155, metalness: 0.85 }));
+    sBase.position.y = 0.06;
+    standGroup.add(sBase);
+
+    const standRod = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.045, 3.2), new THREE.MeshStandardMaterial({ color: 0x94a3b8, metalness: 0.9 }));
+    standRod.position.y = 1.6;
+    standGroup.add(standRod);
 
     const balance = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 1.1), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.6 }));
-    balance.position.set(-0.4, 2.1, 0);
-    g.add(balance);
+    balance.position.set(0.4, 2.1, 0);
+    standGroup.add(balance);
+    g.add(standGroup);
 
-    // Eureka Can with Spout
-    const eureka = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.4, 24), glassMaterial);
-    eureka.position.set(-0.4, 0.7, 0);
-    g.add(eureka);
+    // 2. Eureka Overflow Can filled to Spout
+    const eurekaGroup = new THREE.Group();
+    eurekaGroup.position.set(-0.4, 0, 0);
+    eurekaGroup.visible = false;
 
-    const waterInCan = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.52, 1.1, 20), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.5 }));
-    waterInCan.position.set(-0.4, 0.6, 0);
-    g.add(waterInCan);
+    const eurekaCan = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 1.4, 24), glassMaterial);
+    eurekaCan.position.y = 0.7;
+    eurekaGroup.add(eurekaCan);
 
-    // Measuring Cylinder
-    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.9, 16), glassMaterial);
-    cyl.position.set(0.6, 0.45, 0);
-    g.add(cyl);
+    // Spout
+    const spout = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 0.4), glassMaterial);
+    spout.rotation.z = Math.PI / 4;
+    spout.position.set(0.55, 1.1, 0);
+    eurekaGroup.add(spout);
 
-    const displacedWater = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.23, 0.5, 16), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.6 }));
-    displacedWater.position.set(0.6, 0.28, 0);
-    g.add(displacedWater);
+    const waterInCan = new THREE.Mesh(new THREE.CylinderGeometry(0.52, 0.52, 1.0, 20), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.5 }));
+    waterInCan.position.y = 0.55;
+    eurekaGroup.add(waterInCan);
+    g.add(eurekaGroup);
 
-    // Solid Brass Cylinder
+    // 3. Measuring Cylinder under spout
+    const cylGroup = new THREE.Group();
+    cylGroup.position.set(0.65, 0, 0);
+    cylGroup.visible = false;
+
+    const cyl = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.95, 16), glassMaterial);
+    cyl.position.y = 0.475;
+    cylGroup.add(cyl);
+
+    const displacedWater = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.5, 16), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.6 }));
+    displacedWater.position.y = 0.28;
+    cylGroup.add(displacedWater);
+    g.add(cylGroup);
+
+    // 4. Solid Brass Cylinder
     const solid = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.6, 16), new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.9 }));
     solid.position.set(-0.4, 1.4, 0);
+    solid.visible = false;
     g.add(solid);
 
     labGroup.add(g);
 
-    let immersionPct = 0; // 0 to 100%
-    const weightAir = 3.5; // N
-    const maxDisplaced = 1.0; // N
+    let immersionPct = 0;
+    const weightAir = 3.5;
+    const maxDisplaced = 1.0;
+    let currentStage = 0;
+    let updateRackFn = null;
 
     function updateArchimedesCalc() {
       const upthrust = (immersionPct / 100) * maxDisplaced;
@@ -1456,12 +1656,12 @@
             <span>Immersion in Eureka Can:</span>
             <span class="val">${immersionPct}%</span>
           </div>
-          <input type="range" class="custom-range" id="immersion-range" min="0" max="100" value="${immersionPct}" />
+          <input type="range" class="custom-range" id="immersion-range" min="0" max="100" value="${immersionPct}" ${currentStage < 3 ? 'disabled' : ''} />
         </div>
       `;
 
       formulaBox.innerHTML = `
-        <div class="formula-title">Archimedes\' Principle · आर्किमिडिजको सिद्धान्त</div>
+        <div class="formula-title">Archimedes' Principle · आर्किमिडिजको सिद्धान्त</div>
         <div class="formula-math">Upthrust (U) = Weight in Air (W₁) - Weight in Liquid (W₂)</div>
         <div class="formula-result">
           <span>Apparent Weight (W₂):</span>
@@ -1472,59 +1672,98 @@
           <span>${upthrust.toFixed(2)} N</span>
         </div>
         <div class="formula-result" style="color:#f59e0b;">
-          <span>Displaced Liquid Volume:</span>
+          <span>Displaced Liquid:</span>
           <span>${displacedML} mL (Weight = ${upthrust.toFixed(2)} N)</span>
         </div>
       `;
 
-      document.getElementById('immersion-range').oninput = (e) => {
-        immersionPct = parseInt(e.target.value);
-        if (immersionPct > 0) playBubbleSound();
-        updateArchimedesCalc();
-      };
+      const imRange = document.getElementById('immersion-range');
+      if (imRange) {
+        imRange.oninput = (e) => {
+          immersionPct = parseInt(e.target.value);
+          if (immersionPct > 0) playBubbleSound();
+          updateArchimedesCalc();
+        };
+      }
     }
     updateArchimedesCalc();
 
     const eqItems = [
-      { stage: 0, id: 'stand', icon: '🏗️', en: 'Retort Stand', ne: 'स्ट्यान्ड', descNe: 'स्ट्यान्ड' },
-      { stage: 1, id: 'balance', icon: '⚖️', en: 'Newton Spring Balance', ne: 'स्प्रिङ ब्यालेन्स', descNe: 'कमानी तराजु' },
-      { stage: 2, id: 'eureka', icon: '🫙', en: 'Eureka Overflow Can', ne: 'युरेका क्यान', descNe: 'पानी भरिएको क्यान' },
-      { stage: 3, id: 'solid', icon: '🔩', en: 'Solid Brass Cylinder (3.5N)', ne: 'ठोस वस्तु', descNe: 'पित्तलको बेलना' },
-      { stage: 4, id: 'measuring', icon: '🧪', en: 'Displaced Water Beaker', ne: 'नाप्ने भाँडो', descNe: 'विस्थापित पानी' }
+      { stage: 0, id: 'stand', icon: '🏗️', en: 'Retort Stand with Spring Balance', ne: 'स्ट्यान्ड र स्प्रिङ ब्यालेन्स', descNe: 'स्ट्यान्ड बेन्चमा राख्नुहोस्' },
+      { stage: 1, id: 'eureka', icon: '🫙', en: 'Eureka Can Filled to Spout', ne: 'टुटी भएको युरेका क्यान', descNe: 'पानी भरिएको क्यान राख्नुहोस्' },
+      { stage: 2, id: 'measuring', icon: '🧪', en: 'Displaced Liquid Measuring Beaker', ne: 'नाप्ने भाँडो (सिलिन्डर)', descNe: 'टुटीमुनि भाँडो राख्नुहोस्' },
+      { stage: 3, id: 'solid', icon: '🔩', en: 'Solid Brass Cylinder (Weight in Air = 3.5N)', ne: 'पित्तलको ठोस वस्तु (तौल ३.५N)', descNe: 'ब्यालेन्समा झुन्ड्याउनुहोस्' },
+      { stage: 4, id: 'submerge', icon: '💧', en: 'Submerge Solid into Water', ne: 'वस्तुलाई पानीमा डुबाउनुहोस्', descNe: 'उर्ध्वचाप प्रमाणित गर्ने' }
     ];
 
-    renderRack(eqItems, 4, (item) => {
-      playClink();
-      setObservation(`${item.en} ready on bench.`, `${item.ne} बेन्चमा तयार।`);
+    function executeStage(stg) {
+      if (stg === 0) {
+        standGroup.visible = true;
+        playClink();
+        currentStage = 1;
+        setStep('2', 'Stand placed! Pick "Eureka Can Filled to Spout" from rack to position on bench.', 'स्ट्यान्ड राखियो! अब पानी भरिएको युरेका क्यान बेन्चमा मिलाउनुहोस्।');
+        setObservation('Newton spring balance mounted on stand.', 'स्प्रिङ ब्यालेन्स तयार।');
+      } else if (stg === 1) {
+        eurekaGroup.visible = true;
+        playClink();
+        currentStage = 2;
+        setStep('3', 'Eureka can placed! Pick "Displaced Liquid Measuring Beaker" to place under the spout.', 'युरेका क्यान राखियो! अब टुटीमुनि नाप्ने भाँडो राख्नुहोस्।');
+        setObservation('Eureka can water level exactly at the spout overflow lip.', 'पानी टुटीसम्म भरिएको छ।');
+      } else if (stg === 2) {
+        cylGroup.visible = true;
+        playClink();
+        currentStage = 3;
+        setStep('4', 'Beaker positioned! Pick "Solid Brass Cylinder" from rack to suspend in air (W₁ = 3.5 N).', 'भाँडो राखियो! अब पित्तलको ठोस वस्तु झुन्ड्याउनुहोस् (हावामा तौल = ३.५ N)।');
+        setObservation('Measuring cylinder ready to collect displaced liquid.', 'नाप्ने भाँडो तयार।');
+      } else if (stg === 3) {
+        solid.visible = true;
+        playClink();
+        currentStage = 4;
+        updateArchimedesCalc();
+        setStep('5', 'Solid suspended in air! Submerge into Eureka can: loss of weight will equal displaced water!', 'वस्तु हावामा झुन्ड्याइयो! अब यसलाई युरेका क्यानमा डुबाएर उर्ध्वचाप नाप्नुहोस्।');
+        setObservation('Solid in air: W₁ = 3.5 N. Ready to lower into water.', 'हावामा तौल ३.५ N छ।');
+      } else if (stg === 4) {
+        immersionPct = 100;
+        playBubbleSound();
+        playSuccess();
+        updateArchimedesCalc();
+        currentStage = 5;
+        setStep('Done!', 'Fully submerged! W₁ = 3.5N, W₂ = 2.5N. Upthrust = 1.0N = Weight of 100mL displaced water! Practical 100% complete!', 'वस्तु पूरै डुब्यो! उर्ध्वचाप = १.० N = विस्थापित पानीको तौल। आर्किमिडिजको सिद्धान्त १००% प्रमाणित!');
+        setObservation('Archimedes Verified: Upthrust = Loss of Weight = Displaced Liquid Weight.', 'आर्किमिडिजको सिद्धान्त प्रमाणित भयो।');
+      }
+
+      updateActionButtons();
+      if (updateRackFn) updateRackFn();
+    }
+
+    function updateActionButtons() {
+      const cur = eqItems[currentStage] || { en: 'Archimedes Verified!', ne: 'प्रयोग सम्पन्न!' };
+      actionsGrid.innerHTML = `
+        <button class="lab-action-btn" id="btn-arch-next" ${currentStage >= 5 ? 'disabled' : ''}>
+          <span>👉 Step ${currentStage + 1}: ${cur.en}</span>
+          <span class="sub">${cur.ne}</span>
+        </button>
+        <button class="lab-action-btn btn-reset" id="btn-arch-clean">
+          <span>🔄 Clean Bench</span>
+          <span class="sub">खाली बेन्चबाट सुरु</span>
+        </button>
+      `;
+
+      const bNext = document.getElementById('btn-arch-next');
+      if (bNext && currentStage < 5) {
+        bNext.onclick = () => executeStage(currentStage);
+      }
+      document.getElementById('btn-arch-clean').onclick = () => setupArchimedesExperiment();
+    }
+
+    updateRackFn = renderRack(eqItems, currentStage, (item, stg) => {
+      if (stg === currentStage) executeStage(stg);
+      else if (stg < currentStage) setObservation(`${item.en} is already assembled.`, `${item.ne} राखिसकियो।`);
     });
 
-    setStep('1', 'Lower the solid into the Eureka can. Loss in weight exactly equals weight of displaced water!', 'ठोस वस्तुलाई युरेका क्यानमा डुबाउनुहोस् र विस्थापित पानीको तौल नाप्नुहोस्।');
-    setObservation('Archimedes verified: U = W₁ - W₂ = Displaced Water Weight.', 'उर्ध्वचाप = विस्थापित तरलको तौल प्रमाणित भयो।');
-
-    actionsGrid.innerHTML = `
-      <button class="lab-action-btn" id="btn-arch-submerge">
-        <span>💧 Submerge Solid Fully (100%)</span>
-        <span class="sub">पूरै डुबाउनुहोस्</span>
-      </button>
-      <button class="lab-action-btn btn-reset" id="btn-arch-reset">
-        <span>🔄 Lift Out of Water</span>
-        <span class="sub">पानीबाट बाहिर</span>
-      </button>
-    `;
-
-    document.getElementById('btn-arch-submerge').onclick = () => {
-      immersionPct = 100;
-      playBubbleSound();
-      playSuccess();
-      updateArchimedesCalc();
-      setStep('Fully Submerged!', 'Solid is 100% submerged! W₁ = 3.5N, W₂ = 2.5N. Upthrust = 1.0N = Weight of 100mL displaced water!', 'पूरै डुब्यो! उर्ध्वचाप = १.० N = विस्थापित पानीको तौल।');
-    };
-    document.getElementById('btn-arch-reset').onclick = () => {
-      immersionPct = 0;
-      playClink();
-      updateArchimedesCalc();
-      setStep('1', 'Solid lifted in air. Weight W₁ = 3.5 N.', 'वस्तु हावामा छ, तौल ३.५ N छ।');
-    };
+    setStep('1', 'Pick "Retort Stand with Spring Balance" from the rack to place on your workbench.', 'उपकरण र्याकबाट स्ट्यान्ड र स्प्रिङ ब्यालेन्स छनोट गरी बेन्चमा राख्नुहोस्।');
+    setObservation('Clean laboratory bench ready for Archimedes\' Principle verification.', 'आर्किमिडिजको सिद्धान्त परीक्षण बेन्च तयार।');
+    updateActionButtons();
   }
 
   // ════════════════════════════════════════════════════════════════════════════
@@ -1625,216 +1864,523 @@
   // ════════════════════════════════════════════════════════════════════════════
   // ── EXPERIMENT 7: Compound Optical Microscope & Cell Explorer ─────────────
   // ════════════════════════════════════════════════════════════════════════════
-  function setupMicroscopeExperiment() {
+  import subprocess
+
+with open('sciencelab.js', 'r', encoding='utf-8') as f:
+    js = f.read()
+
+# Locate setupMicroscopeExperiment
+m_start = js.find('function setupMicroscopeExperiment() {')
+# Locate the end of setupMicroscopeExperiment (which ends right before setupHeartExperiment)
+m_end = js.find('function setupHeartExperiment() {')
+
+print("setupMicroscopeExperiment found:", m_start != -1, "to", m_end != -1)
+
+new_microscope_func = """function setupMicroscopeExperiment() {
     labGroup.clear();
     const g = new THREE.Group();
 
-    // Display Circular Eyepiece Viewfinder Overlay
+    // Eyepiece overlay container
     const eyepieceOverlay = document.getElementById('microscope-eyepiece-overlay');
-    if (eyepieceOverlay) eyepieceOverlay.style.display = 'flex';
 
-    // 3D Compound Microscope on Bench
-    const base = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.2, 1.4), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.8 }));
-    base.position.y = 0.1;
-    g.add(base);
+    // ── 3D Detailed Compound Microscope Apparatus ──────────────────────────
+    // 1. Heavy Cast-Iron Horseshoe Base & Limb
+    const scopeGroup = new THREE.Group();
+    scopeGroup.visible = false; // Starts hidden until student picks from rack!
 
-    const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 2.2), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.8 }));
-    pillar.position.set(0, 1.2, -0.4);
-    g.add(pillar);
+    // Cast-iron U-shaped base
+    const baseMat = new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.35, metalness: 0.85 });
+    const uBase = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.22, 1.6), baseMat);
+    uBase.position.y = 0.11;
+    scopeGroup.add(uBase);
 
-    const stage = new THREE.Mesh(new THREE.BoxGeometry(1.3, 0.08, 1.1), new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.5 }));
-    stage.position.set(0, 1.1, 0.15);
-    g.add(stage);
+    // Pillar & Curved Arm
+    const pillarMat = new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9, roughness: 0.2 });
+    const pillar = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.8), pillarMat);
+    pillar.position.set(0, 1.0, -0.45);
+    scopeGroup.add(pillar);
 
-    const slide = new THREE.Mesh(new THREE.BoxGeometry(0.7, 0.02, 0.25), glassMaterial);
-    slide.position.set(0, 1.15, 0.15);
-    g.add(slide);
+    // Curved limb/arm
+    const armCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(0, 1.4, -0.45),
+      new THREE.Vector3(0, 2.2, -0.45),
+      new THREE.Vector3(0, 2.4, 0.0),
+      new THREE.Vector3(0, 2.3, 0.15)
+    ]);
+    const armMesh = new THREE.Mesh(new THREE.TubeGeometry(armCurve, 20, 0.14, 16, false), baseMat);
+    scopeGroup.add(armMesh);
 
-    const coverslip = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.022, 0.25), new THREE.MeshStandardMaterial({ color: 0xf43f5e, transparent: true, opacity: 0.7 }));
-    coverslip.position.set(0, 1.152, 0.15);
-    g.add(coverslip);
+    // Coarse & Fine Focus Brass Knobs on sides of arm
+    const brassMat = new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.9, roughness: 0.25 });
+    const coarseLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.12, 24), brassMat);
+    coarseLeft.rotation.z = Math.PI / 2;
+    coarseLeft.position.set(-0.32, 1.9, -0.35);
+    scopeGroup.add(coarseLeft);
 
-    const bodyTube = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.3), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.6 }));
-    bodyTube.position.set(0, 2.0, 0.15);
-    g.add(bodyTube);
+    const coarseRight = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.12, 24), brassMat);
+    coarseRight.rotation.z = Math.PI / 2;
+    coarseRight.position.set(0.32, 1.9, -0.35);
+    scopeGroup.add(coarseRight);
 
-    // Objective lenses
-    for (let i = 0; i < 3; i++) {
-      const angle = (i / 3) * Math.PI * 2;
-      const obj = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.35), new THREE.MeshStandardMaterial({ color: 0xf59e0b, metalness: 0.9 }));
-      obj.position.set(Math.cos(angle) * 0.15, 1.28, 0.15 + Math.sin(angle) * 0.15);
-      g.add(obj);
-    }
+    const fineLeft = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.18, 20), brassMat);
+    fineLeft.rotation.z = Math.PI / 2;
+    fineLeft.position.set(-0.35, 1.9, -0.35);
+    scopeGroup.add(fineLeft);
 
-    const ocular = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.35), new THREE.MeshStandardMaterial({ color: 0x0f172a, metalness: 0.9 }));
-    ocular.position.set(0, 2.7, 0.15);
-    g.add(ocular);
+    const fineRight = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.18, 20), brassMat);
+    fineRight.rotation.z = Math.PI / 2;
+    fineRight.position.set(0.35, 1.9, -0.35);
+    scopeGroup.add(fineRight);
 
-    const mirror = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.04), new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95 }));
-    mirror.rotation.x = Math.PI / 4;
-    mirror.position.set(0, 0.55, 0.15);
-    g.add(mirror);
+    // Mechanical Stage (Black anodized aluminum with aperture hole)
+    const stage = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.08, 1.2), new THREE.MeshStandardMaterial({ color: 0x1e293b, metalness: 0.6, roughness: 0.4 }));
+    stage.position.set(0, 1.15, 0.15);
+    scopeGroup.add(stage);
 
+    // Mechanical Stage X/Y Caliper Knobs
+    const caliperKnob = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.2), brassMat);
+    caliperKnob.position.set(0.65, 1.05, 0.35);
+    scopeGroup.add(caliperKnob);
+
+    // 2. Glass Specimen Slide & Spring Clips (Hidden until Step 2)
+    const slideGroup = new THREE.Group();
+    slideGroup.position.set(0, 1.20, 0.15);
+    slideGroup.visible = false;
+
+    // Glass slide
+    const slideMesh = new THREE.Mesh(new THREE.BoxGeometry(0.85, 0.02, 0.28), glassMaterial);
+    slideGroup.add(slideMesh);
+
+    // Specimen square with coverslip
+    const coverslip = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.024, 0.26), new THREE.MeshStandardMaterial({ color: 0xec4899, transparent: true, opacity: 0.75 }));
+    coverslip.position.set(0, 0.005, 0);
+    slideGroup.add(coverslip);
+
+    // Chrome stage spring clips
+    const clipMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, metalness: 0.95, roughness: 0.1 });
+    const clipL = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.04), clipMat);
+    clipL.position.set(-0.34, 0.015, -0.05);
+    clipL.rotation.y = 0.3;
+    slideGroup.add(clipL);
+
+    const clipR = new THREE.Mesh(new THREE.BoxGeometry(0.24, 0.03, 0.04), clipMat);
+    clipR.position.set(0.34, 0.015, -0.05);
+    clipR.rotation.y = -0.3;
+    slideGroup.add(clipR);
+    scopeGroup.add(slideGroup);
+
+    // 3. Sub-stage Illuminating Mirror & Light Beam (Hidden until Step 3)
+    const mirrorGroup = new THREE.Group();
+    mirrorGroup.position.set(0, 0.55, 0.15);
+    mirrorGroup.visible = false;
+
+    const mirrorFrame = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.04), pillarMat);
+    mirrorFrame.rotation.x = Math.PI / 4;
+    mirrorGroup.add(mirrorFrame);
+
+    const mirrorGlass = new THREE.Mesh(new THREE.CircleGeometry(0.23, 24), new THREE.MeshStandardMaterial({ color: 0xffffff, metalness: 0.98, roughness: 0.05 }));
+    mirrorGlass.rotation.x = -Math.PI / 4;
+    mirrorGlass.position.z = 0.025;
+    mirrorGroup.add(mirrorGlass);
+
+    // Light cone shining through slide
+    const lightConeGeo = new THREE.ConeGeometry(0.35, 0.7, 16, 1, true);
+    const lightConeMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.28, side: THREE.DoubleSide });
+    const lightCone = new THREE.Mesh(lightConeGeo, lightConeMat);
+    lightCone.position.set(0, 0.38, 0);
+    mirrorGroup.add(lightCone);
+    scopeGroup.add(mirrorGroup);
+
+    // 4. Rotating Objective Turret Nosepiece (Hidden until Step 4)
+    const turretGroup = new THREE.Group();
+    turretGroup.position.set(0, 1.45, 0.15);
+    turretGroup.visible = false;
+
+    const nosepiece = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.28, 0.15, 20), baseMat);
+    turretGroup.add(nosepiece);
+
+    // 3 Objective Lenses: 10x (Yellow band), 40x (Blue band), 100x (White band)
+    const objData = [
+      { colorBand: 0xeab308, h: 0.32, label: '10x' },
+      { colorBand: 0x0284c7, h: 0.42, label: '40x' },
+      { colorBand: 0xf8fafc, h: 0.48, label: '100x' }
+    ];
+    objData.forEach((obj, idx) => {
+      const angle = (idx / 3) * Math.PI * 2;
+      const lensGroup = new THREE.Group();
+      lensGroup.position.set(Math.cos(angle) * 0.15, -obj.h / 2, Math.sin(angle) * 0.15);
+
+      const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.055, obj.h, 16), brassMat);
+      lensGroup.add(barrel);
+
+      const band = new THREE.Mesh(new THREE.CylinderGeometry(0.056, 0.056, 0.05, 16), new THREE.MeshBasicMaterial({ color: obj.colorBand }));
+      band.position.y = -obj.h * 0.15;
+      lensGroup.add(band);
+      turretGroup.add(lensGroup);
+    });
+    scopeGroup.add(turretGroup);
+
+    // Monocular Body Tube & 10x Eyepiece
+    const bodyTube = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.14, 1.1), baseMat);
+    bodyTube.position.set(0, 2.05, 0.15);
+    scopeGroup.add(bodyTube);
+
+    const ocular = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 0.35), baseMat);
+    ocular.position.set(0, 2.65, 0.15);
+    scopeGroup.add(ocular);
+
+    g.add(scopeGroup);
     labGroup.add(g);
 
-    // ── 2D Eyepiece Cell Canvas Renderer ──
+    // ── 2D Histological Cell Explorer Engine (Real Slide Panning & Focus) ────
     const cellCanvas = document.getElementById('cell-canvas');
     const focusKnob = document.getElementById('focus-knob-slider');
     const focusBadge = document.getElementById('eyepiece-focus-badge');
+    const stageCoordsTag = document.getElementById('stage-coords-tag');
     const calloutTitle = document.getElementById('callout-title');
     const calloutDesc = document.getElementById('callout-desc');
 
     let currentSpecimen = 'plant'; // 'plant', 'animal', 'stomata'
-    let focusVal = 15; // 0 to 100 (50 is sharp focus)
+    let focusVal = 15;             // 0-100 (50 is crisp focus)
+    let stageX = 0;                // Mechanical stage X coordinate (microns)
+    let stageY = 0;                // Mechanical stage Y coordinate (microns)
+
+    // Pre-generate authentic random positions for cheek cells
+    const cheekCells = [];
+    for (let i = 0; i < 30; i++) {
+      cheekCells.push({
+        x: (Math.random() - 0.5) * 800,
+        y: (Math.random() - 0.5) * 800,
+        rx: 48 + Math.random() * 28,
+        ry: 40 + Math.random() * 22,
+        rot: Math.random() * Math.PI * 2,
+        nucOffX: (Math.random() - 0.5) * 8,
+        nucOffY: (Math.random() - 0.5) * 8
+      });
+    }
+
+    // Pre-generate stomata complex coordinates
+    const stomataSites = [];
+    for (let r = -3; r <= 3; r++) {
+      for (let c = -3; c <= 3; c++) {
+        stomataSites.push({
+          x: c * 130 + (r % 2) * 45,
+          y: r * 130,
+          rot: Math.sin(r * 2 + c) * 0.4
+        });
+      }
+    }
+
+    function updateCoordsBadge() {
+      if (stageCoordsTag) {
+        stageCoordsTag.textContent = `X: ${stageX >= 0 ? '+' : ''}${Math.round(stageX)} µm, Y: ${stageY >= 0 ? '+' : ''}${Math.round(stageY)} µm`;
+      }
+    }
 
     function drawCellEyepiece() {
       if (!cellCanvas) return;
       const ctx = cellCanvas.getContext('2d');
       const w = cellCanvas.width;
       const h = cellCanvas.height;
+      const cx = w / 2;
+      const cy = h / 2;
 
       ctx.clearRect(0, 0, w, h);
 
-      // Focus blur effect
+      // Optical focal blur
       const distFromSharp = Math.abs(focusVal - 50);
-      const blurPx = (distFromSharp / 50) * 8;
+      const blurPx = (distFromSharp / 50) * 8.5;
       cellCanvas.style.filter = `blur(${blurPx.toFixed(1)}px)`;
 
-      if (distFromSharp <= 8) {
+      if (distFromSharp <= 6) {
         focusBadge.textContent = 'FOCUS CRISP ✓';
         focusBadge.className = 'focus-badge focused';
       } else {
-        focusBadge.textContent = 'Blurry: Turn Knob';
+        focusBadge.textContent = 'Blurry: Turn Wheel';
         focusBadge.className = 'focus-badge';
       }
 
+      ctx.save();
+      // Translate canvas context according to mechanical stage calipers
+      ctx.translate(cx - stageX, cy - stageY);
+
       if (currentSpecimen === 'plant') {
-        // Onion Epidermal Cells (Interlocking Hexagonal Bricks)
-        ctx.fillStyle = '#064e3b';
-        ctx.fillRect(0, 0, w, h);
+        // ── 🌿 Authentic Plant Cell (Onion Epidermal Peel - Iodine Stained) ──
+        // Translucent golden-amber background
+        ctx.fillStyle = '#fef9c3';
+        ctx.fillRect(stageX - cx - 50, stageY - cy - 50, w + 100, h + 100);
 
-        const rows = 3, cols = 3;
-        const cw = w / cols, ch = h / rows;
-        for (let r = 0; r < rows; r++) {
-          for (let c = 0; c < cols; c++) {
-            const x = c * cw, y = r * ch;
-            // Cellulose Wall
-            ctx.strokeStyle = '#22c55e';
-            ctx.lineWidth = 5;
-            ctx.strokeRect(x + 4, y + 4, cw - 8, ch - 8);
+        const cellW = 120;
+        const cellH = 55;
+        const startCol = Math.floor((stageX - cx - 150) / cellW);
+        const endCol = Math.ceil((stageX + cx + 150) / cellW);
+        const startRow = Math.floor((stageY - cy - 150) / cellH);
+        const endRow = Math.ceil((stageY + cy + 150) / cellH);
 
-            // Vacuole
-            ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+        for (let r = startRow; r <= endRow; r++) {
+          const rowOffsetX = (Math.abs(r) % 2) * (cellW / 2);
+          for (let c = startCol; c <= endCol; c++) {
+            const bx = c * cellW + rowOffsetX;
+            const by = r * cellH;
+
+            // Translucent cytoplasm wash
+            ctx.fillStyle = 'rgba(234, 179, 8, 0.12)';
+            ctx.fillRect(bx + 4, by + 4, cellW - 8, cellH - 8);
+
+            // Double Cellulose Cell Wall (outer & inner boundary)
+            ctx.strokeStyle = '#15803d'; // Outer cellulose layer
+            ctx.lineWidth = 4;
+            ctx.strokeRect(bx + 2, by + 2, cellW - 4, cellH - 4);
+
+            ctx.strokeStyle = '#86efac'; // Inner plasma membrane line
+            ctx.lineWidth = 1.5;
+            ctx.strokeRect(bx + 5, by + 5, cellW - 10, cellH - 10);
+
+            // Middle Lamella junction dots
+            ctx.fillStyle = '#14532d';
             ctx.beginPath();
-            ctx.ellipse(x + cw / 2 - 4, y + ch / 2, cw * 0.32, ch * 0.28, 0, 0, Math.PI * 2);
+            ctx.arc(bx, by, 3, 0, Math.PI * 2);
             ctx.fill();
 
-            // Nucleus
-            ctx.fillStyle = '#818cf8';
+            // Large Central Vacuole
+            ctx.fillStyle = 'rgba(186, 230, 253, 0.38)';
             ctx.beginPath();
-            ctx.arc(x + cw * 0.78, y + ch * 0.7, 9, 0, Math.PI * 2);
+            ctx.ellipse(bx + cellW / 2 - 4, by + cellH / 2, cellW * 0.34, cellH * 0.30, 0, 0, Math.PI * 2);
             ctx.fill();
+
+            // Cytoplasmic transvacuolar strands
+            ctx.strokeStyle = 'rgba(202, 138, 4, 0.35)';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(bx + cellW * 0.8, by + cellH * 0.7);
+            ctx.lineTo(bx + 18, by + cellH * 0.3);
+            ctx.stroke();
+
+            // Stained Peripheral Nucleus with Nucleolus
+            const nucX = bx + cellW * 0.78;
+            const nucY = by + cellH * 0.68;
+            ctx.fillStyle = '#7c3aed';
+            ctx.beginPath();
+            ctx.arc(nucX, nucY, 8.5, 0, Math.PI * 2);
+            ctx.fill();
+
             ctx.fillStyle = '#312e81';
             ctx.beginPath();
-            ctx.arc(x + cw * 0.78, y + ch * 0.7, 3.5, 0, Math.PI * 2);
+            ctx.arc(nucX, nucY, 3.2, 0, Math.PI * 2);
             ctx.fill();
 
-            // Chloroplasts
+            // Chloroplast granules
             ctx.fillStyle = '#16a34a';
-            for (let k = 0; k < 5; k++) {
+            for (let k = 0; k < 6; k++) {
               ctx.beginPath();
-              ctx.arc(x + 14 + k * 10, y + 14 + (k % 2) * 14, 3.5, 0, Math.PI * 2);
+              ctx.arc(bx + 16 + k * 12, by + 12 + (k % 2) * 14, 3.2, 0, Math.PI * 2);
               ctx.fill();
             }
           }
         }
+
       } else if (currentSpecimen === 'animal') {
-        // Human Cheek Squamous Epithelial Cells
-        ctx.fillStyle = '#3b0764';
-        ctx.fillRect(0, 0, w, h);
+        // ── 🧬 Authentic Animal Cheek Cells (Methylene Blue Stained) ─────────
+        ctx.fillStyle = '#f8fafc';
+        ctx.fillRect(stageX - cx - 50, stageY - cy - 50, w + 100, h + 100);
 
-        const cells = [
-          { x: w * 0.48, y: h * 0.5, r: 65 },
-          { x: w * 0.18, y: h * 0.25, r: 42 },
-          { x: w * 0.82, y: h * 0.75, r: 45 }
-        ];
+        // Render scattered overlapping squamous epithelial cells
+        cheekCells.forEach(cell => {
+          ctx.save();
+          ctx.translate(cell.x, cell.y);
+          ctx.rotate(cell.rot);
 
-        cells.forEach(c => {
-          ctx.fillStyle = 'rgba(244, 114, 182, 0.35)';
-          ctx.strokeStyle = '#f472b6';
-          ctx.lineWidth = 3;
+          // Translucent squamous cytoplasm
+          ctx.fillStyle = 'rgba(147, 197, 253, 0.32)';
           ctx.beginPath();
-          ctx.ellipse(c.x, c.y, c.r, c.r * 0.88, Math.PI / 6, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, cell.rx, cell.ry, 0, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Folded/crinkled edge outlines (natural appearance of cheek scraping)
+          ctx.strokeStyle = '#3b82f6';
+          ctx.lineWidth = 2.2;
+          ctx.stroke();
+
+          // Margin folds
+          ctx.strokeStyle = 'rgba(29, 78, 216, 0.4)';
+          ctx.lineWidth = 1.8;
+          ctx.beginPath();
+          ctx.arc(-cell.rx * 0.6, 0, cell.ry * 0.4, 0, Math.PI);
+          ctx.stroke();
+
+          // Prominent deep violet-blue central nucleus
+          ctx.fillStyle = '#3730a3';
+          ctx.beginPath();
+          ctx.arc(cell.nucOffX, cell.nucOffY, 11, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Nucleolus
+          ctx.fillStyle = '#1e1b4b';
+          ctx.beginPath();
+          ctx.arc(cell.nucOffX, cell.nucOffY, 4, 0, Math.PI * 2);
+          ctx.fill();
+
+          // Cytoplasmic speckles / oral microflora dots
+          ctx.fillStyle = '#64748b';
+          for (let s = 0; s < 12; s++) {
+            ctx.beginPath();
+            ctx.arc((Math.sin(s * 3) * cell.rx * 0.7), (Math.cos(s * 4) * cell.ry * 0.7), 1.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.restore();
+        });
+
+      } else {
+        // ── 🍃 Leaf Stomata Epidermal Peel (Guard Cells & Apertures) ────────
+        ctx.fillStyle = '#ecfdf5';
+        ctx.fillRect(stageX - cx - 50, stageY - cy - 50, w + 100, h + 100);
+
+        // Epidermal wavy puzzle cells background
+        ctx.strokeStyle = 'rgba(16, 185, 129, 0.25)';
+        ctx.lineWidth = 2;
+        for (let i = -3; i <= 3; i++) {
+          for (let j = -3; j <= 3; j++) {
+            ctx.strokeRect(i * 120 + 10, j * 120 + 10, 100, 100);
+          }
+        }
+
+        // Multiple stomatal complexes distributed across the field
+        stomataSites.forEach(site => {
+          ctx.save();
+          ctx.translate(site.x, site.y);
+          ctx.rotate(site.rot);
+
+          // Left Kidney Guard Cell
+          ctx.fillStyle = '#15803d';
+          ctx.beginPath();
+          ctx.ellipse(-18, 0, 18, 48, -0.15, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.strokeStyle = '#86efac';
+          ctx.lineWidth = 2.5;
+          ctx.stroke();
+
+          // Right Kidney Guard Cell
+          ctx.beginPath();
+          ctx.ellipse(18, 0, 18, 48, 0.15, 0, Math.PI * 2);
           ctx.fill();
           ctx.stroke();
 
-          // Prominent Central Nucleus
-          ctx.fillStyle = '#818cf8';
+          // Thickened inner cuticular wall lining the pore
+          ctx.strokeStyle = '#047857';
+          ctx.lineWidth = 4;
           ctx.beginPath();
-          ctx.arc(c.x, c.y, c.r * 0.32, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.fillStyle = '#312e81';
+          ctx.ellipse(0, 0, 8, 28, 0, 0, Math.PI * 2);
+          ctx.stroke();
+
+          // Stomatal Aperture (dark opening)
+          ctx.fillStyle = '#0f172a';
           ctx.beginPath();
-          ctx.arc(c.x, c.y, c.r * 0.12, 0, Math.PI * 2);
+          ctx.ellipse(0, 0, 7, 26, 0, 0, Math.PI * 2);
           ctx.fill();
 
-          // Centrosome
-          ctx.fillStyle = '#facc15';
-          ctx.fillRect(c.x + c.r * 0.35, c.y - c.r * 0.35, 6, 3);
-          ctx.fillRect(c.x + c.r * 0.35 + 1.5, c.y - c.r * 0.35 - 2, 3, 6);
+          // Chloroplast granules inside guard cells
+          ctx.fillStyle = '#4ade80';
+          for (let g = -3; g <= 3; g++) {
+            ctx.beginPath();
+            ctx.arc(-18, g * 11, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(18, g * 11, 3.2, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Guard cell nuclei
+          ctx.fillStyle = '#1e3a8a';
+          ctx.beginPath();
+          ctx.arc(-22, 0, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.beginPath();
+          ctx.arc(22, 0, 4.5, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.restore();
         });
-      } else {
-        // Stomata with Bean-shaped Guard Cells
-        ctx.fillStyle = '#042f2e';
-        ctx.fillRect(0, 0, w, h);
-
-        const cx = w / 2, cy = h / 2;
-        // Epidermal boundary
-        ctx.strokeStyle = 'rgba(16, 185, 129, 0.4)';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(20, 20, w - 40, h - 40);
-
-        // Left Guard Cell
-        ctx.fillStyle = '#15803d';
-        ctx.beginPath();
-        ctx.ellipse(cx - 24, cy, 26, 60, -0.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.strokeStyle = '#86efac';
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        // Right Guard Cell
-        ctx.beginPath();
-        ctx.ellipse(cx + 24, cy, 26, 60, 0.2, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.stroke();
-
-        // Stomatal Aperture Pore
-        ctx.fillStyle = '#0f172a';
-        ctx.beginPath();
-        ctx.ellipse(cx, cy, 10, 36, 0, 0, Math.PI * 2);
-        ctx.fill();
-
-        // Guard cell chloroplasts
-        ctx.fillStyle = '#4ade80';
-        for (let i = -2; i <= 2; i++) {
-          ctx.beginPath();
-          ctx.arc(cx - 26, cy + i * 16, 4, 0, Math.PI * 2);
-          ctx.fill();
-          ctx.beginPath();
-          ctx.arc(cx + 26, cy + i * 16, 4, 0, Math.PI * 2);
-          ctx.fill();
-        }
       }
+
+      ctx.restore();
+      updateCoordsBadge();
     }
 
-    focusKnob.oninput = (e) => {
-      focusVal = parseInt(e.target.value);
+    // ── Mouse & Touch Dragging on Eyepiece to Slide Stage ───────────────────
+    let isDraggingSlide = false;
+    let startDragX = 0, startDragY = 0;
+
+    cellCanvas.addEventListener('pointerdown', (e) => {
+      isDraggingSlide = true;
+      startDragX = e.clientX;
+      startDragY = e.clientY;
+      cellCanvas.setPointerCapture(e.pointerId);
+    });
+
+    cellCanvas.addEventListener('pointermove', (e) => {
+      if (!isDraggingSlide) return;
+      const dx = e.clientX - startDragX;
+      const dy = e.clientY - startDragY;
+      startDragX = e.clientX;
+      startDragY = e.clientY;
+
+      stageX -= dx * 0.85;
+      stageY -= dy * 0.85;
       drawCellEyepiece();
-      if (Math.abs(focusVal - 50) <= 8) {
-        playClink();
-        setObservation('Specimen in sharp focus! Click on any organelle inside the eyepiece.', 'सूक्ष्मदर्शक यन्त्र स्पष्ट फोकस भयो!');
-      }
+    });
+
+    const stopDrag = () => { isDraggingSlide = false; };
+    cellCanvas.addEventListener('pointerup', stopDrag);
+    cellCanvas.addEventListener('pointercancel', stopDrag);
+
+    // D-Pad Stage Buttons
+    const stepMicrons = 35;
+    const btnUp = document.getElementById('btn-stage-up');
+    const btnDown = document.getElementById('btn-stage-down');
+    const btnLeft = document.getElementById('btn-stage-left');
+    const btnRight = document.getElementById('btn-stage-right');
+
+    if (btnUp) btnUp.onclick = () => { stageY -= stepMicrons; playClink(); drawCellEyepiece(); };
+    if (btnDown) btnDown.onclick = () => { stageY += stepMicrons; playClink(); drawCellEyepiece(); };
+    if (btnLeft) btnLeft.onclick = () => { stageX -= stepMicrons; playClink(); drawCellEyepiece(); };
+    if (btnRight) btnRight.onclick = () => { stageX += stepMicrons; playClink(); drawCellEyepiece(); };
+
+    // Focal Wheel Controls
+    if (focusKnob) {
+      focusKnob.oninput = (e) => {
+        focusVal = parseInt(e.target.value);
+        drawCellEyepiece();
+        if (Math.abs(focusVal - 50) <= 6) {
+          playClink();
+          setObservation('Specimen in sharp focus! Slide the stage or tap organelles.', 'सूक्ष्मदर्शक यन्त्र स्पष्ट फोकस भयो!');
+        }
+      };
+    }
+
+    const btnCoarseMinus = document.getElementById('btn-coarse-minus');
+    const btnCoarsePlus = document.getElementById('btn-coarse-plus');
+    const btnFineFocus = document.getElementById('btn-fine-focus');
+
+    if (btnCoarseMinus) btnCoarseMinus.onclick = () => {
+      focusVal = Math.max(0, focusVal - 12);
+      if (focusKnob) focusKnob.value = focusVal;
+      playTone(250, 'sine', 0.05, 0.1);
+      drawCellEyepiece();
+    };
+    if (btnCoarsePlus) btnCoarsePlus.onclick = () => {
+      focusVal = Math.min(100, focusVal + 12);
+      if (focusKnob) focusKnob.value = focusVal;
+      playTone(320, 'sine', 0.05, 0.1);
+      drawCellEyepiece();
+    };
+    if (btnFineFocus) btnFineFocus.onclick = () => {
+      focusVal = 50;
+      if (focusKnob) focusKnob.value = 50;
+      playClink();
+      playSuccess();
+      drawCellEyepiece();
+      setStep('Focused!', 'Specimen is 100% sharply focused! Drag on the lens or use stage calipers to explore cells.', 'कोष १००% स्पष्ट भयो! स्लाइड सारेर अरु कोषहरू हेर्नुहोस्।');
     };
 
     // Specimen Pills Handler
@@ -1843,50 +2389,134 @@
         document.querySelectorAll('.spec-pill').forEach(p => p.classList.remove('active'));
         pill.classList.add('active');
         currentSpecimen = pill.dataset.spec;
+        stageX = 0;
+        stageY = 0;
         playClink();
         drawCellEyepiece();
         if (currentSpecimen === 'plant') {
-          calloutTitle.textContent = 'Plant Cell (Onion Peel) / वनस्पति कोष';
-          calloutDesc.textContent = 'Rigid cellulose cell wall, large central vacuole, peripheral nucleus, chloroplasts.';
+          calloutTitle.textContent = 'Plant Cell (Onion Epidermal Peel)';
+          calloutDesc.textContent = 'Hexagonal cellulose wall, large central vacuole, peripheral nucleus, chloroplasts.';
           speakText('Onion plant cell selected. Observe thick cell wall and central vacuole.', 'प्याजको वनस्पति कोष छनोट गरियो।');
         } else if (currentSpecimen === 'animal') {
-          calloutTitle.textContent = 'Animal Cell (Cheek Epithelium) / जनावर कोष';
-          calloutDesc.textContent = 'Flexible cell membrane, central prominent nucleus, centrosome, dense cytoplasm.';
+          calloutTitle.textContent = 'Animal Cell (Cheek Squamous Epithelium)';
+          calloutDesc.textContent = 'Flexible plasma membrane, dark central nucleus, centrosome, dense cytoplasm.';
           speakText('Human cheek animal cell selected. Observe prominent central nucleus.', 'मानव गालाको जनावर कोष छनोट गरियो।');
         } else {
-          calloutTitle.textContent = 'Leaf Stomata (Guard Cells) / स्टोमाटा';
-          calloutDesc.textContent = 'Pair of bean-shaped guard cells controlling transpiration pore opening and closing.';
+          calloutTitle.textContent = 'Leaf Stomata (Guard Cells & Pore)';
+          calloutDesc.textContent = 'Pair of kidney-shaped guard cells regulating transpiration and gas exchange.';
           speakText('Leaf stomata selected. Observe kidney shaped guard cells.', 'पातको स्टोमाटा छनोट गरियो।');
         }
       };
     });
 
     // Clicking inside eyepiece inspects organelles
-    cellCanvas.onclick = (e) => {
-      const rect = cellCanvas.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      playTone(800, 'triangle', 0.1, 0.2);
-
+    cellCanvas.addEventListener('click', (e) => {
+      if (isDraggingSlide) return;
+      playTone(850, 'triangle', 0.09, 0.2);
       if (currentSpecimen === 'plant') {
         calloutTitle.textContent = 'Plant Organelle: Cellulose Wall & Vacuole';
-        calloutDesc.textContent = 'Cell Wall provides turgidity & protection. Central vacuole maintains hydrostatic pressure.';
+        calloutDesc.textContent = 'Rigid cellulose cell wall gives plant turgidity. Central vacuole maintains cellular hydrostatic pressure.';
       } else if (currentSpecimen === 'animal') {
         calloutTitle.textContent = 'Animal Organelle: Nucleus & Centrosome';
-        calloutDesc.textContent = 'Nucleus carries genetic DNA chromosomes. Centrosome aids cell division.';
+        calloutDesc.textContent = 'Prominent nucleus holds genetic chromosomes DNA. Centrosome assists spindle formation during cell division.';
       } else {
-        calloutTitle.textContent = 'Stomata: Guard Cell & Stomatal Pore';
-        calloutDesc.textContent = 'Turgid guard cells open pore for gas exchange (CO₂ intake, O₂ release, transpiration).';
+        calloutTitle.textContent = 'Stomata: Guard Cell & Stomatal Aperture';
+        calloutDesc.textContent = 'Turgid guard cells open the stomatal aperture for photosynthetic CO₂ intake and O₂/water vapor release.';
       }
-    };
+    });
 
-    drawCellEyepiece();
+    // ── Progressive Assembly Workflow from Clean Bench ───────────────────────
+    let currentStage = 0;
+    let updateRackFn = null;
+
+    const eqItems = [
+      { stage: 0, id: 'microscope', icon: '🔬', en: 'Compound Microscope', ne: 'संयुक्त सूक्ष्मदर्शक यन्त्र', descNe: 'सूक्ष्मदर्शक बेन्चमा राख्नुहोस्' },
+      { stage: 1, id: 'slide', icon: '🪟', en: 'Prepared Glass Specimen Slide', ne: 'तयार पारिएको काँचको स्लाइड', descNe: 'स्लाइड स्टेजमा राखी क्लिप लगाउनुहोस्' },
+      { stage: 2, id: 'mirror', icon: '🪞', en: 'Sub-stage Illuminating Mirror', ne: 'तलको प्रकाश ऐना मिलाउनुहोस्', descNe: 'प्रकाश परावर्तन गरी उज्यालो पार्ने' },
+      { stage: 3, id: 'turret', icon: '🔄', en: 'Rotate Turret (40x High Power)', ne: '४०x पावर लेन्स घुमाउनुहोस्', descNe: '४०x पावर लेन्स सिधा पार्ने' },
+      { stage: 4, id: 'focus', icon: '🎛️', en: 'Coarse & Fine Focal Wheel', ne: 'फोकस घुमाउने ह्विल (नब)', descNe: 'चित्र स्पष्ट नभएसम्म घुमाउने' },
+      { stage: 5, id: 'calipers', icon: '↔️', en: 'Slide Stage Calipers (X-Y)', ne: 'स्लाइड सारेर अरु कोष हेर्नुहोस्', descNe: 'स्लाइडलाई चारैतिर सार्ने' }
+    ];
+
+    function executeStage(stg) {
+      if (stg === 0) {
+        scopeGroup.visible = true;
+        playClink();
+        currentStage = 1;
+        setStep('2', 'Microscope placed! Pick "Prepared Glass Specimen Slide" from rack to mount on the mechanical stage.', 'सूक्ष्मदर्शक राखियो! अब र्याकबाट काँचको स्लाइड छनोट गरी स्टेजमा क्लिप लगाउनुहोस्।');
+        setObservation('Compound microscope placed on bench. Ready for slide.', 'सूक्ष्मदर्शक बेन्चमा तयार।');
+      } else if (stg === 1) {
+        slideGroup.visible = true;
+        playClink();
+        currentStage = 2;
+        setStep('3', 'Slide mounted! Pick "Sub-stage Illuminating Mirror" from rack to reflect light through condenser.', 'स्लाइड स्टेजमा जोडियो! अब तलको ऐना मिलाएर प्रकाश पठाउनुहोस्।');
+        setObservation('Glass slide secured under mechanical stage clips.', 'स्लाइड क्लिपले बाँधियो।');
+      } else if (stg === 2) {
+        mirrorGroup.visible = true;
+        playClink();
+        currentStage = 3;
+        setStep('4', 'Mirror adjusted! Pick "Rotate Turret (40x High Power)" to click objective lens into position.', 'प्रकाश मिलाइयो! अब ४०x पावरको अब्जेक्टिभ लेन्स घुमाएर मिलाउनुहोस्।');
+        setObservation('Illuminating light beam shining through condenser aperture.', 'प्रकाश पर्याप्त मात्रामा पुग्यो।');
+      } else if (stg === 3) {
+        turretGroup.visible = true;
+        playClink();
+        currentStage = 4;
+        if (eyepieceOverlay) eyepieceOverlay.style.display = 'flex';
+        drawCellEyepiece();
+        setStep('5', 'Eyepiece open! Turn the Focal Wheel (or click "Sharp") to bring blurry cells into crisp focus.', 'आइपिस खुल्यो! अब धमिलो चित्रलाई फोकस ह्विल घुमाएर स्पष्ट पार्नुहोस्।');
+        setObservation('Objective lens aligned: 10x Eyepiece × 40x Objective = 400x.', '४००x म्याग्निफिकेसन तयार।');
+      } else if (stg === 4) {
+        focusVal = 50;
+        if (focusKnob) focusKnob.value = 50;
+        playClink();
+        playSuccess();
+        drawCellEyepiece();
+        currentStage = 5;
+        setStep('6', 'Image is crystal clear! Drag directly on the lens or use Stage Calipers (◀ ▲ ▼ ▶) to slide across tissue!', 'चित्र स्पष्ट भयो! अब लेन्समा तानेर वा क्यालिपर्स बटन थिचेर अरु कोषहरू अवलोकन गर्नुहोस्!');
+        setObservation('Focus crisp (blur = 0px). Ready to navigate across tissue slide.', 'चित्र स्पष्ट भयो। स्लाइड सार्न सकिन्छ।');
+      } else if (stg === 5) {
+        stageX += 70;
+        playClink();
+        drawCellEyepiece();
+        currentStage = 6;
+        setStep('Done!', 'Tissue exploration active! Drag lens or turn calipers to inspect cells anywhere across the slide. Practical 100% complete!', 'स्लाइड सार्ने अभ्यास सफल भयो! सम्पूर्ण कोषहरू अवलोकन गर्नुहोस्।');
+        setObservation('Exploring neighboring cells across continuous tissue grid.', 'स्लाइड सारेर धेरै कोषहरू अवलोकन गरियो।');
+      }
+
+      updateActionButtons();
+      if (updateRackFn) updateRackFn();
+    }
+
+    function updateActionButtons() {
+      const cur = eqItems[currentStage] || { en: 'Microscopy Complete!', ne: 'सूक्ष्मदर्शक प्रयोग सम्पन्न!' };
+      actionsGrid.innerHTML = `
+        <button class="lab-action-btn" id="btn-micro-next" ${currentStage >= 6 ? 'disabled' : ''}>
+          <span>👉 Step ${currentStage + 1}: ${cur.en}</span>
+          <span class="sub">${cur.ne}</span>
+        </button>
+        <button class="lab-action-btn btn-reset" id="btn-micro-clean">
+          <span>🔄 Clean Bench</span>
+          <span class="sub">खाली बेन्चबाट सुरु</span>
+        </button>
+      `;
+
+      const bNext = document.getElementById('btn-micro-next');
+      if (bNext && currentStage < 6) {
+        bNext.onclick = () => executeStage(currentStage);
+      }
+      document.getElementById('btn-micro-clean').onclick = () => setupMicroscopeExperiment();
+    }
+
+    updateRackFn = renderRack(eqItems, currentStage, (item, stg) => {
+      if (stg === currentStage) executeStage(stg);
+      else if (stg < currentStage) setObservation(`${item.en} is already assembled on bench.`, `${item.ne} बेन्चमा राखिसकियो।`);
+    });
 
     slidersWrap.innerHTML = `
       <div class="calc-slider-group">
         <div class="slider-label-row">
-          <span>Objective Magnification:</span>
-          <span class="val">40x (Total 400x)</span>
+          <span>Active Objective Lens:</span>
+          <span class="val">40x High Power</span>
         </div>
         <div style="display:flex;gap:0.3rem;margin-top:0.3rem;">
           <button class="hud-btn" id="btn-mag-10">10x (100x)</button>
@@ -1901,53 +2531,39 @@
     document.getElementById('btn-mag-100').onclick = () => { playClink(); setObservation('100x Oil Immersion Objective selected.', '१००x तेल लेन्स'); };
 
     formulaBox.innerHTML = `
-      <div class="formula-title">Microscope Optics · सूक्ष्मदर्शक क्षमता</div>
-      <div class="formula-math">Total Magnification = Eyepiece (10x) × Objective (40x) = 400x</div>
+      <div class="formula-title">Optical Resolution & Magnification · म्याग्निफिकेसन</div>
+      <div class="formula-math">Total Power = 10x (Eyepiece) × 40x (Objective) = 400x</div>
+      <div class="formula-math">Calibrated Scale: 1 Division = 2.5 µm (Microns)</div>
       <div class="formula-result">
-        <span>Field of View:</span>
-        <span>450 µm (Microns)</span>
+        <span>Current Field of View:</span>
+        <span>450 µm diameter</span>
       </div>
     `;
 
-    const eqItems = [
-      { stage: 0, id: 'base', icon: '🔬', en: 'Compound Microscope', ne: 'संयुक्त सूक्ष्मदर्शक', descNe: 'स्टेज र लेन्स मिलाउनुहोस्' },
-      { stage: 1, id: 'slide', icon: '🪟', en: 'Prepared Glass Slide', ne: 'काँचको स्लाइड', descNe: 'नमूना स्लाइड राख्नुहोस्' },
-      { stage: 2, id: 'focus', icon: '🎛️', en: 'Coarse & Fine Focus Knob', ne: 'फोकस घुमाउने नब', descNe: 'स्पष्ट नभएसम्म घुमाउनुहोस्' }
-    ];
-
-    renderRack(eqItems, 2, (item) => {
-      playClink();
-      setObservation(`${item.en} on workbench.`, `${item.ne} तयार।`);
-    });
-
-    setStep('1', 'Turn the Focus Knob slider in the eyepiece overlay to achieve crisp focus (50) and tap organelles!', 'आइपिस विन्डोमा फोकस नब ५० मा सारेर स्पष्ट चित्र हेर्नुहोस् र अंगहरू छुनुहोस्!');
-    setObservation('Turn focus slider until blurry image becomes crisp.', 'फोकस मिलाउनुहोस्।');
-
-    actionsGrid.innerHTML = `
-      <button class="lab-action-btn" id="btn-auto-focus">
-        <span>🎯 Auto-Focus Specimen (Sharp 50)</span>
-        <span class="sub">आफै स्पष्ट फोकस मिलाउनुहोस्</span>
-      </button>
-      <button class="lab-action-btn btn-reset" id="btn-micro-reset">
-        <span>🔄 Next Specimen</span>
-        <span class="sub">अर्को कोष हेर्नुहोस्</span>
-      </button>
-    `;
-
-    document.getElementById('btn-auto-focus').onclick = () => {
-      focusKnob.value = 50;
-      focusVal = 50;
-      playClink();
-      playSuccess();
-      drawCellEyepiece();
-      setStep('Focused!', 'Specimen is 100% sharply focused! Tap any organelle inside the eyepiece to inspect its function.', 'कोष १००% स्पष्ट भयो! आइपिसभित्र छोएर विस्तृत जानकारी पढ्नुहोस्।');
-    };
-    document.getElementById('btn-micro-reset').onclick = () => {
-      const nextSpec = currentSpecimen === 'plant' ? 'animal' : currentSpecimen === 'animal' ? 'stomata' : 'plant';
-      const btn = document.querySelector(`.spec-pill[data-spec="${nextSpec}"]`);
-      if (btn) btn.click();
-    };
+    setStep('1', 'Pick "Compound Microscope" from the equipment rack to place on your workbench.', 'उपकरण र्याकबाट संयुक्त सूक्ष्मदर्शक यन्त्र छनोट गरी बेन्चमा राख्नुहोस्।');
+    setObservation('Clean laboratory bench ready. Pick microscope from rack.', 'प्रयोगशाला बेन्च तयार। सूक्ष्मदर्शक यन्त्र छनोट गर्नुहोस्।');
+    updateActionButtons();
   }
+  """
+
+js = js[:m_start] + new_microscope_func + js[m_end:]
+
+with open('sciencelab.js', 'w', encoding='utf-8') as f:
+    f.write(js)
+
+print("Replaced setupMicroscopeExperiment successfully!")
+res = subprocess.run(['node', '--check', 'sciencelab.js'], capture_output=True, text=True)
+if res.returncode == 0:
+    print("sciencelab.js SYNTAX VERIFIED OK!")
+else:
+    print("Syntax error in sciencelab.js:\n", res.stderr)
+"""
+
+with open('patch_microscope_js.py', 'w', encoding='utf-8') as f:
+    f.write(new_microscope_func)
+
+print("Wrote patch_microscope_js.py")
+
 
   // ════════════════════════════════════════════════════════════════════════════
   // ── EXPERIMENT 8: 3D Beating Human Heart & Circulation ────────────────────
