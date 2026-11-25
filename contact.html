@@ -6,7 +6,7 @@
   <meta name="description" content="Contact Shree Nepal Secondary School, Brindaban-02, Rautahat, Nepal. Phone, email and inquiry form." />
   <meta name="theme-color" content="#060d19" />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="style.css?v=20" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
@@ -22,13 +22,25 @@
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
-    <ul class="nav-links" id="nav-links">
-      <li><a href="/">Home</a></li><li><a href="/about">About</a></li><li><a href="/academics">Academics</a></li>
-      <li><a href="/faculty">Staff</a></li><li><a href="/committee">Committee</a></li><li><a href="/notices">Notices</a></li>
-      <li><a href="/gallery">Gallery</a></li><li><a href="/links">Edu Links</a></li><li><a href="/contact" class="active">Contact</a></li>
+        <ul class="nav-links" id="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/academics">Academics</a></li>
+      <li><a href="/notices">Notices</a></li>
+      <li><a href="/sciencelab" class="nav-sciencelab">🔬 3D Science Lab</a></li>
       <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
+      <li><a href="/faculty">Staff</a></li>
+      <li><a href="/committee">Committee</a></li>
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="/links">Edu Links</a></li>
+      <li><a href="/contact" class="active">Contact</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false"><span></span><span></span><span></span></button>
+    <div class="nav-right-actions">
+      <a href="/sciencelab" class="nav-quick-lab-btn" title="3D Science Lab">🔬 Lab</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -68,22 +80,24 @@
           </div>
         </div>
 
-        <!-- GOOGLE MAP EMBED CARD -->
+                <!-- CAMPUS LOCATION MAP CARD -->
         <div class="glass-card" style="padding:1.5rem;overflow:hidden;">
-          <h4 style="color:var(--gold);margin-bottom:0.75rem;font-size:1.05rem;">🗺️ School Location Map</h4>
-          <div style="width:100%;height:280px;border-radius:12px;overflow:hidden;border:1px solid var(--glass-border);">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+            <h4 style="color:var(--white);font-size:1.05rem;font-weight:700;margin:0;">Campus Location & Access</h4>
+            <span style="font-size:0.75rem;color:var(--text-muted);background:rgba(255,255,255,0.06);padding:0.25rem 0.65rem;border-radius:4px;">Brindaban-02, Rautahat</span>
+          </div>
+          <div style="width:100%;height:280px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:#0f2240;position:relative;">
             <iframe
-              src="https://maps.google.com/maps?q=Brindaban,Rautahat,Nepal&t=&z=14&ie=UTF8&iwloc=&output=embed"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=85.29%2C26.98%2C85.36%2C27.08&layer=mapnik&marker=27.0392%2C85.3265"
               width="100%"
               height="100%"
               style="border:0;"
-              allowfullscreen=""
               loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              title="Shree Nepal Secondary School Map Location">
+              title="Shree Nepal Secondary School Campus Map">
             </iframe>
           </div>
-          <div style="margin-top:0.75rem;text-align:center;">
+          <div style="margin-top:0.85rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+            <span style="font-size:0.82rem;color:var(--text-muted);">Coordinates: 27°02'21"N, 85°19'35"E</span>
             <a href="https://maps.google.com/maps?q=Brindaban,Rautahat,Nepal" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Open in Google Maps ↗</a>
           </div>
         </div>
@@ -92,7 +106,7 @@
 
       <!-- Message Form -->
       <div class="glass-card" style="padding:2rem;">
-        <h3 style="color:var(--gold);margin-bottom:1.35rem;font-size:1.15rem;">💬 Send a Message</h3>
+        <h3 style="color:var(--gold);margin-bottom:1.35rem;font-size:1.15rem;">Send a Message</h3>
         <form onsubmit="event.preventDefault();this.querySelector('.send-btn').textContent='✅ Message Sent!';setTimeout(()=>{this.reset();this.querySelector('.send-btn').textContent='Send Message →';},3000);">
           <div style="margin-bottom:1rem;">
             <label style="display:block;color:var(--white);margin-bottom:0.4rem;font-size:0.85rem;font-weight:600;">Full Name</label>
@@ -132,6 +146,6 @@
   </div>
 </footer>
 
-<script src="script.js?v=15"></script>
-<script src="dynamic.js?v=15"></script>
+<script src="script.js?v=20"></script>
+<script src="dynamic.js?v=20"></script>
 </body></html>

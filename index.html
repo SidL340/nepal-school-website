@@ -7,7 +7,7 @@
   <meta name="description" content="Official Website of Shree Nepal Secondary School, Bishrampur, Brindaban-02, Rautahat, Nepal. NEB Affiliated. Quality education ECD to Class 12 (+2)." />
   <meta name="theme-color" content="#060d19" />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="style.css?v=20" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
@@ -25,22 +25,25 @@
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
-    <ul class="nav-links" id="nav-links">
+        <ul class="nav-links" id="nav-links">
       <li><a href="#hero-section" class="active">Home</a></li>
       <li><a href="#about">About</a></li>
       <li><a href="#academics">Academics</a></li>
+      <li><a href="#notices">Notices</a></li>
+      <li><a href="/sciencelab" class="nav-sciencelab">🔬 3D Science Lab</a></li>
+      <li><a href="#epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
       <li><a href="#faculty">Staff</a></li>
       <li><a href="#committee">Committee</a></li>
-      <li><a href="#notices">Notices</a></li>
       <li><a href="#gallery">Gallery</a></li>
       <li><a href="#links">Edu Links</a></li>
       <li><a href="#contact">Contact</a></li>
-      <li><a href="#epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
-      <li><a href="https://app.nepalssb.edu.np" target="_blank" rel="noopener" class="nav-login-btn">🔐 Portal Login</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-expanded="false">
-      <span></span><span></span><span></span>
-    </button>
+    <div class="nav-right-actions">
+      <a href="/sciencelab" class="nav-quick-lab-btn" title="3D Science Lab">🔬 Lab</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Open navigation menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -53,22 +56,22 @@
     <img src="images/assembly.jpg" alt="" onerror="this.style.display='none'">
   </div>
   <div class="hero-overlay"></div>
-  <div class="hero-particles" id="hero-particles"></div>
+  
 
   <div class="container">
     <div class="hero-content reveal visible">
       <div class="hero-badge">
-        🇳🇵 NEB Affiliated &nbsp;·&nbsp; Estd. 2007 B.S. &nbsp;·&nbsp; Govt. Secondary School
+        Government of Nepal · NEB Affiliated · Estd. 2007 B.S.
       </div>
 
       <h1><span class="dyn-school-name">Shree Nepal Secondary School</span></h1>
       <p class="hero-tagline dyn-school-about">Nurturing Young Minds · Empowering Students for 21st Century Excellence · Quality Education from ECD to Class 12 (+2).</p>
 
-      <div class="hero-actions">
-        <a href="#about"         class="btn btn-gold">Explore Our School →</a>
-        <a href="#notices"       class="btn btn-outline">Latest Notices 📢</a>
-        <a href="#epustakalaya"  class="btn btn-white">E-Library 📚</a>
-        <a href="https://app.nepalssb.edu.np" target="_blank" rel="noopener" class="btn" style="background:#0ea5e9;color:#fff;font-weight:800;">🔐 School Portal Login ↗</a>
+            <div class="hero-actions">
+        <a href="#about"         class="btn btn-gold">Explore School Overview</a>
+        <a href="#notices"       class="btn btn-outline">Official Notice Board</a>
+        <a href="/sciencelab"    class="btn btn-blue">3D Science Lab</a>
+        <a href="#epustakalaya"  class="btn btn-white">Digital Library</a>
       </div>
     </div>
   </div>
@@ -367,7 +370,7 @@
 <section class="section" id="links">
   <div class="container">
     <div class="section-header">
-      <div class="tag">🔗 National Portals</div>
+      <div class="tag">National Educational Portals</div>
       <h2>Educational Links & Exam Results</h2>
       <p>Official Nepal Ministry, Examination Board & Learning Portals</p>
       <div class="gold-line"></div>
@@ -405,14 +408,40 @@
           <span style="color:var(--gold);font-weight:800;font-size:0.8rem;">learning.cehrd.gov.np ↗</span>
         </div>
       </a>
-      <a href="https://app.nepalssb.edu.np" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;border:1px solid rgba(14,165,233,0.45);grid-column:1 / -1;">
-        <div style="font-size:2.5rem;flex-shrink:0;">🔐</div>
+      <a href="https://pustakalaya.org/en/" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+        <div style="font-size:2.2rem;flex-shrink:0;">📖</div>
         <div>
-          <h3 style="color:#38bdf8;margin-bottom:0.25rem;font-size:1.15rem;">School Management & Learning Portal</h3>
-          <p style="color:var(--text-body);font-size:0.88rem;margin-bottom:0.25rem;">Official Portal Login for Students, Teachers & School Administration</p>
-          <span style="color:#0ea5e9;font-weight:800;font-size:0.85rem;">app.nepalssb.edu.np ↗</span>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1rem;">E-Pustakalaya Digital Library</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.25rem;">Free Nepali e-books, textbooks & learning materials</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.8rem;">pustakalaya.org ↗</span>
         </div>
       </a>
+      <a href="https://moest.gov.np/" target="_blank" rel="noopener" class="glass-card" style="padding:1.5rem;display:flex;align-items:center;gap:1.1rem;">
+        <div style="font-size:2.2rem;flex-shrink:0;">🏛️</div>
+        <div>
+          <h3 style="color:var(--white);margin-bottom:0.25rem;font-size:1rem;">Ministry of Education</h3>
+          <p style="color:var(--text-muted);font-size:0.83rem;margin-bottom:0.25rem;">Government of Nepal — MoEST Official Portal</p>
+          <span style="color:var(--gold);font-weight:800;font-size:0.8rem;">moest.gov.np ↗</span>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 3D VIRTUAL SCIENCE LAB PROMO ═══════════════════════════════════════ -->
+<section class="section" id="sciencelab-promo" style="background:radial-gradient(circle at 50% 50%, rgba(14, 165, 233, 0.12) 0%, var(--navy-mid) 100%);">
+  <div class="container">
+    <div class="glass-card reveal" style="padding:2.5rem 1.75rem;text-align:center;border:1.5px solid var(--cyan-light);box-shadow:0 0 35px rgba(14, 165, 233, 0.25);">
+      <div style="font-size:3.5rem;margin-bottom:0.85rem;">🔬</div>
+      <div class="tag" style="margin-bottom:0.75rem;background:rgba(14,165,233,0.18);color:var(--cyan-light);border:1px solid var(--cyan-light);">Nepal CDC Curriculum · Grades 8, 9 & 10 (SEE)</div>
+      <h2 style="color:var(--white);margin-bottom:0.6rem;font-size:2rem;">3D Virtual Science Laboratory</h2>
+      <p style="max-width:680px;margin:0 auto 1.5rem;font-size:0.95rem;color:var(--text-body);line-height:1.6;">
+        Explore interactive 3D simulations of Chemistry, Physics, and Biology laboratory experiments. Built for smart boards, touch displays, and mobile devices—students can assemble glassware, pour reagents, spark chemical reactions, and analyze cellular structures in real time.
+      </p>
+      <div style="display:flex;gap:0.85rem;justify-content:center;flex-wrap:wrap;">
+        <a href="/sciencelab" class="btn btn-gold" style="background:linear-gradient(135deg, #0284c7, #0ea5e9);box-shadow:0 4px 20px rgba(14,165,233,0.45);font-size:1.05rem;padding:0.85rem 1.8rem;">🔬 Launch 3D Science Lab ➔</a>
+        <a href="/sciencelab" class="btn btn-outline">📋 Browse All Practical Experiments</a>
+      </div>
     </div>
   </div>
 </section>
@@ -470,22 +499,24 @@
           </div>
         </div>
 
-        <!-- GOOGLE MAP EMBED CARD -->
-        <div class="glass-card" style="padding:1.35rem;overflow:hidden;">
-          <h4 style="color:var(--gold);margin-bottom:0.65rem;font-size:1rem;">🗺️ School Location Map</h4>
-          <div style="width:100%;height:240px;border-radius:10px;overflow:hidden;border:1px solid var(--glass-border);">
+                <!-- CAMPUS LOCATION MAP CARD -->
+        <div class="glass-card" style="padding:1.5rem;overflow:hidden;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.75rem;">
+            <h4 style="color:var(--white);font-size:1.05rem;font-weight:700;margin:0;">Campus Location & Access</h4>
+            <span style="font-size:0.75rem;color:var(--text-muted);background:rgba(255,255,255,0.06);padding:0.25rem 0.65rem;border-radius:4px;">Brindaban-02, Rautahat</span>
+          </div>
+          <div style="width:100%;height:250px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,255,255,0.12);background:#0f2240;position:relative;">
             <iframe
-              src="https://maps.google.com/maps?q=Brindaban,Rautahat,Nepal&t=&z=14&ie=UTF8&iwloc=&output=embed"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=85.29%2C26.98%2C85.36%2C27.08&layer=mapnik&marker=27.0392%2C85.3265"
               width="100%"
               height="100%"
               style="border:0;"
-              allowfullscreen=""
               loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade"
-              title="Shree Nepal Secondary School Map Location">
+              title="Shree Nepal Secondary School Campus Map">
             </iframe>
           </div>
-          <div style="margin-top:0.65rem;text-align:center;">
+          <div style="margin-top:0.85rem;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;">
+            <span style="font-size:0.82rem;color:var(--text-muted);">Coordinates: 27°02'21"N, 85°19'35"E</span>
             <a href="https://maps.google.com/maps?q=Brindaban,Rautahat,Nepal" target="_blank" rel="noopener" class="btn btn-outline btn-sm">Open in Google Maps ↗</a>
           </div>
         </div>
@@ -493,7 +524,7 @@
 
       <!-- Message Form -->
       <div class="glass-card" style="padding:1.75rem;">
-        <h3 style="color:var(--gold);margin-bottom:1.1rem;font-size:1.1rem;">💬 Send a Message</h3>
+        <h3 style="color:var(--gold);margin-bottom:1.1rem;font-size:1.1rem;">Inquiries & Contact</h3>
         <form onsubmit="event.preventDefault();this.querySelector('.send-btn').textContent='✅ Message Sent!';setTimeout(()=>{this.reset();this.querySelector('.send-btn').textContent='Send Message →';},3000);">
           <div style="margin-bottom:0.85rem;">
             <label style="display:block;color:var(--white);margin-bottom:0.35rem;font-size:0.82rem;font-weight:600;">Full Name</label>
@@ -576,23 +607,9 @@
   <img id="lightbox-img" src="" alt="Enlarged view">
 </div>
 
-<script src="script.js?v=15"></script>
-<script>
-  // Floating particles
-  (() => {
-    const c = document.getElementById('hero-particles');
-    if (!c) return;
-    for (let i = 0; i < 18; i++) {
-      const d = document.createElement('div');
-      const s = Math.random() * 5 + 2;
-      d.style.cssText = `position:absolute;width:${s}px;height:${s}px;background:var(--gold);border-radius:50%;
-        opacity:${(Math.random()*0.25+0.07).toFixed(2)};left:${Math.random()*100}%;top:${Math.random()*100}%;
-        animation:float ${Math.random()*7+5}s ease-in-out ${Math.random()*4}s infinite;pointer-events:none;`;
-      c.appendChild(d);
-    }
-  })();
-</script>
-<script src="script.js?v=15"></script>
-<script src="dynamic.js?v=15"></script>
+<script src="script.js?v=20"></script>
+
+<script src="script.js?v=20"></script>
+<script src="dynamic.js?v=20"></script>
 </body>
 </html>

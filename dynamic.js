@@ -6,7 +6,7 @@ window.openAttachmentModal = function(url) {
   if (!modal) {
     modal = document.createElement('div');
     modal.id = 'attachment-modal';
-    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,13,25,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:99999;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s ease;padding:1rem;';
+    modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(6,13,25,0.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);z-index:1000000;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity 0.3s ease;padding:1rem;';
     
     modal.innerHTML = `
       <div style="position:absolute;top:15px;right:20px;color:white;font-size:2.5rem;cursor:pointer;user-select:none;line-height:1;z-index:10;" onclick="closeAttachmentModal()">&times;</div>
@@ -174,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const isHomePage = path === '/' || path.includes('index') || document.querySelector('.hero-content') !== null;
       if (isHomePage) {
         const text1 = s.ticker || "Welcome to Shree Nepal Secondary School, Brindaban-02, Rautahat! Quality Education from ECD to Class 12 (+2).";
-        const text2 = s.ticker2 || "Notice: Admissions open for Grade 11 (+2 Management, Education & Humanities). Visit office or portal for details.";
+        const text2 = s.ticker2 || "Notice: Admissions open for Grade 11 (+2 Management, Education & Humanities). Visit school administration office for details.";
 
         let tw = document.getElementById('ticker-wrapper');
         if (!tw) {
@@ -458,23 +458,14 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       const imgHtml = splashNotice.imageUrl 
-        ? `<img src="${optimizeImage(splashNotice.imageUrl)}" alt="${sanitizeHTML(splashNotice.title)}" onclick="openAttachmentModal('${splashNotice.imageUrl}')">`
-        : `<div style="font-size:3.5rem;margin:1rem 0;">📋</div>`;
+        ? `<img src="${optimizeImage(splashNotice.imageUrl)}" alt="${sanitizeHTML(splashNotice.title)}" onclick="event.stopPropagation(); openAttachmentModal('${splashNotice.imageUrl}')" title="Click to view full screen">`
+        : `<div style="font-size:3.5rem;margin:1rem 0;">📋<br><span style="font-size:1rem;color:var(--text-muted);">${sanitizeHTML(splashNotice.title)}</span></div>`;
 
       splashModal.innerHTML = `
-        <div class="splash-modal-card">
+        <div class="splash-modal-card splash-image-only">
           <button class="splash-close-btn" onclick="closeSplashModal()" aria-label="Close Notice">&times;</button>
-          <div class="splash-modal-header">
-            <div style="display:flex;align-items:center;gap:0.5rem;">
-              <span class="badge ${splashNotice.important ? 'badge-red' : 'badge-gold'}">📢 ${sanitizeHTML(splashNotice.category || 'NOTICE')}</span>
-              <span style="font-size:0.8rem;color:var(--text-muted);">📅 ${sanitizeHTML(splashNotice.date || '')}</span>
-            </div>
-          </div>
-          <div class="splash-modal-body">
+          <div class="splash-modal-body" style="padding:0;">
             ${imgHtml}
-            <h3 style="font-size:1.25rem;color:var(--white);margin-bottom:0.6rem;line-height:1.4;">${sanitizeHTML(splashNotice.title)}</h3>
-            ${splashNotice.description ? `<p style="color:var(--text-body);font-size:0.9rem;margin-bottom:1rem;line-height:1.6;">${sanitizeHTML(splashNotice.description)}</p>` : ''}
-            ${splashNotice.imageUrl ? `<button onclick="openAttachmentModal('${splashNotice.imageUrl}')" class="btn btn-gold btn-sm" style="margin-bottom:0.5rem;">🔍 View Full Document</button>` : ''}
           </div>
         </div>
       `;

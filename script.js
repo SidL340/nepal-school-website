@@ -54,7 +54,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Always keep URL bar clean as root domain (nepalssb.edu.np) without appended subpaths
-  if (window.history && window.history.replaceState && !currentPath.includes('manage')) {
+  if (window.history && window.history.replaceState && !currentPath.includes('manage') && !currentPath.includes('sciencelab')) {
     window.history.replaceState(null, '', '/');
   }
 

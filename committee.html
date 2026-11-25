@@ -6,7 +6,7 @@
   <meta name="description" content="School Management Committee (SMC) members of Shree Nepal Secondary School, Rautahat, Nepal." />
   <meta name="theme-color" content="#060d19" />
   <link rel="icon" type="image/png" href="images/logo.png" />
-  <link rel="stylesheet" href="style.css?v=15" />
+  <link rel="stylesheet" href="style.css?v=20" />
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-storage-compat.js"></script>
@@ -23,19 +23,25 @@
         <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
       </div>
     </a>
-    <ul class="nav-links" id="nav-links">
+        <ul class="nav-links" id="nav-links">
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
       <li><a href="/academics">Academics</a></li>
+      <li><a href="/notices">Notices</a></li>
+      <li><a href="/sciencelab" class="nav-sciencelab">🔬 3D Science Lab</a></li>
+      <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
       <li><a href="/faculty">Staff</a></li>
       <li><a href="/committee" class="active">Committee</a></li>
-      <li><a href="/notices">Notices</a></li>
       <li><a href="/gallery">Gallery</a></li>
       <li><a href="/links">Edu Links</a></li>
       <li><a href="/contact">Contact</a></li>
-      <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
     </ul>
-    <button class="nav-toggle" id="nav-toggle" aria-label="Toggle Menu"><span></span><span></span><span></span></button>
+    <div class="nav-right-actions">
+      <a href="/sciencelab" class="nav-quick-lab-btn" title="3D Science Lab">🔬 Lab</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -93,7 +99,7 @@
   </div>
 </footer>
 
-<script src="script.js?v=15"></script>
-<script src="dynamic.js?v=15"></script>
+<script src="script.js?v=20"></script>
+<script src="dynamic.js?v=20"></script>
 </body>
 </html>

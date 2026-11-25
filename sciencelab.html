@@ -1,0 +1,2289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+  <title>3D Virtual Science Lab | Shree Nepal Secondary School</title>
+  <meta name="description" content="Interactive 3D Virtual Science Laboratory for Class 8, 9 & 10 (SEE) based on Nepal CDC Curriculum. Perform real-time physics, chemistry and biology experiments on smartboards and personal devices." />
+  <meta name="theme-color" content="#0c1e3e" />
+  <link rel="icon" type="image/png" href="images/logo.png" />
+  
+  <!-- Design System Fonts & Styles -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Noto+Sans+Devanagari:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=20" />
+
+  <!-- Three.js & OrbitControls for Real-time 3D Graphics -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <style>
+    /* ══════════════════════════════════════════════════════════
+       3D SCIENCE LAB PORTAL — SMARTBOARD & TOUCHSCREEN STYLES
+       ══════════════════════════════════════════════════════════ */
+    :root {
+      --lab-dark: #070e1c;
+      --lab-card: rgba(14, 28, 54, 0.85);
+      --lab-border: rgba(56, 189, 248, 0.28);
+      --lab-glow: 0 0 30px rgba(14, 165, 233, 0.35);
+    }
+
+    body {
+      background-color: var(--lab-dark);
+      color: var(--text-body);
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Lab Page Header */
+    .lab-hero {
+      position: relative;
+      padding: 7rem 1.5rem 2.5rem;
+      background: radial-gradient(circle at 50% 20%, rgba(14, 165, 233, 0.18) 0%, rgba(12, 30, 62, 0.95) 70%, var(--lab-dark) 100%);
+      text-align: center;
+      border-bottom: 1px solid var(--lab-border);
+    }
+
+    .lab-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid var(--cyan-light);
+      padding: 0.45rem 1.25rem;
+      border-radius: var(--radius-pill);
+      font-size: 0.88rem;
+      font-weight: 700;
+      color: var(--cyan-light);
+      margin-bottom: 1.25rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .lab-hero h1 {
+      font-family: 'Outfit', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 3.4rem);
+      font-weight: 900;
+      line-height: 1.15;
+      margin-bottom: 0.85rem;
+      background: linear-gradient(135deg, #ffffff 0%, #cae9ff 60%, var(--cyan-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .lab-hero p {
+      max-width: 820px;
+      margin: 0 auto 2rem;
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      line-height: 1.65;
+    }
+
+    /* Class & Subject Filter Hub */
+    .filter-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      margin: 0 auto;
+      max-width: 1100px;
+    }
+
+    .filter-btn {
+      padding: 0.65rem 1.35rem;
+      border-radius: var(--radius-pill);
+      border: 1.5px solid var(--glass-border);
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--white);
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      touch-action: manipulation;
+    }
+
+    .filter-btn:hover, .filter-btn.active {
+      background: var(--cyan);
+      border-color: var(--cyan-light);
+      color: #ffffff;
+      box-shadow: 0 0 20px rgba(14, 165, 233, 0.5);
+      transform: translateY(-2px);
+    }
+
+    /* ══════ MAIN 3D WORKBENCH THEATER ══════ */
+    .workbench-section {
+      padding: 2rem 1.5rem 4rem;
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    .stage-wrapper {
+      position: relative;
+      background: #040914;
+      border: 2px solid var(--lab-border);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 80px rgba(0, 0, 0, 0.8), var(--lab-glow);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Top Stage Bar */
+    .stage-header {
+      background: rgba(12, 28, 54, 0.95);
+      padding: 1rem 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      border-bottom: 1px solid var(--lab-border);
+      z-index: 10;
+    }
+
+    .exp-title-box {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .exp-tag {
+      background: var(--gold);
+      color: #0c1e3e;
+      font-weight: 800;
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .exp-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .stage-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+    }
+
+    .hud-btn {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      padding: 0.5rem 1rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s ease;
+      touch-action: manipulation;
+    }
+
+    .hud-btn:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: var(--cyan-light);
+    }
+
+    .hud-btn.btn-fullscreen {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      border: none;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    }
+
+    /* 3D Canvas Area */
+    .stage-canvas-container {
+      position: relative;
+      width: 100%;
+      height: 68vh;
+      min-height: 520px;
+      max-height: 820px;
+      background: radial-gradient(circle at 50% 50%, #0d1e3a 0%, #040913 85%);
+      cursor: grab;
+      touch-action: none;
+    }
+
+    .stage-canvas-container:active {
+      cursor: grabbing;
+    }
+
+    #three-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Live Status & Observation Pill */
+    .live-status-pill {
+      position: absolute;
+      top: 18px;
+      left: 20px;
+      background: rgba(6, 13, 25, 0.88);
+      border: 1px solid var(--cyan-light);
+      border-radius: 12px;
+      padding: 0.75rem 1.25rem;
+      color: #ffffff;
+      font-size: 0.9rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      z-index: 5;
+      max-width: 420px;
+      backdrop-filter: blur(8px);
+      pointer-events: none;
+    }
+
+    .live-status-pill .status-title {
+      color: var(--gold-light);
+      font-size: 0.75rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 0.25rem;
+    }
+
+    .live-status-pill .status-desc {
+      font-size: 0.95rem;
+      line-height: 1.35;
+      font-weight: 600;
+    }
+
+    /* Touch Control Deck at Bottom of Stage */
+    .control-deck {
+      background: rgba(10, 22, 45, 0.98);
+      padding: 1.25rem 1.5rem;
+      border-top: 1px solid var(--lab-border);
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      z-index: 10;
+    }
+
+    .control-deck-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .deck-instructions {
+      font-size: 0.95rem;
+      color: #e2e8f0;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .deck-instructions span.step-number {
+      background: var(--gold);
+      color: #0c1e3e;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    /* Big Touch Action Buttons (Ideal for Smartboards) */
+    .touch-actions-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.85rem;
+    }
+
+    .touch-btn {
+      min-height: 54px;
+      padding: 0.75rem 1.4rem;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1.5px solid rgba(255, 255, 255, 0.2);
+      color: #ffffff;
+      font-size: 1rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.65rem;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      touch-action: manipulation;
+      user-select: none;
+    }
+
+    .touch-btn:hover {
+      background: rgba(14, 165, 233, 0.25);
+      border-color: var(--cyan-light);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(14, 165, 233, 0.35);
+    }
+
+    .touch-btn:active {
+      transform: translateY(1px);
+    }
+
+    .touch-btn.primary {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      border: none;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    }
+
+    .touch-btn.primary:hover {
+      background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+      box-shadow: 0 6px 25px rgba(14, 165, 233, 0.6);
+    }
+
+    .touch-btn.accent {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      border: none;
+      color: #0c1e3e;
+      box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);
+    }
+
+    .touch-btn.accent:hover {
+      background: linear-gradient(135deg, #f59e0b, #fde047);
+      box-shadow: 0 6px 25px rgba(245, 158, 11, 0.55);
+    }
+
+    .touch-btn.danger {
+      background: rgba(239, 68, 68, 0.2);
+      border-color: #ef4444;
+      color: #fca5a5;
+    }
+
+    .touch-btn.danger:hover {
+      background: #ef4444;
+      color: #ffffff;
+    }
+
+    /* Slider Touch Widget */
+    .slider-box {
+      display: flex;
+      align-items: center;
+      gap: 0.85rem;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      border: 1px solid var(--glass-border);
+    }
+
+    .slider-box label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--cyan-light);
+      white-space: nowrap;
+    }
+
+    .slider-box input[type="range"] {
+      width: 140px;
+      accent-color: var(--cyan);
+      cursor: pointer;
+    }
+
+    .slider-box span.val-display {
+      font-family: monospace;
+      font-weight: 700;
+      color: var(--gold-light);
+      min-width: 45px;
+    }
+
+    /* Slide-out Theory & Procedure Drawer */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(4, 9, 20, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 9999;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.35s ease;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .theory-drawer {
+      position: fixed;
+      top: 0;
+      right: -620px;
+      width: 90%;
+      max-width: 580px;
+      height: 100vh;
+      background: #09152b;
+      border-left: 2px solid var(--lab-border);
+      box-shadow: -15px 0 50px rgba(0, 0, 0, 0.8);
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      transition: right 0.4s var(--ease);
+      overflow: hidden;
+    }
+
+    .drawer-overlay.active .theory-drawer {
+      right: 0;
+    }
+
+    .drawer-header {
+      padding: 1.5rem;
+      background: rgba(14, 28, 54, 0.95);
+      border-bottom: 1px solid var(--lab-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .drawer-header h3 {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin: 0;
+    }
+
+    .drawer-close {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      color: #ffffff;
+      font-size: 1.6rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .drawer-close:hover {
+      background: var(--gold);
+      color: #0c1e3e;
+      transform: scale(1.1);
+    }
+
+    .drawer-body {
+      padding: 1.5rem;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .guide-card {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      border-radius: 14px;
+      padding: 1.25rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .guide-card h4 {
+      color: var(--cyan-light);
+      font-size: 1.05rem;
+      font-weight: 800;
+      margin-bottom: 0.65rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .guide-card p, .guide-card li {
+      font-size: 0.92rem;
+      color: #e2e8f0;
+      line-height: 1.65;
+    }
+
+    .chemical-equation {
+      background: #040913;
+      border: 1px solid rgba(245, 158, 11, 0.4);
+      padding: 0.85rem 1.1rem;
+      border-radius: 10px;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--gold-light);
+      margin: 0.75rem 0;
+      overflow-x: auto;
+    }
+
+    /* ══════ EXPERIMENTS CATALOG GRID ══════ */
+    .catalog-section {
+      padding: 3rem 1.5rem 6rem;
+      max-width: 1480px;
+      margin: 0 auto;
+    }
+
+    .section-heading-box {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .section-heading-box h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.5rem;
+    }
+
+    .section-heading-box p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
+    .exp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+      gap: 1.75rem;
+    }
+
+    .exp-card {
+      background: var(--lab-card);
+      border: 1px solid var(--lab-border);
+      border-radius: var(--radius);
+      padding: 1.6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .exp-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--cyan), var(--gold));
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .exp-card:hover {
+      transform: translateY(-6px);
+      border-color: var(--cyan-light);
+      box-shadow: 0 18px 45px rgba(14, 165, 233, 0.25);
+    }
+
+    .exp-card:hover::before {
+      opacity: 1;
+    }
+
+    .exp-card.active-card {
+      border: 2px solid var(--gold);
+      box-shadow: 0 0 35px rgba(245, 158, 11, 0.3);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.85rem;
+    }
+
+    .card-class-badge {
+      background: rgba(14, 165, 233, 0.15);
+      border: 1px solid rgba(14, 165, 233, 0.4);
+      color: var(--cyan-light);
+      font-size: 0.75rem;
+      font-weight: 800;
+      padding: 0.25rem 0.65rem;
+      border-radius: 6px;
+      text-transform: uppercase;
+    }
+
+    .card-subject-badge {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--gold-light);
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: #ffffff;
+      margin-bottom: 0.6rem;
+      line-height: 1.35;
+    }
+
+    .card-desc {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      line-height: 1.55;
+      margin-bottom: 1.25rem;
+    }
+
+    .card-apparatus-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      margin-bottom: 1.4rem;
+    }
+
+    .app-pill {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 0.2rem 0.55rem;
+      border-radius: 6px;
+      font-size: 0.76rem;
+      color: #cbd5e1;
+    }
+
+    .card-btn {
+      width: 100%;
+      padding: 0.75rem;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid var(--glass-border);
+      border-radius: 10px;
+      color: #ffffff;
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      transition: all 0.25s ease;
+    }
+
+    .exp-card:hover .card-btn, .exp-card.active-card .card-btn {
+      background: linear-gradient(135deg, #0284c7, #0ea5e9);
+      border-color: transparent;
+      box-shadow: 0 4px 15px rgba(14, 165, 233, 0.4);
+    }
+
+    /* Fullscreen classroom mode overrides */
+    body.is-fullscreen {
+      overflow: hidden;
+    }
+
+    body.is-fullscreen .navbar,
+    body.is-fullscreen .lab-hero,
+    body.is-fullscreen .catalog-section,
+    body.is-fullscreen footer {
+      display: none !important;
+    }
+
+    body.is-fullscreen .workbench-section {
+      padding: 0;
+      max-width: 100vw;
+      height: 100vh;
+      margin: 0;
+    }
+
+    body.is-fullscreen .stage-wrapper {
+      border-radius: 0;
+      height: 100vh;
+      border: none;
+    }
+
+    body.is-fullscreen .stage-canvas-container {
+      height: calc(100vh - 170px);
+      max-height: none;
+    }
+
+    @media (max-width: 768px) {
+      .stage-canvas-container {
+        height: 52vh;
+        min-height: 420px;
+      }
+      .touch-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .touch-actions-grid {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══ TOP NAVIGATION BAR ════════════════════════════════════════════════ -->
+<nav class="navbar" id="navbar">
+  <div class="nav-container">
+    <a href="/" class="nav-brand">
+      <img src="images/logo.png" alt="School Logo" onerror="this.style.display='none'">
+      <div class="nav-brand-text">
+        <span class="school-name"><span class="dyn-school-name">Shree Nepal Secondary School</span></span>
+        <span class="school-sub">Brindaban-02, Rautahat, Nepal</span>
+      </div>
+    </a>
+        <ul class="nav-links" id="nav-links">
+      <li><a href="/">Home</a></li>
+      <li><a href="/about">About</a></li>
+      <li><a href="/academics">Academics</a></li>
+      <li><a href="/notices">Notices</a></li>
+      <li><a href="/sciencelab" class="nav-sciencelab active">🔬 3D Science Lab</a></li>
+      <li><a href="/epustakalaya" class="nav-epustakalaya">📚 E-Library</a></li>
+      <li><a href="/faculty">Staff</a></li>
+      <li><a href="/committee">Committee</a></li>
+      <li><a href="/gallery">Gallery</a></li>
+      <li><a href="/links">Edu Links</a></li>
+      <li><a href="/contact">Contact</a></li>
+    </ul>
+    <div class="nav-right-actions">
+      <a href="/sciencelab" class="nav-quick-lab-btn" title="3D Science Lab">🔬 Lab</a>
+      <button class="nav-toggle" id="nav-toggle" aria-label="Menu" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- ═══ LAB HERO & CURRICULUM SELECTOR ════════════════════════════════════ -->
+<header class="lab-hero">
+  <div class="container">
+    <div class="lab-badge">
+      🇳🇵 Nepal CDC Curriculum · Grades 8, 9 & 10 (SEE Board)
+    </div>
+    <h1>3D Virtual Science Laboratory</h1>
+    <p>
+      Hands-on interactive 3D science simulations designed for classroom smart boards, interactive touchscreens, and personal computers. Students and teachers can assemble apparatus, pour reagents, spark chemical reactions, verify physical laws, and inspect cell structures with real-time 3D physics.
+    </p>
+
+    <!-- Filters -->
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="all">All Experiments (सबै प्रयोग)</button>
+      <button class="filter-btn" data-filter="class10">Class 10 (SEE Board)</button>
+      <button class="filter-btn" data-filter="class9">Class 9 (कक्षा ९)</button>
+      <button class="filter-btn" data-filter="class8">Class 8 (कक्षा ८)</button>
+      <button class="filter-btn" data-filter="chem">🧪 Chemistry</button>
+      <button class="filter-btn" data-filter="phys">⚡ Physics</button>
+      <button class="filter-btn" data-filter="bio">🔬 Biology</button>
+    </div>
+  </div>
+</header>
+
+<!-- ═══ MAIN 3D INTERACTIVE WORKBENCH ══════════════════════════════════════ -->
+<main class="workbench-section">
+  <div class="stage-wrapper" id="stage-wrapper">
+    
+    <!-- Stage Header Bar -->
+    <div class="stage-header">
+      <div class="exp-title-box">
+        <span class="exp-tag" id="current-exp-tag">Class 10 · Chemistry</span>
+        <h2 class="exp-name" id="current-exp-name">Preparation of Carbon Dioxide Gas (CO₂)</h2>
+      </div>
+      <div class="stage-actions">
+        <button class="hud-btn" id="btn-sound-toggle" title="Toggle Sound Effects">🔊 Sound ON</button>
+        <button class="hud-btn" id="btn-camera-reset" title="Reset 3D Camera">🔄 Reset View</button>
+        <button class="hud-btn" id="btn-open-theory">📖 Theory & Steps</button>
+        <button class="hud-btn btn-fullscreen" id="btn-toggle-fullscreen">⛶ Classroom Smartboard Mode</button>
+      </div>
+    </div>
+
+    <!-- 3D WebGL Canvas Container -->
+    <div class="stage-canvas-container" id="canvas-container">
+      <canvas id="three-canvas"></canvas>
+
+      <!-- Dynamic Observation Pill -->
+      <div class="live-status-pill" id="live-status-pill">
+        <div class="status-title" id="status-title">Real-time Lab State</div>
+        <div class="status-desc" id="status-desc">Apparatus assembled and ready. Tap step 1 below to add calcium carbonate (marble chips).</div>
+      </div>
+    </div>
+
+    <!-- Bottom Touch Control Deck (Large touch targets for smartboards) -->
+    <div class="control-deck">
+      <div class="control-deck-row">
+        <div class="deck-instructions">
+          <span class="step-number" id="step-number">1</span>
+          <span id="step-instruction">Tap "Add CaCO₃ Chips" to load marble pieces into the Woulfe's bottle.</span>
+        </div>
+        <div id="deck-secondary-controls">
+          <!-- Dynamic sliders / auxiliary touch controls -->
+        </div>
+      </div>
+
+      <!-- Action Buttons (Dynamically Populated by Active Simulation) -->
+      <div class="touch-actions-grid" id="touch-actions-grid">
+        <!-- Buttons injected by JavaScript -->
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- ═══ SLIDE-OUT THEORY & PROCEDURE DRAWER ════════════════════════════════ -->
+<div class="drawer-overlay" id="drawer-overlay">
+  <div class="theory-drawer" id="theory-drawer">
+    <div class="drawer-header">
+      <h3 id="drawer-title">Experiment Guide & Theory</h3>
+      <button class="drawer-close" id="drawer-close">&times;</button>
+    </div>
+    <div class="drawer-body" id="drawer-body">
+      <!-- Injected by active experiment -->
+    </div>
+  </div>
+</div>
+
+<!-- ═══ EXPERIMENT CATALOG GALLERY ═════════════════════════════════════════ -->
+<section class="catalog-section">
+  <div class="container">
+    <div class="section-heading-box">
+      <h2>Nepal CDC Science Practical Catalog</h2>
+      <p>Select any practical below to load it immediately into the 3D Virtual Workbench</p>
+    </div>
+
+    <div class="exp-grid" id="exp-grid">
+      <!-- Generated dynamically below -->
+    </div>
+  </div>
+</section>
+
+<!-- ═══ FOOTER ═════════════════════════════════════════════════════════════ -->
+<footer class="footer">
+  <div class="container" style="text-align:center;padding:2.5rem 1rem;">
+    <p style="color:var(--text-muted);font-size:0.92rem;margin-bottom:0.5rem;">
+      © 2026 Shree Nepal Secondary School · Bishrampur, Brindaban-02, Rautahat, Nepal.
+    </p>
+    <p style="color:var(--cyan-light);font-size:0.85rem;font-weight:700;">
+      3D Virtual Science Lab Platform · Empowering Practical STEM Learning
+    </p>
+  </div>
+</footer>
+
+<!-- ═════════════════════════════════════════════════════════════════════════
+     THREE.JS 3D SCIENCE SIMULATOR ENGINE (PHYSICS & CHEMISTRY & BIOLOGY)
+     ═════════════════════════════════════════════════════════════════════════ -->
+<script>
+(() => {
+  'use strict';
+
+  // ── 0. Web Audio API Lab Sound Synthesizer ─────────────────────────────────
+  const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  let soundEnabled = true;
+
+  function playTone(freq, type, duration, gainVal = 0.15) {
+    if (!soundEnabled || !audioCtx) return;
+    try {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(gainVal, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    } catch(e) {}
+  }
+
+  function playBubbleSound() {
+    if (!soundEnabled) return;
+    for (let i = 0; i < 4; i++) {
+      setTimeout(() => {
+        playTone(350 + Math.random() * 500, 'sine', 0.08, 0.12);
+      }, i * 60);
+    }
+  }
+
+  function playClink() {
+    playTone(1800, 'triangle', 0.2, 0.2);
+  }
+
+  function playSwitchClick() {
+    playTone(280, 'square', 0.05, 0.2);
+  }
+
+  function playFlameSound() {
+    playTone(140, 'sawtooth', 0.4, 0.18);
+  }
+
+  function playSuccess() {
+    playTone(523.25, 'sine', 0.15, 0.2); // C5
+    setTimeout(() => playTone(659.25, 'sine', 0.15, 0.2), 120); // E5
+    setTimeout(() => playTone(783.99, 'sine', 0.3, 0.2), 240); // G5
+  }
+
+  // ── 1. Experiment Registry & CDC Specifications ───────────────────────────
+  const EXPERIMENTS = [
+    {
+      id: 'co2_prep',
+      class: 'class10',
+      subject: 'chem',
+      title: 'Lab Preparation of Carbon Dioxide Gas (CO₂)',
+      nepaliTitle: 'कार्बन डाइअक्साइड ग्यास बनाउने प्रयोगशाला विधि',
+      grade: 'Class 10 · SEE Board',
+      chapter: 'Chemistry · Ch. 12: Some Gases (केही ग्यासहरू)',
+      desc: 'Preparation of CO₂ gas by treating calcium carbonate (marble chips) with dilute hydrochloric acid (HCl) at room temperature, testing with burning splinter and lime water.',
+      apparatus: ["Woulfe's 2-neck Bottle", "Thistle Funnel", "Delivery Tube", "Gas Jar", "Marble Chips (CaCO₃)", "Dilute HCl", "Lime Water", "Splinter"],
+      equation: 'CaCO₃ + 2HCl ➔ CaCl₂ + H₂O + CO₂↑',
+      setupFunction: setupCO2Lab
+    },
+    {
+      id: 'nh3_prep',
+      class: 'class10',
+      subject: 'chem',
+      title: 'Lab Preparation of Ammonia Gas (NH₃)',
+      nepaliTitle: 'एमोनिया ग्यास बनाउने प्रयोगशाला विधि',
+      grade: 'Class 10 · SEE Board',
+      chapter: 'Chemistry · Ch. 12: Some Gases (केही ग्यासहरू)',
+      desc: 'Preparing ammonia gas by heating a solid mixture of ammonium chloride (NH₄Cl) and calcium hydroxide (slaked lime, Ca(OH)₂) in 2:1 ratio, collecting by downward displacement of air.',
+      apparatus: ["Hard Glass Test Tube", "Burner", "Delivery Tube", "Inverted Gas Jar", "NH₄Cl + Ca(OH)₂", "Red Litmus", "Conc. HCl Rod"],
+      equation: '2NH₄Cl + Ca(OH)₂ ─(Heat)─➔ CaCl₂ + 2H₂O + 2NH₃↑',
+      setupFunction: setupNH3Lab
+    },
+    {
+      id: 'ohms_law',
+      class: 'class10',
+      subject: 'phys',
+      title: "Verification of Ohm's Law (V = I × R)",
+      nepaliTitle: "ओहमको नियमको प्रमाणीकरण",
+      grade: 'Class 10 · SEE Board',
+      chapter: 'Physics · Ch. 4: Current Electricity & Magnetism',
+      desc: 'Studying the linear relationship between potential difference (V) and current (I) across a conductor to plot a V-I graph and determine electrical resistance.',
+      apparatus: ["DC Battery Bank", "Draggable Rheostat", "Analog Ammeter", "Analog Voltmeter", "Plug Key Switch", "Resistance Coil"],
+      equation: 'V = I × R  ➔  R = V / I (Constant Resistance)',
+      setupFunction: setupOhmsLab
+    },
+    {
+      id: 'archimedes',
+      class: 'class9',
+      subject: 'phys',
+      title: "Verification of Archimedes' Principle",
+      nepaliTitle: "आर्किमिडिजको सिद्धान्त प्रमाणीकरण",
+      grade: 'Class 9 & 10',
+      chapter: 'Physics · Ch. 2: Pressure (चाप)',
+      desc: 'Submerging a metal cylinder into a Eureka overflow can to prove that the buoyant upthrust equals the weight of the liquid displaced.',
+      apparatus: ["Spring Balance (0-10N)", "Eureka Overflow Can", "Metal Cylinder", "Water", "Overflow Beaker", "Digital Scale"],
+      equation: 'Upthrust (U) = Weight in Air - Weight in Water = Weight of Displaced Liquid',
+      setupFunction: setupArchimedesLab
+    },
+    {
+      id: 'optics_prism',
+      class: 'class10',
+      subject: 'phys',
+      title: 'Refraction & Triangular Prism Dispersion (VIBGYOR)',
+      nepaliTitle: 'प्रकाशको अपवर्तन तथा प्रिज्मबाट रङ विभाजन',
+      grade: 'Class 9 & 10',
+      chapter: 'Physics · Ch. 5: Light (प्रकाश)',
+      desc: 'Tracing light rays through a rectangular glass slab to observe lateral displacement and through a 60° triangular glass prism to demonstrate spectral dispersion into 7 rainbow colors.',
+      apparatus: ["Laser Beam Source", "Protractor Optical Table", "Rectangular Glass Slab", "Triangular Glass Prism", "White Screen"],
+      equation: 'Snell\'s Law: n = sin(i) / sin(r)  |  Dispersion: VIBGYOR (Violet to Red)',
+      setupFunction: setupOpticsLab
+    },
+    {
+      id: 'microscope_cell',
+      class: 'class9',
+      subject: 'bio',
+      title: 'Virtual Compound Microscope & Cell Explorer',
+      nepaliTitle: 'कम्पाउन्ड माइक्रोस्कोप तथा वनस्पति र जनावर कोष',
+      grade: 'Class 8, 9 & 10',
+      chapter: 'Biology · Ch. 17: Cell & Tissues (कोष र तन्तुहरू)',
+      desc: 'Operating a 3D compound microscope with revolving nosepiece, coarse/fine adjustment focus, and slide illumination to examine onion peel plant cells, human cheek animal cells, and stomata.',
+      apparatus: ["3D Compound Microscope", "Onion Peel Slide (Safranin)", "Cheek Cell Slide (Methylene Blue)", "Stomata Slide", "Coarse/Fine Knobs"],
+      equation: 'Magnification = Eyepiece (10x) × Objective (10x/40x) = 100x / 400x',
+      setupFunction: setupMicroscopeLab
+    },
+    {
+      id: 'titration_acid_base',
+      class: 'class8',
+      subject: 'chem',
+      title: 'Acid-Base Neutralization Titration & pH Scale',
+      nepaliTitle: 'अम्ल-क्षार उदासीनीकरण तथा pH मापन',
+      grade: 'Class 8, 9 & 10',
+      chapter: 'Chemistry · Ch. 11: Acid, Base & Salt (अम्ल, क्षार र लवण)',
+      desc: 'Titrating hydrochloric acid (HCl) against sodium hydroxide (NaOH) with phenolphthalein indicator to observe the sharp color change at neutralization (pH 7.0).',
+      apparatus: ["50mL Glass Burette", "Conical Flask", "Magnetic Stirrer", "0.1M NaOH", "0.1M HCl", "Phenolphthalein", "Litmus", "pH Meter"],
+      equation: 'HCl (Acid) + NaOH (Base) ➔ NaCl (Salt) + H₂O (Neutralization at pH 7)',
+      setupFunction: setupTitrationLab
+    }
+  ];
+
+  let currentExp = EXPERIMENTS[0];
+
+  // ── 2. Three.js Scene, Camera, Renderer & Orbit Controls ──────────────────
+  const canvasContainer = document.getElementById('canvas-container');
+  const canvas = document.getElementById('three-canvas');
+
+  const scene = new THREE.Scene();
+  scene.background = new THREE.Color(0x060f22);
+  scene.fog = new THREE.FogExp2(0x060f22, 0.035);
+
+  const camera = new THREE.PerspectiveCamera(45, canvasContainer.clientWidth / canvasContainer.clientHeight, 0.1, 100);
+  camera.position.set(0, 3.2, 7.5);
+
+  const renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: false, powerPreference: 'high-performance' });
+  renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
+  const controls = new THREE.OrbitControls(camera, renderer.domElement);
+  controls.enableDamping = true;
+  controls.dampingFactor = 0.05;
+  controls.maxPolarAngle = Math.PI / 2 + 0.05; // Prevent flipping under floor
+  controls.minDistance = 2.5;
+  controls.maxDistance = 14;
+  controls.target.set(0, 1.2, 0);
+
+  // Lighting Rig
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.65);
+  scene.add(ambientLight);
+
+  const mainLight = new THREE.DirectionalLight(0xe0f2fe, 1.2);
+  mainLight.position.set(5, 10, 6);
+  mainLight.castShadow = true;
+  mainLight.shadow.mapSize.width = 1024;
+  mainLight.shadow.mapSize.height = 1024;
+  mainLight.shadow.camera.near = 0.5;
+  mainLight.shadow.camera.far = 25;
+  scene.add(mainLight);
+
+  const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.4);
+  fillLight.position.set(-6, 4, -4);
+  scene.add(fillLight);
+
+  const benchPointLight = new THREE.PointLight(0xfde047, 0.5, 8);
+  benchPointLight.position.set(0, 2.5, 0);
+  scene.add(benchPointLight);
+
+  // Lab Workbench Floor Table
+  const tableGeo = new THREE.BoxGeometry(10, 0.35, 6);
+  const tableMat = new THREE.MeshStandardMaterial({ color: 0x111c33, roughness: 0.3, metalness: 0.2 });
+  const tableMesh = new THREE.Mesh(tableGeo, tableMat);
+  tableMesh.position.y = -0.175;
+  tableMesh.receiveShadow = true;
+  scene.add(tableMesh);
+
+  // Grid Helper on bench
+  const gridHelper = new THREE.GridHelper(10, 20, 0x0284c7, 0x1e3a5f);
+  gridHelper.position.y = 0.005;
+  scene.add(gridHelper);
+
+  // Active Simulation Group Holder
+  let labGroup = new THREE.Group();
+  scene.add(labGroup);
+
+  // Shared Animation Callback
+  let currentAnimationTick = null;
+
+  // ── 3. Helper Functions for 3D Mesh Generation ─────────────────────────────
+  const glassMaterial = new THREE.MeshPhysicalMaterial({
+    color: 0xffffff,
+    transparent: true,
+    opacity: 0.38,
+    roughness: 0.1,
+    metalness: 0.05,
+    transmission: 0.85,
+    ior: 1.5,
+    reflectivity: 0.9,
+    depthWrite: false
+  });
+
+  const brassMaterial = new THREE.MeshStandardMaterial({ color: 0xd97706, roughness: 0.3, metalness: 0.85 });
+  const ironStandMaterial = new THREE.MeshStandardMaterial({ color: 0x2d3748, roughness: 0.5, metalness: 0.6 });
+
+  function createRetortStand(x = -1.5, height = 3.5) {
+    const stand = new THREE.Group();
+    // Heavy base
+    const base = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.12, 0.9), ironStandMaterial);
+    base.position.set(x, 0.06, 0);
+    base.castShadow = true;
+    stand.add(base);
+    // Vertical iron rod
+    const rod = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, height, 16), ironStandMaterial);
+    rod.position.set(x - 0.35, height / 2, 0);
+    rod.castShadow = true;
+    stand.add(rod);
+    return stand;
+  }
+
+  function setStatus(title, desc) {
+    document.getElementById('status-title').textContent = title;
+    document.getElementById('status-desc').textContent = desc;
+  }
+
+  function setStep(num, instruction) {
+    document.getElementById('step-number').textContent = num;
+    document.getElementById('step-instruction').textContent = instruction;
+  }
+
+  // ── 4. SIMULATION 1: CO₂ GAS PREPARATION ──────────────────────────────────
+  function setupCO2Lab() {
+    labGroup.clear();
+    const g = new THREE.Group();
+
+    // 1. Stand holding delivery tube
+    g.add(createRetortStand(-1.6, 2.8));
+
+    // 2. Woulfe's Bottle (Double Neck Flask)
+    const bottleGroup = new THREE.Group();
+    bottleGroup.position.set(-1.0, 0, 0);
+
+    const bodyGeo = new THREE.CylinderGeometry(0.65, 0.75, 1.4, 24);
+    const body = new THREE.Mesh(bodyGeo, glassMaterial);
+    body.position.y = 0.7;
+    bottleGroup.add(body);
+
+    // Necks
+    const neckGeo = new THREE.CylinderGeometry(0.16, 0.16, 0.45, 16);
+    const neck1 = new THREE.Mesh(neckGeo, glassMaterial);
+    neck1.position.set(-0.3, 1.5, 0);
+    bottleGroup.add(neck1);
+
+    const neck2 = new THREE.Mesh(neckGeo, glassMaterial);
+    neck2.position.set(0.3, 1.5, 0);
+    bottleGroup.add(neck2);
+
+    // Liquid in bottle (Dilute HCl)
+    const liquidGeo = new THREE.CylinderGeometry(0.62, 0.7, 0.6, 24);
+    const liquidMat = new THREE.MeshStandardMaterial({ color: 0x93c5fd, transparent: true, opacity: 0.65 });
+    const liquid = new THREE.Mesh(liquidGeo, liquidMat);
+    liquid.position.y = 0.4;
+    liquid.scale.set(1, 0.001, 1); // initially empty
+    bottleGroup.add(liquid);
+
+    // Marble chips (CaCO3)
+    const chipsGroup = new THREE.Group();
+    chipsGroup.position.set(0, 0.15, 0);
+    chipsGroup.visible = false;
+    const chipMat = new THREE.MeshStandardMaterial({ color: 0xe2e8f0, roughness: 0.8 });
+    for (let i = 0; i < 9; i++) {
+      const chip = new THREE.Mesh(new THREE.DodecahedronGeometry(0.1 + Math.random() * 0.05), chipMat);
+      chip.position.set((Math.random() - 0.5) * 0.7, Math.random() * 0.15, (Math.random() - 0.5) * 0.7);
+      chipsGroup.add(chip);
+    }
+    bottleGroup.add(chipsGroup);
+
+    // Thistle Funnel dipping in neck1
+    const funnelStem = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 1.8, 16), glassMaterial);
+    funnelStem.position.set(-0.3, 1.7, 0);
+    bottleGroup.add(funnelStem);
+    const funnelTop = new THREE.Mesh(new THREE.ConeGeometry(0.25, 0.35, 16, 1, true), glassMaterial);
+    funnelTop.position.set(-0.3, 2.7, 0);
+    bottleGroup.add(funnelTop);
+
+    g.add(bottleGroup);
+
+    // 3. Upright Gas Jar (Upward displacement of air)
+    const jarGroup = new THREE.Group();
+    jarGroup.position.set(1.4, 0, 0);
+    const jar = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 1.8, 24), glassMaterial);
+    jar.position.y = 0.9;
+    jarGroup.add(jar);
+
+    // Gas cloud in jar
+    const gasCloudGeo = new THREE.CylinderGeometry(0.42, 0.42, 1.7, 16);
+    const gasCloudMat = new THREE.MeshStandardMaterial({ color: 0xf8fafc, transparent: true, opacity: 0 });
+    const gasCloud = new THREE.Mesh(gasCloudGeo, gasCloudMat);
+    gasCloud.position.y = 0.9;
+    jarGroup.add(gasCloud);
+
+    // Wooden Splinter with Flame
+    const splinterGroup = new THREE.Group();
+    splinterGroup.position.set(1.4, 3.2, 0);
+    splinterGroup.visible = false;
+    const stick = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.8), new THREE.MeshStandardMaterial({ color: 0x854d0e }));
+    splinterGroup.add(stick);
+    const flame = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.2, 12), new THREE.MeshBasicMaterial({ color: 0xf59e0b }));
+    flame.position.y = -0.45;
+    splinterGroup.add(flame);
+    jarGroup.add(splinterGroup);
+
+    g.add(jarGroup);
+
+    // 4. Test Tube with Lime Water
+    const tubeGroup = new THREE.Group();
+    tubeGroup.position.set(2.8, 0, 0);
+    const tubeRack = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.5), new THREE.MeshStandardMaterial({ color: 0x78350f }));
+    tubeRack.position.y = 0.4;
+    tubeGroup.add(tubeRack);
+
+    const limeTube = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 1.2, 16), glassMaterial);
+    limeTube.position.y = 0.8;
+    tubeGroup.add(limeTube);
+
+    const limeLiquid = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.13, 0.7, 16), new THREE.MeshStandardMaterial({ color: 0xe0f2fe, transparent: true, opacity: 0.5 }));
+    limeLiquid.position.y = 0.55;
+    tubeGroup.add(limeLiquid);
+
+    g.add(tubeGroup);
+
+    // 5. Glass Delivery Tube connecting bottle to jar
+    const tubeCurve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.7, 1.7, 0),
+      new THREE.Vector3(-0.7, 2.3, 0),
+      new THREE.Vector3(0.5, 2.3, 0),
+      new THREE.Vector3(1.4, 2.3, 0),
+      new THREE.Vector3(1.4, 0.3, 0)
+    ]);
+    const deliveryTube = new THREE.Mesh(new THREE.TubeGeometry(tubeCurve, 32, 0.035, 12, false), glassMaterial);
+    g.add(deliveryTube);
+
+    // Particle bubbles inside Woulfe's bottle
+    const bubbleCount = 45;
+    const bubbleGeo = new THREE.SphereGeometry(0.025, 8, 8);
+    const bubbleMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
+    const bubbles = [];
+    for (let i = 0; i < bubbleCount; i++) {
+      const b = new THREE.Mesh(bubbleGeo, bubbleMat);
+      b.position.set(-1.0 + (Math.random() - 0.5) * 0.8, 0.2 + Math.random() * 0.5, (Math.random() - 0.5) * 0.8);
+      b.visible = false;
+      g.add(b);
+      bubbles.push(b);
+    }
+
+    labGroup.add(g);
+
+    // Simulation States
+    let hasCaCO3 = false;
+    let hasHCl = false;
+    let isFasting = false;
+
+    // Render loop animation
+    currentAnimationTick = () => {
+      if (hasHCl && isFasting) {
+        bubbles.forEach(b => {
+          b.position.y += 0.02;
+          if (b.position.y > 0.8) {
+            b.position.y = 0.15 + Math.random() * 0.1;
+          }
+        });
+        if (gasCloudMat.opacity < 0.65) gasCloudMat.opacity += 0.005;
+      }
+    };
+
+    // Build Touch Deck UI
+    const deck = document.getElementById('touch-actions-grid');
+    deck.innerHTML = `
+      <button class="touch-btn primary" id="btn-add-caco3">1️⃣ Add Marble Chips (CaCO₃)</button>
+      <button class="touch-btn primary" id="btn-add-hcl" disabled>2️⃣ Pour Dilute HCl</button>
+      <button class="touch-btn accent" id="btn-test-flame" disabled>🔥 Test with Splinter</button>
+      <button class="touch-btn accent" id="btn-test-lime" disabled>🥛 Bubble into Lime Water</button>
+      <button class="touch-btn danger" id="btn-reset-exp">🔄 Reset</button>
+    `;
+
+    document.getElementById('deck-secondary-controls').innerHTML = `
+      <div class="slider-box">
+        <label>Gas Flow:</label>
+        <span class="val-display" id="gas-flow-val">0 sccm</span>
+      </div>
+    `;
+
+    setStep('1', 'Tap "Add Marble Chips (CaCO₃)" to put solid reactant into the flask.');
+    setStatus('Ready for Experiment', 'Woulfe\'s bottle assembled. Waiting for calcium carbonate.');
+
+    // Button Listeners
+    document.getElementById('btn-add-caco3').addEventListener('click', () => {
+      chipsGroup.visible = true;
+      hasCaCO3 = true;
+      playClink();
+      document.getElementById('btn-add-caco3').disabled = true;
+      document.getElementById('btn-add-hcl').disabled = false;
+      setStep('2', 'Tap "Pour Dilute HCl" down the thistle funnel to initiate effervescence.');
+      setStatus('Marble Chips Loaded', 'CaCO₃ chips resting at the bottom of the flask.');
+    });
+
+    document.getElementById('btn-add-hcl').addEventListener('click', () => {
+      hasHCl = true;
+      liquid.scale.set(1, 1, 1);
+      liquid.position.y = 0.4;
+      isFasting = true;
+      bubbles.forEach(b => b.visible = true);
+      playBubbleSound();
+      document.getElementById('gas-flow-val').textContent = '45 mL/s';
+      document.getElementById('btn-add-hcl').disabled = true;
+      document.getElementById('btn-test-flame').disabled = false;
+      document.getElementById('btn-test-lime').disabled = false;
+      setStep('3', 'Reaction in progress: CaCO₃ + 2HCl ➔ CaCl₂ + H₂O + CO₂↑. Gas is filling the gas jar. Test with flame or lime water.');
+      setStatus('Chemical Reaction Active!', 'Furious effervescence of CO₂ bubbles! Gas is collecting by upward displacement of air.');
+      playSuccess();
+    });
+
+    document.getElementById('btn-test-flame').addEventListener('click', () => {
+      splinterGroup.visible = true;
+      splinterGroup.position.set(1.4, 2.1, 0);
+      playFlameSound();
+      setStatus('Testing with Burning Splinter...', 'Lowering burning splinter into the mouth of the CO₂ gas jar.');
+      setTimeout(() => {
+        flame.visible = false; // extinguished
+        playTone(200, 'sawtooth', 0.2, 0.2);
+        setStatus('Flame Extinguished Immediately! ❌🔥', 'Conclusion: Carbon dioxide gas does NOT support combustion and is non-flammable.');
+      }, 700);
+    });
+
+    document.getElementById('btn-test-lime').addEventListener('click', () => {
+      limeLiquid.material.color.setHex(0xffffff);
+      limeLiquid.material.opacity = 0.95;
+      playBubbleSound();
+      setStatus('Lime Water Turned Milky White! 🥛', 'Ca(OH)₂ + CO₂ ➔ CaCO₃↓ (insoluble white precipitate) + H₂O. Proves presence of CO₂!');
+      playSuccess();
+    });
+
+    document.getElementById('btn-reset-exp').addEventListener('click', setupCO2Lab);
+  }
+
+  // ── 5. SIMULATION 2: NH₃ AMMONIA GAS PREPARATION ─────────────────────────
+  function setupNH3Lab() {
+    labGroup.clear();
+    const g = new THREE.Group();
+
+    // Retort stand with clamp
+    g.add(createRetortStand(-1.4, 3.4));
+
+    // Hard glass test tube slanted downwards (~ -15 deg)
+    const tubeGroup = new THREE.Group();
+    tubeGroup.position.set(-0.8, 1.8, 0);
+    tubeGroup.rotation.z = -0.22; // Slanted down towards open mouth
+
+    const hardTube = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 2.0, 20), glassMaterial);
+    tubeGroup.add(hardTube);
+
+    // Chemical Mixture (NH4Cl + Ca(OH)2 2:1 ratio)
+    const mixGeo = new THREE.CylinderGeometry(0.16, 0.16, 0.7, 16);
+    const mixMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, roughness: 0.9 });
+    const mixMesh = new THREE.Mesh(mixGeo, mixMat);
+    mixMesh.position.y = -0.55;
+    mixMesh.visible = false;
+    tubeGroup.add(mixMesh);
+
+    g.add(tubeGroup);
+
+    // Bunsen Burner beneath closed end of test tube
+    const burnerGroup = new THREE.Group();
+    burnerGroup.position.set(-1.25, 0, 0);
+
+    const bBase = new THREE.Mesh(new THREE.CylinderGeometry(0.4, 0.45, 0.12, 16), ironStandMaterial);
+    burnerGroup.add(bBase);
+    const bTube = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.08, 0.7, 16), brassMaterial);
+    bTube.position.y = 0.4;
+    burnerGroup.add(bTube);
+
+    // Animated Bunsen Flame
+    const flameGeo = new THREE.ConeGeometry(0.14, 0.55, 16);
+    const flameMat = new THREE.MeshBasicMaterial({ color: 0x38bdf8 });
+    const flameMesh = new THREE.Mesh(flameGeo, flameMat);
+    flameMesh.position.y = 0.95;
+    flameMesh.visible = false;
+    burnerGroup.add(flameMesh);
+
+    g.add(burnerGroup);
+
+    // Inverted Gas Jar (Downward displacement of air)
+    const jarStand = createRetortStand(1.5, 3.5);
+    g.add(jarStand);
+
+    const invJarGroup = new THREE.Group();
+    invJarGroup.position.set(1.5, 2.2, 0);
+    invJarGroup.rotation.z = Math.PI; // Inverted!
+
+    const invJar = new THREE.Mesh(new THREE.CylinderGeometry(0.45, 0.45, 1.8, 24), glassMaterial);
+    invJarGroup.add(invJar);
+
+    const nh3GasGeo = new THREE.CylinderGeometry(0.42, 0.42, 1.6, 16);
+    const nh3GasMat = new THREE.MeshStandardMaterial({ color: 0xf0fdf4, transparent: true, opacity: 0 });
+    const nh3GasMesh = new THREE.Mesh(nh3GasGeo, nh3GasMat);
+    invJarGroup.add(nh3GasMesh);
+
+    g.add(invJarGroup);
+
+    // Long bent delivery tube from test tube into inverted jar
+    const curve = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(-0.55, 1.65, 0),
+      new THREE.Vector3(0.3, 1.3, 0),
+      new THREE.Vector3(1.5, 1.3, 0),
+      new THREE.Vector3(1.5, 2.8, 0)
+    ]);
+    const delivery = new THREE.Mesh(new THREE.TubeGeometry(curve, 28, 0.035, 12, false), glassMaterial);
+    g.add(delivery);
+
+    // Litmus paper & Glass rod
+    const litmusMesh = new THREE.Mesh(new THREE.BoxGeometry(0.12, 0.55, 0.02), new THREE.MeshStandardMaterial({ color: 0xef4444 }));
+    litmusMesh.position.set(1.5, 0.7, 0);
+    litmusMesh.visible = false;
+    g.add(litmusMesh);
+
+    labGroup.add(g);
+
+    let isHeating = false;
+    currentAnimationTick = () => {
+      if (isHeating) {
+        flameMesh.scale.y = 0.9 + Math.sin(Date.now() * 0.02) * 0.15;
+        if (nh3GasMat.opacity < 0.6) nh3GasMat.opacity += 0.006;
+      }
+    };
+
+    // UI Controls
+    const deck = document.getElementById('touch-actions-grid');
+    deck.innerHTML = `
+      <button class="touch-btn primary" id="btn-load-nh4cl">1️⃣ Load NH₄Cl + Ca(OH)₂ Mixture</button>
+      <button class="touch-btn primary" id="btn-light-burner" disabled>2️⃣ Light Bunsen Burner 🔥</button>
+      <button class="touch-btn accent" id="btn-litmus-test" disabled>🟥 Test Moist Red Litmus</button>
+      <button class="touch-btn accent" id="btn-hcl-test" disabled>🧪 Test with Conc. HCl Glass Rod</button>
+      <button class="touch-btn danger" id="btn-reset-exp">🔄 Reset</button>
+    `;
+
+    document.getElementById('deck-secondary-controls').innerHTML = `
+      <div class="slider-box">
+        <label>Flame Heat:</label>
+        <span class="val-display" id="heat-val">OFF</span>
+      </div>
+    `;
+
+    setStep('1', 'Tap "Load NH₄Cl + Ca(OH)₂ Mixture" into the hard glass test tube.');
+    setStatus('Ready for NH₃ Preparation', 'Slanted hard glass test tube ready. Prevents condensation cracks.');
+
+    document.getElementById('btn-load-nh4cl').addEventListener('click', () => {
+      mixMesh.visible = true;
+      playClink();
+      document.getElementById('btn-load-nh4cl').disabled = true;
+      document.getElementById('btn-light-burner').disabled = false;
+      setStep('2', 'Tap "Light Bunsen Burner" to heat the mixture.');
+      setStatus('Mixture Loaded', 'NH₄Cl and Ca(OH)₂ (ratio 2:1) ready for thermal decomposition.');
+    });
+
+    document.getElementById('btn-light-burner').addEventListener('click', () => {
+      flameMesh.visible = true;
+      isHeating = true;
+      playFlameSound();
+      document.getElementById('heat-val').textContent = '280 °C';
+      document.getElementById('btn-light-burner').disabled = true;
+      document.getElementById('btn-litmus-test').disabled = false;
+      document.getElementById('btn-hcl-test').disabled = false;
+      setStep('3', 'Reaction: 2NH₄Cl + Ca(OH)₂ ➔ CaCl₂ + 2H₂O + 2NH₃↑. Pungent gas collecting in inverted jar.');
+      setStatus('Ammonia Gas Producing!', 'NH₃ is lighter than air, collecting by downward displacement of air.');
+      playSuccess();
+    });
+
+    document.getElementById('btn-litmus-test').addEventListener('click', () => {
+      litmusMesh.visible = true;
+      litmusMesh.position.set(1.5, 1.25, 0);
+      setTimeout(() => {
+        litmusMesh.material.color.setHex(0x3b82f6); // turns blue
+        playSuccess();
+        setStatus('Red Litmus Turned Deep Blue! 🟦', 'Conclusion: Ammonia is a basic (alkaline) gas in aqueous solution.');
+      }, 500);
+    });
+
+    document.getElementById('btn-hcl-test').addEventListener('click', () => {
+      playTone(600, 'sine', 0.3, 0.2);
+      setStatus('Dense White Fumes of Ammonium Chloride (NH₄Cl)! 💨', 'NH₃ + HCl ➔ NH₄Cl (Dense white smoke proves ammonia gas identity).');
+      playSuccess();
+    });
+
+    document.getElementById('btn-reset-exp').addEventListener('click', setupNH3Lab);
+  }
+
+  // ── 6. SIMULATION 3: OHM'S LAW & CIRCUIT BUILDER ──────────────────────────
+  function setupOhmsLab() {
+    labGroup.clear();
+    const g = new THREE.Group();
+
+    // Circuit Breadboard base
+    const board = new THREE.Mesh(new THREE.BoxGeometry(5.5, 0.15, 3.8), new THREE.MeshStandardMaterial({ color: 0x1e293b, roughness: 0.6 }));
+    board.position.y = 0.08;
+    g.add(board);
+
+    // Battery Bank (DC 0-12V)
+    const battery = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.65, 0.7), new THREE.MeshStandardMaterial({ color: 0x0284c7, metalness: 0.4 }));
+    battery.position.set(-2.0, 0.45, -1.2);
+    g.add(battery);
+
+    // Switch Key
+    const keyBase = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.25, 0.15), ironStandMaterial);
+    keyBase.position.set(-0.6, 0.2, -1.2);
+    g.add(keyBase);
+    const keyLever = new THREE.Mesh(new THREE.BoxGeometry(0.08, 0.35, 0.08), brassMaterial);
+    keyLever.position.set(-0.6, 0.35, -1.2);
+    g.add(keyLever);
+
+    // Rheostat (Cylinder with sliding contact)
+    const rheoBase = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.3, 2.2, 16), new THREE.MeshStandardMaterial({ color: 0x713f12 }));
+    rheoBase.rotation.z = Math.PI / 2;
+    rheoBase.position.set(1.4, 0.45, -1.2);
+    g.add(rheoBase);
+
+    const sliderKnob = new THREE.Mesh(new THREE.BoxGeometry(0.25, 0.35, 0.3), brassMaterial);
+    sliderKnob.position.set(1.4, 0.75, -1.2);
+    g.add(sliderKnob);
+
+    // Analog Ammeter
+    const ammCase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.35, 24), ironStandMaterial);
+    ammCase.rotation.x = Math.PI / 2.5;
+    ammCase.position.set(-1.4, 0.45, 1.0);
+    g.add(ammCase);
+    const ammNeedle = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.45, 0.01), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    ammNeedle.position.set(-1.4, 0.55, 1.0);
+    g.add(ammNeedle);
+
+    // Analog Voltmeter
+    const voltCase = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.35, 24), ironStandMaterial);
+    voltCase.rotation.x = Math.PI / 2.5;
+    voltCase.position.set(1.4, 0.45, 1.0);
+    g.add(voltCase);
+    const voltNeedle = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.45, 0.01), new THREE.MeshBasicMaterial({ color: 0x38bdf8 }));
+    voltNeedle.position.set(1.4, 0.55, 1.0);
+    g.add(voltNeedle);
+
+    // Resistance Coil (Center)
+    const coil = new THREE.Mesh(new THREE.TorusGeometry(0.35, 0.08, 12, 32), brassMaterial);
+    coil.position.set(0, 0.45, 0);
+    g.add(coil);
+
+    // Glowing Circuit Wire Path
+    const wirePoints = [
+      new THREE.Vector3(-1.4, 0.25, -1.2),
+      new THREE.Vector3(-0.6, 0.25, -1.2),
+      new THREE.Vector3(0.5, 0.25, -1.2),
+      new THREE.Vector3(2.3, 0.25, -1.2),
+      new THREE.Vector3(2.3, 0.25, 1.0),
+      new THREE.Vector3(1.4, 0.25, 1.0),
+      new THREE.Vector3(0, 0.25, 0),
+      new THREE.Vector3(-1.4, 0.25, 1.0),
+      new THREE.Vector3(-2.0, 0.25, 1.0),
+      new THREE.Vector3(-2.0, 0.25, -1.2)
+    ];
+    const wireCurve = new THREE.CatmullRomCurve3(wirePoints, true);
+    const wireMesh = new THREE.Mesh(new THREE.TubeGeometry(wireCurve, 64, 0.035, 8, true), new THREE.MeshStandardMaterial({ color: 0x334155 }));
+    g.add(wireMesh);
+
+    labGroup.add(g);
+
+    let isClosed = false;
+    let resistance = 5.0; // Ohms
+    let voltage = 6.0; // Volts
+
+    function updateOhmPhysics() {
+      if (!isClosed) {
+        ammNeedle.rotation.z = 0.5;
+        voltNeedle.rotation.z = 0.5;
+        wireMesh.material.color.setHex(0x334155);
+        document.getElementById('calc-current').textContent = '0.00 A';
+        document.getElementById('calc-volt').textContent = '0.00 V';
+        setStatus('Circuit Open (कुञ्जी खुला छ)', 'Flip the switch to connect the power circuit.');
+        return;
+      }
+      const current = voltage / resistance;
+      ammNeedle.rotation.z = 0.5 - (current / 3.0) * 1.0;
+      voltNeedle.rotation.z = 0.5 - (voltage / 12.0) * 1.0;
+      wireMesh.material.color.setHex(0xf59e0b);
+
+      document.getElementById('calc-current').textContent = current.toFixed(2) + ' A';
+      document.getElementById('calc-volt').textContent = voltage.toFixed(1) + ' V';
+      document.getElementById('calc-res').textContent = resistance.toFixed(1) + ' Ω';
+      setStatus('Ohm\'s Law Verified: V ∝ I', `Voltage = ${voltage.toFixed(1)}V, Current = ${current.toFixed(2)}A. Calculated Resistance R = V/I = ${(voltage/current).toFixed(1)} Ω.`);
+    }
+
+    // UI
+    const deck = document.getElementById('touch-actions-grid');
+    deck.innerHTML = `
+      <button class="touch-btn primary" id="btn-toggle-switch">⚡ Close Circuit Switch (कुञ्जी जोड्नुहोस्)</button>
+      <button class="touch-btn accent" id="btn-record-point">📈 Record Data Point (V-I)</button>
+      <button class="touch-btn danger" id="btn-reset-exp">🔄 Reset</button>
+    `;
+
+    document.getElementById('deck-secondary-controls').innerHTML = `
+      <div class="slider-box">
+        <label>Rheostat R (Ω):</label>
+        <input type="range" id="slider-rheo" min="2" max="25" step="1" value="5">
+        <span class="val-display" id="calc-res">5.0 Ω</span>
+      </div>
+      <div class="slider-box">
+        <label>Voltage: <span id="calc-volt">6.0 V</span></label>
+        <label>Current: <span id="calc-current" style="color:var(--cyan-light)">1.20 A</span></label>
+      </div>
+    `;
+
+    setStep('1', 'Flip the key switch to close the circuit and observe meter needle deflections.');
+    updateOhmPhysics();
+
+    document.getElementById('btn-toggle-switch').addEventListener('click', () => {
+      isClosed = !isClosed;
+      playSwitchClick();
+      keyLever.rotation.x = isClosed ? -Math.PI / 2 : 0;
+      document.getElementById('btn-toggle-switch').textContent = isClosed ? '🔌 Open Circuit Switch' : '⚡ Close Circuit Switch';
+      updateOhmPhysics();
+      if (isClosed) playSuccess();
+    });
+
+    document.getElementById('slider-rheo').addEventListener('input', (e) => {
+      resistance = parseFloat(e.target.value);
+      sliderKnob.position.x = 0.5 + (resistance / 25) * 1.8;
+      updateOhmPhysics();
+    });
+
+    document.getElementById('btn-record-point').addEventListener('click', () => {
+      if (!isClosed) return;
+      playTone(880, 'sine', 0.15, 0.2);
+      setStatus('Point Plotted on V-I Graph!', `Plotted: (V=${voltage.toFixed(1)}V, I=${(voltage/resistance).toFixed(2)}A). Slope = Constant Resistance.`);
+    });
+
+    document.getElementById('btn-reset-exp').addEventListener('click', setupOhmsLab);
+  }
+
+  // ── 7. SIMULATION 4: ARCHIMEDES' PRINCIPLE & UPTHRUST ─────────────────────
+  function setupArchimedesLab() {
+    labGroup.clear();
+    const g = new THREE.Group();
+
+    // Stand with Spring balance
+    g.add(createRetortStand(-0.8, 3.8));
+
+    // Spring Balance (Cylindrical body with scale)
+    const balanceGroup = new THREE.Group();
+    balanceGroup.position.set(-0.4, 2.7, 0);
+
+    const bCylinder = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 1.2, 16), brassMaterial);
+    balanceGroup.add(bCylinder);
+
+    const pointer = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.04, 0.2), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    pointer.position.set(0, 0.2, 0.1);
+    balanceGroup.add(pointer);
+
+    // Suspended Solid Metal Cylinder
+    const metalBlock = new THREE.Mesh(new THREE.CylinderGeometry(0.28, 0.28, 0.8, 20), new THREE.MeshStandardMaterial({ color: 0x475569, metalness: 0.9 }));
+    metalBlock.position.set(0, -1.2, 0);
+    balanceGroup.add(metalBlock);
+
+    g.add(balanceGroup);
+
+    // Eureka Overflow Can
+    const eurekaGroup = new THREE.Group();
+    eurekaGroup.position.set(-0.4, 0, 0);
+
+    const canMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.65, 0.65, 1.4, 24), glassMaterial);
+    canMesh.position.y = 0.7;
+    eurekaGroup.add(canMesh);
+
+    // Spout
+    const spout = new THREE.Mesh(new THREE.CylinderGeometry(0.06, 0.06, 0.45, 12), glassMaterial);
+    spout.rotation.z = -Math.PI / 4;
+    spout.position.set(0.7, 1.15, 0);
+    eurekaGroup.add(spout);
+
+    // Water inside Eureka can
+    const water = new THREE.Mesh(new THREE.CylinderGeometry(0.62, 0.62, 1.1, 24), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65 }));
+    water.position.y = 0.58;
+    eurekaGroup.add(water);
+
+    g.add(eurekaGroup);
+
+    // Collection Beaker on Digital Scale
+    const scaleGroup = new THREE.Group();
+    scaleGroup.position.set(1.2, 0, 0);
+
+    const scaleBase = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.15, 0.9), ironStandMaterial);
+    scaleBase.position.y = 0.075;
+    scaleGroup.add(scaleBase);
+
+    const beaker = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.35, 0.8, 20), glassMaterial);
+    beaker.position.y = 0.55;
+    scaleGroup.add(beaker);
+
+    const overflowWater = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.33, 0.4, 20), new THREE.MeshStandardMaterial({ color: 0x38bdf8, transparent: true, opacity: 0.65 }));
+    overflowWater.position.y = 0.35;
+    overflowWater.scale.set(1, 0.001, 1);
+    scaleGroup.add(overflowWater);
+
+    g.add(scaleGroup);
+    labGroup.add(g);
+
+    function updateArchimedes(depth) {
+      // depth: 0 (in air) to 1 (fully submerged)
+      balanceGroup.position.y = 2.7 - depth * 0.95;
+      pointer.position.y = 0.2 + depth * 0.35; // pointer moves up as apparent weight decreases
+      overflowWater.scale.set(1, Math.max(0.001, depth), 1);
+
+      const weightAir = 5.0; // Newtons
+      const upthrust = depth * 1.8;
+      const weightWater = weightAir - upthrust;
+      const displacedWeight = upthrust;
+
+      document.getElementById('weight-air').textContent = weightAir.toFixed(1) + ' N';
+      document.getElementById('weight-water').textContent = weightWater.toFixed(1) + ' N';
+      document.getElementById('calc-upthrust').textContent = upthrust.toFixed(1) + ' N';
+      document.getElementById('weight-disp').textContent = displacedWeight.toFixed(1) + ' N';
+
+      if (depth >= 0.98) {
+        setStatus('Archimedes\' Principle Proved! ⚖️', `Upthrust U = (5.0 - ${weightWater.toFixed(1)}) = ${upthrust.toFixed(1)} N == Displaced Water Weight (${displacedWeight.toFixed(1)} N).`);
+        playSuccess();
+      } else {
+        setStatus('Submerging Object in Water...', `Depth: ${(depth * 100).toFixed(0)}%. Water overflowing into measuring beaker.`);
+      }
+    }
+
+    const deck = document.getElementById('touch-actions-grid');
+    deck.innerHTML = `
+      <button class="touch-btn primary" id="btn-submerge-full">🌊 Fully Submerge Object</button>
+      <button class="touch-btn primary" id="btn-raise-air">🌤️ Lift to Air</button>
+      <button class="touch-btn danger" id="btn-reset-exp">🔄 Reset</button>
+    `;
+
+    document.getElementById('deck-secondary-controls').innerHTML = `
+      <div class="slider-box">
+        <label>Submerge Depth:</label>
+        <input type="range" id="slider-depth" min="0" max="1" step="0.05" value="0">
+      </div>
+      <div class="slider-box">
+        <label>Weight: <span id="weight-water">5.0 N</span></label>
+        <label>Upthrust: <span id="calc-upthrust" style="color:var(--gold-light)">0.0 N</span></label>
+      </div>
+    `;
+
+    setStep('1', 'Drag slider or tap "Fully Submerge Object" to lower the brass block into the water.');
+    updateArchimedes(0);
+
+    document.getElementById('slider-depth').addEventListener('input', (e) => {
+      updateArchimedes(parseFloat(e.target.value));
+    });
+
+    document.getElementById('btn-submerge-full').addEventListener('click', () => {
+      document.getElementById('slider-depth').value = 1;
+      updateArchimedes(1);
+    });
+
+    document.getElementById('btn-raise-air').addEventListener('click', () => {
+      document.getElementById('slider-depth').value = 0;
+      updateArchimedes(0);
+    });
+
+    document.getElementById('btn-reset-exp').addEventListener('click', setupArchimedesLab);
+  }
+
+  // ── 8. SIMULATION 5: OPTICS (REFRACTION & PRISM DISPERSION) ────────────────
+  function setupOpticsLab() {
+    labGroup.clear();
+    const g = new THREE.Group();
+
+    // Protractor optical turntable
+    const tableDisc = new THREE.Mesh(new THREE.CylinderGeometry(2.2, 2.2, 0.08, 32), new THREE.MeshStandardMaterial({ color: 0x1e293b }));
+    tableDisc.position.y = 0.04;
+    g.add(tableDisc);
+
+    // Laser Light Source on arm
+    const laserArm = new THREE.Group();
+    const laserBody = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.35, 0.35), new THREE.MeshStandardMaterial({ color: 0xef4444, metalness: 0.8 }));
+    laserBody.position.set(-2.2, 0.45, 0);
+    laserArm.add(laserBody);
+    g.add(laserArm);
+
+    // Glass Slab
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(1.6, 0.8, 1.0), glassMaterial);
+    slab.position.set(0, 0.45, 0);
+    g.add(slab);
+
+    // Triangular Prism (Toggled)
+    const prismShape = new THREE.Shape();
+    prismShape.moveTo(-0.8, -0.6);
+    prismShape.lineTo(0.8, -0.6);
+    prismShape.lineTo(0, 0.7);
+    prismShape.closePath();
+    const prismGeo = new THREE.ExtrudeGeometry(prismShape, { depth: 0.9, bevelEnabled: false });
+    const prism = new THREE.Mesh(prismGeo, glassMaterial);
+    prism.rotation.x = Math.PI / 2;
+    prism.position.set(0, 0.04, 0.45);
+    prism.visible = false;
+    g.add(prism);
+
+    // Rainbow VIBGYOR Spectrum lines (7 rays)
+    const rainbowColors = [0x7e22ce, 0x4338ca, 0x0284c7, 0x16a34a, 0xeab308, 0xf97316, 0xef4444]; // VIBGYOR
+    const rainbowRays = [];
+    rainbowColors.forEach((color, idx) => {
+      const ray = new THREE.Mesh(new THREE.CylinderGeometry(0.015, 0.015, 2.6), new THREE.MeshBasicMaterial({ color: color }));
+      ray.position.set(1.4, 0.45, (idx - 3) * 0.12);
+      ray.rotation.z = Math.PI / 2 + 0.18 + idx * 0.03;
+      ray.visible = false;
+      g.add(ray);
+      rainbowRays.push(ray);
+    });
+
+    // Single Incident Laser Ray
+    const incidentRay = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 2.2), new THREE.MeshBasicMaterial({ color: 0xef4444 }));
+    incidentRay.rotation.z = Math.PI / 2;
+    incidentRay.position.set(-1.1, 0.45, 0);
+    g.add(incidentRay);
+
+    labGroup.add(g);
+
+    let isPrismMode = false;
+    let incidentAngle = 35; // degrees
+
+    function updateOptics() {
+      if (!isPrismMode) {
+        slab.visible = true;
+        prism.visible = false;
+        rainbowRays.forEach(r => r.visible = false);
+        incidentRay.material.color.setHex(0xef4444);
+        setStatus('Rectangular Slab Refraction', `Angle of Incidence i = ${incidentAngle}°. Angle of Refraction r ≈ 22°. Lateral displacement observed.`);
+      } else {
+        slab.visible = false;
+        prism.visible = true;
+        rainbowRays.forEach(r => r.visible = true);
+        incidentRay.material.color.setHex(0xffffff); // White light
+        setStatus('Prism Dispersion: VIBGYOR! 🌈', 'White light splits into Violet, Indigo, Blue, Green, Yellow, Orange, Red due to differing refractive indices.');
+      }
+    }
+
+    const deck = document.getElementById('touch-actions-grid');
+    deck.innerHTML = `
+      <button class="touch-btn primary" id="btn-mode-slab">🔲 Mode: Rectangular Slab</button>
+      <button class="touch-btn accent" id="btn-mode-prism">🔺 Mode: Triangular Prism (VIBGYOR)</button>
+      <button class="touch-btn danger" id="btn-reset-exp">🔄 Reset</button>
+    `;
+
+    document.getElementById('deck-secondary-controls').innerHTML = `
+      <div class="slider-box">
+        <label>Angle i (°):</label>
+        <input type="range" id="slider-angle" min="10" max="70" step="1" value="35">
+        <span class="val-display" id="angle-disp">35°</span>
+      </div>
+    `;
+
+    setStep('1', 'Toggle between Glass Slab refraction and Prism Dispersion to view the rainbow spectrum.');
+    updateOptics();
+
+    document.getElementById('btn-mode-slab').addEventListener('click', () => {
+      isPrismMode = false;
+      playTone(500, 'sine', 0.15, 0.15);
+      updateOptics();
+    });
+
+    document.getElementById('btn-mode-prism').addEventListener('click', () => {
+      isPrismMode = true;
+      playSuccess();
+      updateOptics();
+    });
+
+    document.getElementById('slider-angle').addEventListener('input', (e) => {
+      incidentAngle = parseInt(e.target.value);
+      document.getElementById('angle-disp').textContent = incidentAngle + '°';
+      laserArm.rotation.y = ((incidentAngle - 35) * Math.PI) / 180;
+      updateOptics();
+    });
+
+    document.getElementById('btn-reset-exp').addEventListener('click', setupOpticsLab);
+  }
+
+  // ── 9. SIMULATION 6: VIRTUAL COMPOUND MICROSCOPE ──────────────────────────
+  function setupMicroscopeLab() {
+    labGroup.clear();
+    const g = new THREE.Group();
+
+    // Horseshoe base
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(0.8, 0.9, 0.25, 20), ironStandMaterial);
+    base.position.y = 0.125;
+    g.add(base);
+
+    // Vertical Pillar & Curved Limb
+    const limb = new THREE.Mesh(new THREE.TorusGeometry(0.9, 0.14, 16, 24, Math.PI * 0.75), ironStandMaterial);
+    limb.position.set(-0.35, 1.4, 0);
+    limb.rotation.z = Math.PI / 3;
+    g.add(limb);
+
+    // Mechanical Stage
+    const stage = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.08, 1.4), new THREE.MeshStandardMaterial({ color: 0x0f172a, roughness: 0.4 }));
+    stage.position.set(0, 1.2, 0);
+    g.add(stage);
+
+    // Glass Slide with specimen
+    const slide = new THREE.Mesh(new THREE.BoxGeometry(0.8, 0.02, 0.3), glassMaterial);
+    slide.position.set(0, 1.25, 0);
+    g.add(slide);
+
+    // Objective Lens assembly
+    const nosepiece = new THREE.Mesh(new THREE.CylinderGeometry(0.25, 0.35, 0.3, 16), brassMaterial);
+    nosepiece.position.set(0, 1.7, 0);
+    g.add(nosepiece);
+
+    const objLens = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.12, 0.45, 16), brassMaterial);
+    objLens.position.set(0, 1.45, 0);
+    g.add(objLens);
+
+    // Body tube & Eyepiece
+    const bodyTube = new THREE.Mesh(new THREE.CylinderGeometry(0.14, 0.14, 1.2, 16), ironStandMaterial);
+    bodyTube.position.set(0, 2.3, 0);
+    g.add(bodyTube);
+
+    const eyepiece = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.18, 0.35, 16), brassMaterial);
+    eyepiece.position.set(0, 2.9, 0);
+    g.add(eyepiece);
+
+    // Coarse & Fine Focus Knobs
+    const knob = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.15, 16), brassMaterial);
+    knob.rotation.x = Math.PI / 2;
+    knob.position.set(-0.4, 1.8, 0.3);
+    g.add(knob);
+
+    labGroup.add(g);
+
+    // Viewfinder HUD Overlay (Eyepiece Vision)
+    let specimenType = 'onion';
+    let focusScore = 0.5;
+
+    function updateEyepieceView() {
+      if (specimenType === 'onion') {
+        setStatus('Onion Peel Cell (प्याजको कोष) — 100x', 'Rectangular plant cells with prominent cell wall, cytoplasm, and stained nucleus.');
+      } else if (specimenType === 'cheek') {
+        setStatus('Human Cheek Cell (गालाको कोष) — 400x', 'Irregular polygonal animal cells with cell membrane and distinct dark nucleus.');
+      } else {
+        setStatus('Leaf Epidermis & Stomata (स्टोमाटा) — 400x', 'Kidney-shaped guard cells surrounding the central stomatal pore for gas exchange.');
+      }
+    }
+
+    const deck = document.getElementById('touch-actions-grid');
+    deck.innerHTML = `
+      <button class="touch-btn primary" id="btn-slide-onion">🧅 Onion Peel Cell (Plant)</button>
+      <button class="touch-btn primary" id="btn-slide-cheek">👄 Cheek Cell (Animal)</button>
+      <button class="touch-btn accent" id="btn-slide-stomata">🍃 Leaf Stomata & Guard Cells</button>
+      <button class="touch-btn danger" id="btn-reset-exp">🔄 Reset</button>
+    `;
+
+    document.getElementById('deck-secondary-controls').innerHTML = `
+      <div class="slider-box">
+        <label>Focus Knob:</label>
+        <input type="range" id="slider-focus" min="0" max="1" step="0.05" value="0.5">
+        <span class="val-display" id="focus-disp">Sharp</span>
+      </div>
+    `;
+
+    setStep('1', 'Select a slide (Onion Plant Cell, Cheek Animal Cell, or Stomata) to inspect under the virtual microscope.');
+    updateEyepieceView();
+
+    document.getElementById('btn-slide-onion').addEventListener('click', () => {
+      specimenType = 'onion';
+      playClink();
+      updateEyepieceView();
+      playSuccess();
+    });
+
+    document.getElementById('btn-slide-cheek').addEventListener('click', () => {
+      specimenType = 'cheek';
+      playClink();
+      updateEyepieceView();
+      playSuccess();
+    });
+
+    document.getElementById('btn-slide-stomata').addEventListener('click', () => {
+      specimenType = 'stomata';
+      playClink();
+      updateEyepieceView();
+      playSuccess();
+    });
+
+    document.getElementById('slider-focus').addEventListener('input', (e) => {
+      focusScore = parseFloat(e.target.value);
+      knob.rotation.y = focusScore * Math.PI * 4;
+      bodyTube.position.y = 2.2 + focusScore * 0.2;
+      objLens.position.y = 1.35 + focusScore * 0.2;
+    });
+
+    document.getElementById('btn-reset-exp').addEventListener('click', setupMicroscopeLab);
+  }
+
+  // ── 10. SIMULATION 7: ACID-BASE NEUTRALIZATION TITRATION ───────────────────
+  function setupTitrationLab() {
+    labGroup.clear();
+    const g = new THREE.Group();
+
+    // Retort stand with Burette Clamp
+    g.add(createRetortStand(-0.6, 4.2));
+
+    // Calibrated 50mL Glass Burette
+    const buretteGroup = new THREE.Group();
+    buretteGroup.position.set(0, 1.8, 0);
+
+    const bTube = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 2.6, 20), glassMaterial);
+    buretteGroup.add(bTube);
+
+    // NaOH liquid in burette
+    const naohLiquid = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.1, 2.2, 16), new THREE.MeshStandardMaterial({ color: 0xbfdbfe, transparent: true, opacity: 0.6 }));
+    buretteGroup.add(naohLiquid);
+
+    // Stopcock Valve
+    const stopcock = new THREE.Mesh(new THREE.BoxGeometry(0.35, 0.08, 0.08), brassMaterial);
+    stopcock.position.set(0, -1.2, 0);
+    buretteGroup.add(stopcock);
+
+    g.add(buretteGroup);
+
+    // Conical Flask on Bench
+    const flaskGroup = new THREE.Group();
+    flaskGroup.position.set(0, 0, 0);
+
+    const flaskBase = new THREE.Mesh(new THREE.ConeGeometry(0.7, 0.9, 24), glassMaterial);
+    flaskBase.position.y = 0.45;
+    flaskGroup.add(flaskBase);
+
+    // Solution inside flask
+    const flaskLiquidMat = new THREE.MeshStandardMaterial({ color: 0xf1f5f9, transparent: true, opacity: 0.7 });
+    const flaskLiquid = new THREE.Mesh(new THREE.ConeGeometry(0.65, 0.5, 20), flaskLiquidMat);
+    flaskLiquid.position.y = 0.25;
+    flaskGroup.add(flaskLiquid);
+
+    g.add(flaskGroup);
+    labGroup.add(g);
+
+    let dispensedML = 0.0;
+    let hasIndicator = false;
+
+    function updateTitration() {
+      document.getElementById('dispensed-vol').textContent = dispensedML.toFixed(1) + ' mL';
+      if (dispensedML >= 25.0 && hasIndicator) {
+        flaskLiquidMat.color.setHex(0xf43f5e); // Bright Pink at neutralization point!
+        flaskLiquidMat.opacity = 0.95;
+        document.getElementById('ph-meter').textContent = 'pH 7.0 (Neutral)';
+        setStatus('Neutralization Endpoint Reached! (गुलाबी रङ)', 'Phenolphthalein turned pink! HCl neutralized by NaOH at exactly 25.0 mL. pH = 7.0.');
+        playSuccess();
+      } else if (hasIndicator) {
+        document.getElementById('ph-meter').textContent = (1.5 + (dispensedML / 25) * 4.5).toFixed(1);
+        setStatus('Dispensing NaOH Solution...', `Added ${dispensedML.toFixed(1)} mL of 0.1M NaOH. Solution remains colorless in acid.`);
+      }
+    }
+
+    const deck = document.getElementById('touch-actions-grid');
+    deck.innerHTML = `
+      <button class="touch-btn primary" id="btn-add-indicator">🧪 1. Add Phenolphthalein Indicator</button>
+      <button class="touch-btn primary" id="btn-drip-naoh" disabled>💧 2. Dispense NaOH Drop-by-Drop</button>
+      <button class="touch-btn accent" id="btn-titrate-auto" disabled>⚡ Fast Titrate to Endpoint</button>
+      <button class="touch-btn danger" id="btn-reset-exp">🔄 Reset</button>
+    `;
+
+    document.getElementById('deck-secondary-controls').innerHTML = `
+      <div class="slider-box">
+        <label>Burette Reading:</label>
+        <span class="val-display" id="dispensed-vol">0.0 mL</span>
+      </div>
+      <div class="slider-box">
+        <label>Solution pH:</label>
+        <span class="val-display" id="ph-meter">1.5 (Acidic)</span>
+      </div>
+    `;
+
+    setStep('1', 'Tap "Add Phenolphthalein Indicator" into the acid solution.');
+
+    document.getElementById('btn-add-indicator').addEventListener('click', () => {
+      hasIndicator = true;
+      playTone(1200, 'sine', 0.15, 0.2);
+      document.getElementById('btn-add-indicator').disabled = true;
+      document.getElementById('btn-drip-naoh').disabled = false;
+      document.getElementById('btn-titrate-auto').disabled = false;
+      setStep('2', 'Tap "Dispense NaOH Drop-by-Drop" to release base until color permanently flashes pink.');
+      setStatus('Indicator Added', 'Colorless in acidic solution. Ready for titration.');
+    });
+
+    document.getElementById('btn-drip-naoh').addEventListener('click', () => {
+      dispensedML += 2.5;
+      if (dispensedML > 30) dispensedML = 30;
+      playTone(900, 'sine', 0.08, 0.12);
+      updateTitration();
+    });
+
+    document.getElementById('btn-titrate-auto').addEventListener('click', () => {
+      dispensedML = 25.0;
+      playBubbleSound();
+      updateTitration();
+    });
+
+    document.getElementById('btn-reset-exp').addEventListener('click', setupTitrationLab);
+  }
+
+  // ── 11. Experiment Catalog Grid Generation ─────────────────────────────────
+  const expGrid = document.getElementById('exp-grid');
+  function renderCatalog(filter = 'all') {
+    expGrid.innerHTML = '';
+    const filtered = EXPERIMENTS.filter(e => {
+      if (filter === 'all') return true;
+      if (filter === 'class10') return e.class === 'class10';
+      if (filter === 'class9') return e.class === 'class9';
+      if (filter === 'class8') return e.class === 'class8';
+      if (filter === 'chem') return e.subject === 'chem';
+      if (filter === 'phys') return e.subject === 'phys';
+      if (filter === 'bio') return e.subject === 'bio';
+      return true;
+    });
+
+    filtered.forEach(exp => {
+      const card = document.createElement('div');
+      card.className = `exp-card ${exp.id === currentExp.id ? 'active-card' : ''}`;
+      card.innerHTML = `
+        <div>
+          <div class="card-top">
+            <span class="card-class-badge">${exp.grade}</span>
+            <span class="card-subject-badge">${exp.chapter.split('·')[0]}</span>
+          </div>
+          <h3 class="card-title">${exp.title}</h3>
+          <p style="color:var(--gold-light);font-size:0.85rem;font-weight:700;margin-bottom:0.5rem;">${exp.nepaliTitle}</p>
+          <p class="card-desc">${exp.desc}</p>
+          <div class="card-apparatus-list">
+            ${exp.apparatus.slice(0, 4).map(a => `<span class="app-pill">${a}</span>`).join('')}
+            ${exp.apparatus.length > 4 ? `<span class="app-pill">+${exp.apparatus.length - 4} more</span>` : ''}
+          </div>
+        </div>
+        <button class="card-btn">🔬 Perform in 3D ➔</button>
+      `;
+
+      card.addEventListener('click', () => {
+        loadExperiment(exp);
+        window.scrollTo({ top: document.getElementById('stage-wrapper').offsetTop - 90, behavior: 'smooth' });
+      });
+
+      expGrid.appendChild(card);
+    });
+  }
+
+  function loadExperiment(exp) {
+    currentExp = exp;
+    document.getElementById('current-exp-tag').textContent = `${exp.grade.split('·')[0]} · ${exp.subject.toUpperCase()}`;
+    document.getElementById('current-exp-name').textContent = exp.title;
+
+    // Camera reset position
+    camera.position.set(0, 3.2, 7.5);
+    controls.target.set(0, 1.2, 0);
+
+    // Populate drawer theory
+    document.getElementById('drawer-title').textContent = exp.title;
+    document.getElementById('drawer-body').innerHTML = `
+      <div class="guide-card">
+        <h4>🎯 Objective (उद्देश्य)</h4>
+        <p>${exp.desc}</p>
+        <p style="color:var(--gold-light);margin-top:0.35rem;font-weight:600;">नेपाली: ${exp.nepaliTitle}</p>
+      </div>
+
+      <div class="guide-card">
+        <h4>🧪 Chemical Equation / Principle (सिद्धान्त)</h4>
+        <div class="chemical-equation">${exp.equation}</div>
+      </div>
+
+      <div class="guide-card">
+        <h4>📦 Required Apparatus & Reagents (आवश्यक सामग्रीहरू)</h4>
+        <ul>
+          ${exp.apparatus.map(item => `<li>${item}</li>`).join('')}
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>🛡️ Safety Precautions (सुरक्षा सावधानीहरू)</h4>
+        <ul>
+          <li>Always wear safety goggles and lab aprons.</li>
+          <li>Never inhale pungent gases directly; gently waft fumes towards nose.</li>
+          <li>Ensure thistle funnel dips below liquid surface to prevent gas escape.</li>
+          <li>Slant test tubes slightly downward when heating powders that release moisture.</li>
+        </ul>
+      </div>
+
+      <div class="guide-card">
+        <h4>🎓 SEE Exam Viva Questions (मौखिक प्रश्नोत्तर)</h4>
+        <p><strong>Q1: Why is CO₂ collected by upward displacement of air?</strong><br>
+        <em>Ans: Because CO₂ is about 1.5 times heavier than air and soluble in water.</em></p>
+        <p style="margin-top:0.5rem;"><strong>Q2: Why is NH₃ gas collected by downward displacement of air?</strong><br>
+        <em>Ans: Because ammonia is lighter than air (density 0.68 g/L) and highly soluble in water.</em></p>
+      </div>
+    `;
+
+    // Invoke 3D setup
+    exp.setupFunction();
+    renderCatalog(activeFilter);
+    playSuccess();
+  }
+
+  // ── 12. UI Event Handlers ──────────────────────────────────────────────────
+  let activeFilter = 'all';
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      e.target.classList.add('active');
+      activeFilter = e.target.getAttribute('data-filter');
+      renderCatalog(activeFilter);
+    });
+  });
+
+  // Camera Reset
+  document.getElementById('btn-camera-reset').addEventListener('click', () => {
+    camera.position.set(0, 3.2, 7.5);
+    controls.target.set(0, 1.2, 0);
+    playClink();
+  });
+
+  // Sound Toggle
+  document.getElementById('btn-sound-toggle').addEventListener('click', (e) => {
+    soundEnabled = !soundEnabled;
+    e.target.textContent = soundEnabled ? '🔊 Sound ON' : '🔇 Sound OFF';
+    playTone(440, 'sine', 0.1, 0.15);
+  });
+
+  // Theory Drawer
+  const drawerOverlay = document.getElementById('drawer-overlay');
+  document.getElementById('btn-open-theory').addEventListener('click', () => {
+    drawerOverlay.classList.add('active');
+  });
+  document.getElementById('drawer-close').addEventListener('click', () => {
+    drawerOverlay.classList.remove('active');
+  });
+  drawerOverlay.addEventListener('click', (e) => {
+    if (e.target === drawerOverlay) drawerOverlay.classList.remove('active');
+  });
+
+  // Fullscreen Smartboard Mode
+  const fullscreenBtn = document.getElementById('btn-toggle-fullscreen');
+  fullscreenBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      document.body.classList.add('is-fullscreen');
+      fullscreenBtn.textContent = '❌ Exit Fullscreen';
+    } else {
+      if (document.exitFullscreen) document.exitFullscreen();
+      document.body.classList.remove('is-fullscreen');
+      fullscreenBtn.textContent = '⛶ Classroom Smartboard Mode';
+    }
+  });
+
+  document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+      document.body.classList.remove('is-fullscreen');
+      fullscreenBtn.textContent = '⛶ Classroom Smartboard Mode';
+    }
+    setTimeout(onWindowResize, 100);
+  });
+
+  // Responsive Window Resize
+  function onWindowResize() {
+    camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+  }
+  window.addEventListener('resize', onWindowResize);
+
+  // ── 13. Main Animation Loop ────────────────────────────────────────────────
+  function animate() {
+    requestAnimationFrame(animate);
+    controls.update();
+    if (currentAnimationTick) currentAnimationTick();
+    renderer.render(scene, camera);
+  }
+  animate();
+
+  // Initial Load
+  loadExperiment(EXPERIMENTS[0]);
+  renderCatalog('all');
+
+})();
+</script>
+
+<!-- Mobile Navigation Toggle Script -->
+<script>
+  const navToggle = document.getElementById('nav-toggle');
+  const navLinks = document.getElementById('nav-links');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('nav-open');
+      navToggle.setAttribute('aria-expanded', isOpen);
+    });
+  }
+</script>
+</body>
+</html>
